@@ -1,0 +1,228 @@
+.navbar {
+  background-color: var(--navbar-bg-color);
+  backdrop-filter: var(--navbar-blur);
+  -webkit-backdrop-filter: var(--navbar-blur); /* Safari支持 */
+  box-shadow: var(--card-shadow);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 80px;
+  transition: background-color var(--transition-speed);
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  height: 100%;
+  max-width: 1400px;
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+.navbar-brand:hover {
+  color: var(--primary-hover-color);
+  text-decoration: none;
+}
+
+.navbar-search {
+  display: flex;
+  align-items: center;
+  margin: 0 1rem;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px 0 0 4px;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color var(--transition-speed);
+}
+
+.search-input:focus {
+  border-color: var(--primary-color);
+}
+
+.search-btn {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color var(--transition-speed);
+}
+
+.search-btn:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  margin-left: 1.5rem;
+}
+
+.nav-link {
+  color: var(--navbar-text-color);
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.nav-link:hover {
+  background-color: var(--navbar-hover-bg-color);
+  color: var(--navbar-text-color);
+  text-decoration: none;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--navbar-text-color);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.dropdown-toggle:hover {
+  background-color: var(--navbar-hover-bg-color);
+  color: var(--navbar-text-color);
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  border: 2px solid var(--primary-color);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--dropdown-bg-color);
+  border-radius: 4px;
+  box-shadow: var(--card-shadow);
+  min-width: 150px;
+  z-index: 1000;
+  transition: background-color var(--transition-speed);
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  color: var(--navbar-text-color);
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.dropdown-item:hover {
+  background-color: var(--navbar-hover-bg-color);
+  color: var(--navbar-text-color);
+  text-decoration: none;
+}
+
+/* 添加动画效果 */
+.navbar {
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-speed);
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--navbar-hover-bg-color);
+}
+
+/* 移动端响应式设计 */
+@media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    min-height: 80px;
+  }
+  
+  .navbar .container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .navbar-search {
+    width: 100%;
+    max-width: none;
+    margin: 1rem 0;
+  }
+  
+  .nav-menu {
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .nav-item {
+    margin: 0.25rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+  }
+}

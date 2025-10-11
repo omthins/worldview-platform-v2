@@ -1,0 +1,332 @@
+.worldview-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.worldview-header {
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.worldview-number {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.worldview-title {
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.worldview-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.author-name {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.publish-date {
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+}
+
+.worldview-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.like-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 5px 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+}
+
+.like-btn:hover {
+  background-color: var(--hover-bg-color);
+}
+
+.like-btn.liked {
+  background-color: var(--alert-danger-bg-color);
+  border-color: var(--btn-danger-color);
+  color: var(--btn-danger-color);
+}
+
+.view-count {
+  color: var(--text-secondary-color);
+  font-size: 0.9rem;
+}
+
+.worldview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.category-tag {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.tag {
+  background-color: var(--tag-bg-color);
+  color: var(--primary-color);
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+}
+
+.worldview-cover {
+  margin: 2.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.worldview-cover img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.worldview-content {
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 3rem;
+  margin-bottom: 3rem;
+}
+
+.worldview-description {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.worldview-description h3 {
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.worldview-description p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary-color);
+}
+
+.worldview-body {
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.worldview-body h1, 
+.worldview-body h2, 
+.worldview-body h3 {
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+.worldview-body h1 {
+  font-size: 2rem;
+}
+
+.worldview-body h2 {
+  font-size: 1.7rem;
+}
+
+.worldview-body h3 {
+  font-size: 1.4rem;
+}
+
+.worldview-body p {
+  margin-bottom: 1.5rem;
+}
+
+.worldview-body ul, 
+.worldview-body ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.worldview-body li {
+  margin-bottom: 0.5rem;
+}
+
+.worldview-footer {
+  margin-top: 3rem;
+}
+
+.author-bio {
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.author-bio h3 {
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.author-card {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.author-avatar-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--primary-color);
+}
+
+.author-details h4 {
+  margin-bottom: 0.75rem;
+  color: var(--text-color);
+  font-size: 1.3rem;
+}
+
+.author-details p {
+  margin-bottom: 1.2rem;
+  color: var(--text-secondary-color);
+  line-height: 1.6;
+}
+
+.author-id {
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  background-color: var(--card-bg-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .worldview-detail {
+    padding: 1.5rem 1rem;
+  }
+  
+  .worldview-title {
+    font-size: 2.2rem;
+  }
+  
+  .worldview-content {
+    padding: 2rem;
+  }
+  
+  .author-bio {
+    padding: 2rem;
+  }
+  
+  .worldview-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .author-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .author-avatar-large {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .worldview-detail {
+    padding: 1rem 0.75rem;
+  }
+  
+  .worldview-title {
+    font-size: 2rem;
+  }
+  
+  .worldview-content {
+    padding: 1.5rem;
+  }
+  
+  .author-bio {
+    padding: 1.5rem;
+  }
+  
+  .worldview-body {
+    font-size: 1rem;
+  }
+  
+  .worldview-body h1 {
+    font-size: 1.8rem;
+  }
+  
+  .worldview-body h2 {
+    font-size: 1.5rem;
+  }
+  
+  .worldview-body h3 {
+    font-size: 1.3rem;
+  }
+}

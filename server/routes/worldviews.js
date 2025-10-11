@@ -1,0 +1,364 @@
+const express = require('express');
+const { body, validationResult } = require('express-validator');
+const { Worldview, User, UserWorldviewLike } = require('../models');
+const { authenticateToken } = require('../middleware/auth');
+const { Op } = require('sequelize');
+
+const router = express.Router();
+
+// 获取所有世界观（分页）
+router.get('/', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const category = req.query.category;
+    const search = req.query.search;
+    const offset = (page - 1) * limit;
+    
+    // 构建查询条件
+    let whereCondition = { isPublic: true };
+    
+    if (category && category !== '全部') {
+      whereCondition.category = category;
+    }
+    
+    if (search) {
+      // 检查搜索词是否为数字（可能是世界观编号或作者ID）
+      const isNumeric = /^\d+$/.test(search);
+      
+      if (isNumeric) {
+        // 如果是数字，搜索世界观编号和作者ID
+        whereCondition[Op.or] = [
+          { title: { [Op.iLike]: `%${search}%` } },
+          { description: { [Op.iLike]: `%${search}%` } },
+          { tags: { [Op.contains]: [search] } },
+          { worldviewNumber: parseInt(search) },
+          { '$author.id$': parseInt(search) }
+        ];
+      } else {
+        // 如果不是数字，搜索标题、描述、标签和作者名
+        whereCondition[Op.or] = [
+          { title: { [Op.iLike]: `%${search}%` } },
+          { description: { [Op.iLike]: `%${search}%` } },
+          { tags: { [Op.contains]: [search] } },
+          { '$author.username$': { [Op.iLike]: `%${search}%` } }
+        ];
+      }
+    }
+    
+    const { count, rows: worldviews } = await Worldview.findAndCountAll({
+      where: whereCondition,
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'username', 'avatar']
+        },
+        {
+          model: User,
+          as: 'likingUsers',
+          attributes: ['id', 'username'],
+          through: { attributes: [] }
+        }
+      ],
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
+    
+    res.json({
+      worldviews,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      total: count
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+// 获取单个世界观详情
+router.get('/:id', async (req, res) => {
+  try {
+    const worldview = await Worldview.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'username', 'avatar', 'bio']
+        },
+        {
+          model: User,
+          as: 'likingUsers',
+          attributes: ['id', 'username', 'avatar'],
+          through: { attributes: [] }
+        }
+      ]
+    });
+    
+    if (!worldview) {
+      return res.status(404).json({ message: '世界观不存在' });
+    }
+    
+    // 增加浏览量
+    await Worldview.update(
+      { views: worldview.views + 1 },
+      { where: { id: req.params.id } }
+    );
+    
+    // 更新返回的浏览量
+    worldview.views += 1;
+    
+    res.json(worldview);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+// 创建新世界观
+router.post('/', authenticateToken, [
+  body('title').notEmpty().withMessage('标题不能为空'),
+  body('description').notEmpty().withMessage('描述不能为空'),
+  body('content').notEmpty().withMessage('内容不能为空'),
+  body('category').isIn(['奇幻', '科幻', '现实', '历史', '神话', '其他']).withMessage('无效的分类')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    
+    const { title, description, content, category, tags, coverImage, isPublic } = req.body;
+    
+    // 获取当前最大的世界观编号
+    const maxWorldview = await Worldview.findOne({
+      order: [['worldviewNumber', 'DESC']]
+    });
+    
+    // 生成新的世界观编号
+    const newWorldviewNumber = maxWorldview ? maxWorldview.worldviewNumber + 1 : 1;
+    
+    const worldview = await Worldview.create({
+      worldviewNumber: newWorldviewNumber,
+      title,
+      description,
+      content,
+      category,
+      tags: tags || [],
+      coverImage: coverImage || '',
+      authorId: req.user.id,
+      isPublic: isPublic !== undefined ? isPublic : true
+    });
+    
+    // 获取包含作者信息的世界观
+    const worldviewWithAuthor = await Worldview.findByPk(worldview.id, {
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username', 'avatar']
+      }]
+    });
+    
+    res.status(201).json(worldviewWithAuthor);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+// 更新世界观
+router.put('/:id', authenticateToken, [
+  body('title').optional().notEmpty().withMessage('标题不能为空'),
+  body('description').optional().notEmpty().withMessage('描述不能为空'),
+  body('content').optional().notEmpty().withMessage('内容不能为空'),
+  body('category').optional().isIn(['奇幻', '科幻', '现实', '历史', '神话', '其他']).withMessage('无效的分类')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    
+    const worldview = await Worldview.findByPk(req.params.id);
+    
+    if (!worldview) {
+      return res.status(404).json({ message: '世界观不存在' });
+    }
+    
+    // 检查是否是作者
+    if (worldview.authorId !== req.user.id) {
+      return res.status(403).json({ message: '无权修改此世界观' });
+    }
+    
+    const { title, description, content, category, tags, coverImage, isPublic } = req.body;
+    
+    // 更新字段
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (content !== undefined) updateData.content = content;
+    if (category !== undefined) updateData.category = category;
+    if (tags !== undefined) updateData.tags = tags;
+    if (coverImage !== undefined) updateData.coverImage = coverImage;
+    if (isPublic !== undefined) updateData.isPublic = isPublic;
+    
+    await Worldview.update(updateData, { where: { id: req.params.id } });
+    
+    // 获取更新后的世界观
+    const updatedWorldview = await Worldview.findByPk(req.params.id, {
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username', 'avatar']
+      }]
+    });
+    
+    res.json(updatedWorldview);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+// 删除世界观
+router.delete('/:id', authenticateToken, async (req, res) => {
+  try {
+    const worldview = await Worldview.findByPk(req.params.id);
+    
+    if (!worldview) {
+      return res.status(404).json({ message: '世界观不存在' });
+    }
+    
+    // 检查是否是作者
+    if (worldview.authorId !== req.user.id) {
+      return res.status(403).json({ message: '无权删除此世界观' });
+    }
+    
+    await Worldview.destroy({ where: { id: req.params.id } });
+    
+    res.json({ message: '世界观已删除' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+// 点赞/取消点赞世界观
+router.post('/:id/like', authenticateToken, async (req, res) => {
+  try {
+    const worldview = await Worldview.findByPk(req.params.id, {
+      include: [{
+        model: User,
+        as: 'likingUsers',
+        attributes: ['id', 'username'],
+        through: { attributes: [] }
+      }]
+    });
+    
+    if (!worldview) {
+      return res.status(404).json({ message: '世界观不存在' });
+    }
+    
+    const userId = req.user.id;
+    
+    // 检查是否已经点赞
+    const isLiked = worldview.likingUsers ? worldview.likingUsers.some(user => user.id === userId) : false;
+    
+    if (isLiked) {
+      // 取消点赞
+      await UserWorldviewLike.destroy({
+        where: { userId, worldviewId: req.params.id }
+      });
+      
+      res.json({ 
+        message: '取消点赞',
+        likesCount: worldview.likingUsers ? worldview.likingUsers.length - 1 : 0
+      });
+    } else {
+      // 点赞
+      await UserWorldviewLike.create({
+        userId,
+        worldviewId: req.params.id
+      });
+      
+      res.json({ 
+        message: '点赞成功',
+        likesCount: worldview.likingUsers ? worldview.likingUsers.length + 1 : 1
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+// 获取当前登录用户的世界观
+router.get('/user', authenticateToken, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+    
+    const { count, rows: worldviews } = await Worldview.findAndCountAll({
+      where: { 
+        authorId: req.user.id
+      },
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username', 'avatar']
+      }],
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
+    
+    res.json({
+      worldviews,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      total: count
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+// 获取指定用户的世界观
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+    
+    const { count, rows: worldviews } = await Worldview.findAndCountAll({
+      where: { 
+        authorId: req.params.userId,
+        isPublic: true 
+      },
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username', 'avatar']
+      }],
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
+    
+    res.json({
+      worldviews,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      total: count
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+module.exports = router;

@@ -1,0 +1,194 @@
+.comment-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.comment-section h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.comment-form {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+}
+
+.comment-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.comment-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+}
+
+.replying-to {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: var(--hover-bg-color);
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.btn-cancel-reply {
+  background: none;
+  border: none;
+  color: var(--text-secondary-color);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn-cancel-reply:hover {
+  color: #343a40;
+  text-decoration: underline;
+}
+
+.login-prompt {
+  padding: 1.5rem;
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-prompt a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-prompt a:hover {
+  text-decoration: underline;
+}
+
+.comments-list {
+  margin-top: 1.5rem;
+}
+
+.comment-item {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+
+.comment-avatar {
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.comment-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.comment-author {
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.comment-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
+}
+
+.comment-body {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.comment-action {
+  background: none;
+  border: none;
+  color: var(--text-secondary-color);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+}
+
+.comment-action:hover {
+  color: #007bff;
+}
+
+.like-btn:hover {
+  color: #e63946;
+}
+
+.comment-replies {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--border-color);
+}
+
+.comment-reply {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.comment-reply .comment-avatar img {
+  width: 30px;
+  height: 30px;
+}
+
+.reply-content {
+  flex: 1;
+}
+
+.no-comments {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary-color);
+  font-style: italic;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .comment-form {
+    padding: 1rem;
+  }
+  
+  .comment-item {
+    margin-bottom: 1rem;
+  }
+  
+  .comment-avatar {
+    margin-right: 0.75rem;
+  }
+  
+  .comment-avatar img {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .comment-replies {
+    padding-left: 0.5rem;
+  }
+}
