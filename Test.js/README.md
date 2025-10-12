@@ -1,69 +1,71 @@
-# 测试脚本说明
+# 用户管理测试脚本
 
-本文件夹包含用于世界观平台项目的各种测试和实用脚本。
+本目录包含用于管理用户的测试脚本，支持创建用户、查看用户列表等功能。
 
 ## 脚本列表
 
-### 用户管理脚本
-
-- `create-user.js` - 交互式创建单个用户
-
-### 世界观管理脚本
-
-- `create-worldview-with-user.js` - 使用指定用户发表世界观
-- `manage-worldview.js` - 管理现有世界观（查看、编辑、删除）
+### 1. create-user-enhanced.js
+加强版的用户创建脚本，提供以下功能：
+- 创建新用户（支持自定义ID，可以是数字或字母）
+- 查看所有用户列表
+- 输入验证（邮箱格式、密码长度等）
+- 重复检查（ID、用户名、邮箱唯一性）
 
 ## 使用方法
 
-要运行这些脚本，请在项目根目录下使用以下命令格式：
-
+### 运行用户创建脚本
 ```bash
-node Test.js/脚本名称.js
+node Test.js/create-user-enhanced.js
 ```
 
-例如：
-```bash
-node Test.js/create-user.js
-```
+### 脚本功能
+1. **创建新用户**
+   - 输入用户ID（支持字母和数字组合）
+   - 输入用户名
+   - 输入电子邮件（会验证格式）
+   - 输入密码（至少6位）
+   - 可选输入头像URL
+   - 可选输入个人简介
+
+2. **查看所有用户**
+   - 显示数据库中所有用户的基本信息
+   - 包括ID、用户名、邮箱和创建时间
+
+3. **退出系统**
+   - 安全关闭脚本和数据库连接
 
 ## 注意事项
 
-- 运行这些脚本前，请确保数据库连接正常
-- 某些脚本可能会修改数据库数据，请在运行前备份重要数据
-- 脚本主要用于开发和测试环境，不建议在生产环境中使用
+1. 用户ID必须是唯一的，可以是数字或字母组合
+2. 用户名必须是唯一的
+3. 电子邮件必须是唯一的且格式正确
+4. 密码长度至少为6位
+5. 脚本会自动检查输入的有效性，并在发现重复时提示错误
 
----
+## 示例
 
-# Test Scripts Description
-
-This folder contains various test and utility scripts for the WorldView Platform project.
-
-## Script List
-
-### User Management Scripts
-
-- `create-user.js` - Create a single user interactively
-
-### Worldview Management Scripts
-
-- `create-worldview-with-user.js` - Publish worldviews using specified user
-- `manage-worldview.js` - Manage existing worldviews (view, edit, delete)
-
-## Usage
-
-To run these scripts, use the following command format from the project root directory:
-
-```bash
-node Test.js/script-name.js
+创建一个普通数字ID用户：
+```
+用户ID: 123
+用户名: testuser
+电子邮件: test@example.com
+密码: password123
+头像: (可选)
+个人简介: (可选)
 ```
 
-For example:
-```bash
-node Test.js/create-user.js
+创建一个字母ID用户（用于特殊用途）：
+```
+用户ID: admin
+用户名: 管理员
+电子邮件: admin@worldview.com
+密码: adminpass123
+头像: (可选)
+个人简介: 系统管理员账户
 ```
 
-## Notes
+## 技术细节
 
-- Ensure the database connection is working before running these scripts
-- Some scripts may modify database data, please backup important data before running
-- Scripts are primarily for development and testing environments, not recommended for production use
+- 使用Sequelize ORM连接PostgreSQL数据库
+- 使用readline模块处理命令行输入
+- 支持字符串类型的用户ID，便于特殊用途账户管理
