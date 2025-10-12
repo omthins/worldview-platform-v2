@@ -1,18 +1,31 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../server/config/database');
 const readline = require('readline');
+const { Sequelize, DataTypes } = require('sequelize');
+require('dotenv').config();
 
-// 创建readline接口用于用户输入
+// 创建命令行接口
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-// 定义User模型
+// 初始化数据库连接
+const sequelize = new Sequelize(
+  process.env.DB_NAME || 'world',
+  process.env.DB_USER || 'postgres',
+  process.env.DB_PASSWORD || '123456',
+  {
+    host: process.env.DB_HOST || 'localhost',
+    dialect: process.env.DB_DIALECT || 'postgres',
+    logging: false
+  }
+);
+
+// 定义用户模型
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.STRING,
-    primaryKey: true
+    primaryKey: true,
+    allowNull: false
   },
   username: {
     type: DataTypes.STRING,
@@ -69,13 +82,6 @@ function isValidId(id) {
 // 创建用户的主函数
 async function createUser() {
   try {
-    // 连接数据库
-    await sequelize.authenticate();
-    console.log('数据库连接成功');
-    
-    // 同步数据库
-    await sequelize.sync({ alter: true });
-    
     console.log('\n===== 创建新用户 =====\n');
     
     // 获取用户输入
@@ -127,8 +133,6 @@ async function createUser() {
     const existingUserById = await User.findByPk(userId);
     if (existingUserById) {
       console.log(`\n错误: 用户ID "${userId}" 已存在`);
-      rl.close();
-      await sequelize.close();
       return;
     }
     
@@ -136,8 +140,6 @@ async function createUser() {
     const existingUserByUsername = await User.findOne({ where: { username } });
     if (existingUserByUsername) {
       console.log(`\n错误: 用户名 "${username}" 已存在`);
-      rl.close();
-      await sequelize.close();
       return;
     }
     
@@ -145,8 +147,6 @@ async function createUser() {
     const existingUserByEmail = await User.findOne({ where: { email } });
     if (existingUserByEmail) {
       console.log(`\n错误: 电子邮件 "${email}" 已存在`);
-      rl.close();
-      await sequelize.close();
       return;
     }
     
@@ -170,19 +170,12 @@ async function createUser() {
     
   } catch (error) {
     console.error('创建用户失败:', error);
-  } finally {
-    rl.close();
-    await sequelize.close();
-    console.log('数据库连接已关闭');
   }
 }
 
 // 显示当前所有用户
 async function listUsers() {
   try {
-    await sequelize.authenticate();
-    console.log('数据库连接成功');
-    
     const users = await User.findAll({
       attributes: ['id', 'username', 'email', 'createdAt']
     });
@@ -196,7 +189,6 @@ async function listUsers() {
       });
     }
     
-    await sequelize.close();
   } catch (error) {
     console.error('获取用户列表失败:', error);
   }
@@ -214,15 +206,16 @@ async function mainMenu() {
   switch (choice) {
     case '1':
       await createUser();
+      await mainMenu();
       break;
     case '2':
       await listUsers();
-      // 显示用户列表后返回主菜单
       await mainMenu();
       break;
     case '3':
       console.log('再见！');
       rl.close();
+      await sequelize.close();
       return;
     default:
       console.log('无效选择，请重新输入');
@@ -231,4 +224,21 @@ async function mainMenu() {
 }
 
 // 启动程序
-mainMenu();
+async function startApp() {
+  try {
+    // 连接数据库
+    await sequelize.authenticate();
+    console.log('数据库连接成功');
+    
+    // 同步数据库
+    await sequelize.sync({ alter: true });
+    
+    // 启动主菜单
+    await mainMenu();
+  } catch (error) {
+    console.error('应用程序启动失败:', error);
+    process.exit(1);
+  }
+}
+
+startApp();
