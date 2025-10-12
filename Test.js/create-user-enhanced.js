@@ -10,12 +10,13 @@ const rl = readline.createInterface({
 
 // 初始化数据库连接
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'world',
+  process.env.DB_NAME || 'worldview_platform',
   process.env.DB_USER || 'postgres',
-  process.env.DB_PASSWORD || '123456',
+  process.env.DB_PASS || 'mc114514',
   {
     host: process.env.DB_HOST || 'localhost',
-    dialect: process.env.DB_DIALECT || 'postgres',
+    port: process.env.DB_PORT || 5432,
+    dialect: 'postgres',
     logging: false
   }
 );
