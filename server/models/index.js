@@ -4,16 +4,16 @@ const Worldview = require('./Worldview');
 const Comment = require('./Comment');
 
 // 定义模型关联
-User.hasMany(Worldview, { foreignKey: 'authorId', as: 'worldviews' });
+User.hasMany(Worldview, { foreignKey: 'authorId', as: 'worldviews', onDelete: 'CASCADE' });
 Worldview.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
 
-User.hasMany(Comment, { foreignKey: 'authorId', as: 'comments' });
+User.hasMany(Comment, { foreignKey: 'authorId', as: 'comments', onDelete: 'CASCADE' });
 Comment.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
 
-Worldview.hasMany(Comment, { foreignKey: 'worldviewId', as: 'comments' });
+Worldview.hasMany(Comment, { foreignKey: 'worldviewId', as: 'comments', onDelete: 'CASCADE' });
 Comment.belongsTo(Worldview, { foreignKey: 'worldviewId', as: 'worldview' });
 
-Comment.hasMany(Comment, { foreignKey: 'parentCommentId', as: 'replies' });
+Comment.hasMany(Comment, { foreignKey: 'parentCommentId', as: 'replies', onDelete: 'CASCADE' });
 Comment.belongsTo(Comment, { foreignKey: 'parentCommentId', as: 'parentComment' });
 
 // 多对多关系：用户点赞世界观

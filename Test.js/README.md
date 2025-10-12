@@ -4,26 +4,14 @@
 
 ## 脚本列表
 
-### 数据库操作脚本
+### 用户管理脚本
 
-- `add-worldview-number-column.js` - 为世界观表添加编号列
-- `add-worldview-number-column-v2.js` - 为世界观表添加编号列的第二个版本
-- `update-worldview-numbers.js` - 更新世界观的编号
+- `create-user.js` - 交互式创建单个用户
 
-### 数据检查脚本
+### 世界观管理脚本
 
-- `check-database-data.js` - 检查数据库中的数据
-- `check-worldview-numbers.js` - 检查世界观编号
-
-### 数据迁移脚本
-
-- `migrate-ids.js` - 迁移ID的脚本
-- `migrate-ids-v2.js` - 迁移ID的脚本第二版
-- `migrate-ids-v3.js` - 迁移ID的脚本第三版
-
-### 测试数据脚本
-
-- `create-test-data.js` - 创建测试数据
+- `create-worldview-with-user.js` - 使用指定用户发表世界观
+- `manage-worldview.js` - 管理现有世界观（查看、编辑、删除）
 
 ## 使用方法
 
@@ -35,7 +23,7 @@ node Test.js/脚本名称.js
 
 例如：
 ```bash
-node Test.js/check-database-data.js
+node Test.js/create-user.js
 ```
 
 ## 注意事项
@@ -52,26 +40,14 @@ This folder contains various test and utility scripts for the WorldView Platform
 
 ## Script List
 
-### Database Operation Scripts
+### User Management Scripts
 
-- `add-worldview-number-column.js` - Add number column to worldview table
-- `add-worldview-number-column-v2.js` - Second version of script to add number column to worldview table
-- `update-worldview-numbers.js` - Update worldview numbers
+- `create-user.js` - Create a single user interactively
 
-### Data Check Scripts
+### Worldview Management Scripts
 
-- `check-database-data.js` - Check data in the database
-- `check-worldview-numbers.js` - Check worldview numbers
-
-### Data Migration Scripts
-
-- `migrate-ids.js` - Script for migrating IDs
-- `migrate-ids-v2.js` - Second version of script for migrating IDs
-- `migrate-ids-v3.js` - Third version of script for migrating IDs
-
-### Test Data Scripts
-
-- `create-test-data.js` - Create test data
+- `create-worldview-with-user.js` - Publish worldviews using specified user
+- `manage-worldview.js` - Manage existing worldviews (view, edit, delete)
 
 ## Usage
 
@@ -83,7 +59,7 @@ node Test.js/script-name.js
 
 For example:
 ```bash
-node Test.js/check-database-data.js
+node Test.js/create-user.js
 ```
 
 ## Notes

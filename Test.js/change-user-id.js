@@ -18,8 +18,7 @@ const sequelize = new Sequelize(
 const { DataTypes } = require('sequelize');
 const User = sequelize.define('User', {
   id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+    type: DataTypes.STRING,
     primaryKey: true
   },
   username: {
@@ -73,7 +72,7 @@ const Worldview = sequelize.define('Worldview', {
     allowNull: false
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   },
   likes: {
@@ -94,7 +93,7 @@ const Comment = sequelize.define('Comment', {
     allowNull: false
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   },
   worldviewId: {
@@ -110,7 +109,7 @@ const Comment = sequelize.define('Comment', {
 // 定义UserWorldviewLike模型
 const UserWorldviewLike = sequelize.define('UserWorldviewLike', {
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   },
   worldviewId: {
@@ -122,7 +121,7 @@ const UserWorldviewLike = sequelize.define('UserWorldviewLike', {
 // 定义UserCommentLike模型
 const UserCommentLike = sequelize.define('UserCommentLike', {
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   },
   commentId: {
@@ -181,7 +180,18 @@ async function changeUserId() {
     }
     
     // 获取要更改的用户ID
-    const oldUserId = await askQuestion('\n请输入要更改的用户ID: ');
+    let oldUserId;
+    while (true) {
+      oldUserId = await askQuestion('\n请输入要更改的用户ID: ');
+      
+      // 验证输入是否为有效的ID (字母和数字的组合，至少1个字符)
+      if (!/^[a-zA-Z0-9]+$/.test(oldUserId)) {
+        console.log('错误: 用户ID只能包含字母和数字，请重新输入');
+        continue;
+      }
+      
+      break;
+    }
     const user = await User.findByPk(oldUserId);
     
     if (!user) {
@@ -195,15 +205,15 @@ async function changeUserId() {
     // 获取新的用户ID
     let newUserId;
     while (true) {
-      const newUserIdInput = await askQuestion('请输入新的用户ID (必须是数字): ');
+      const newUserIdInput = await askQuestion('请输入新的用户ID (可以是字母和数字的组合): ');
       
-      // 验证输入是否为整数
-      if (!/^-?\d+$/.test(newUserIdInput)) {
-        console.log('错误: 用户ID必须是整数，请重新输入');
+      // 验证输入是否为有效的ID (字母和数字的组合，至少1个字符)
+      if (!/^[a-zA-Z0-9]+$/.test(newUserIdInput)) {
+        console.log('错误: 用户ID只能包含字母和数字，请重新输入');
         continue;
       }
       
-      newUserId = parseInt(newUserIdInput, 10);
+      newUserId = newUserIdInput;
       break;
     }
     

@@ -300,4 +300,60 @@ router.post('/unfollow/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// 删除用户
+router.delete('/:id', authenticateToken, async (req, res) => {
+  try {
+    const targetUserId = req.params.id;
+    const currentUserId = req.user.id;
+
+    // 检查是否为管理员或用户本人
+    if (targetUserId !== currentUserId) {
+      // 这里可以添加管理员权限检查
+      return res.status(403).json({ message: '只能删除自己的账户' });
+    }
+
+    const user = await User.findByPk(targetUserId);
+    
+    if (!user) {
+      return res.status(404).json({ message: '用户不存在' });
+    }
+
+    // 删除用户头像文件（如果不是默认头像）
+    if (user.avatar && user.avatar.startsWith('/uploads/avatars/')) {
+      const avatarPath = path.join(__dirname, '..', user.avatar);
+      if (fs.existsSync(avatarPath)) {
+        fs.unlinkSync(avatarPath);
+      }
+    }
+
+    // 获取用户的所有世界观，删除相关图片
+    const worldviews = await Worldview.findAll({
+      where: { authorId: targetUserId },
+      attributes: ['id', 'coverImage']
+    });
+
+    // 删除世界观封面图片
+    for (const worldview of worldviews) {
+      if (worldview.coverImage && worldview.coverImage.startsWith('/uploads/images/')) {
+        const imagePath = path.join(__dirname, '..', worldview.coverImage);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      }
+    }
+
+    // 删除用户的所有相关数据
+    // 由于设置了外键约束和级联删除，删除用户会自动删除相关的世界观、评论和点赞记录
+    
+    await User.destroy({
+      where: { id: targetUserId }
+    });
+
+    res.json({ message: '用户账户已成功删除' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
 module.exports = router;
