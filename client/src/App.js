@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { ToastProvider } from './components/common/ToastContext';
 import Navbar from './components/layout/Navbar';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
@@ -36,58 +37,60 @@ const PublicRoute = ({ children }) => {
 
 function App() {
   return (
-    <div className="App">
-      <Navbar />
-      <main>
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route 
-              path="/login" 
-              element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
-              } 
-            />
-            <Route 
-              path="/register" 
-              element={
-                <PublicRoute>
-                  <Register />
-                </PublicRoute>
-              } 
-            />
-            <Route 
-              path="/dashboard" 
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              } 
-            />
-            <Route 
-              path="/create-worldview" 
-              element={
-                <PrivateRoute>
-                  <CreateWorldview />
-                </PrivateRoute>
-              } 
-            />
-            <Route path="/worldview/:id" element={<WorldviewDetail />} />
-            <Route 
-              path="/profile" 
-              element={
-                <PrivateRoute>
-                  <Profile />
-                </PrivateRoute>
-              } 
-            />
-            <Route path="/profile/:id" element={<UserProfile />} />
-          </Routes>
-        </div>
-      </main>
-    </div>
+    <ToastProvider>
+      <div className="App">
+        <Navbar />
+        <main>
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route 
+                path="/login" 
+                element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                } 
+              />
+              <Route 
+                path="/register" 
+                element={
+                  <PublicRoute>
+                    <Register />
+                  </PublicRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard" 
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/create-worldview" 
+                element={
+                  <PrivateRoute>
+                    <CreateWorldview />
+                  </PrivateRoute>
+                } 
+              />
+              <Route path="/worldview/:id" element={<WorldviewDetail />} />
+              <Route 
+                path="/profile" 
+                element={
+                  <PrivateRoute>
+                    <Profile />
+                  </PrivateRoute>
+                } 
+              />
+              <Route path="/profile/:id" element={<UserProfile />} />
+            </Routes>
+          </div>
+        </main>
+      </div>
+    </ToastProvider>
   );
 }
 

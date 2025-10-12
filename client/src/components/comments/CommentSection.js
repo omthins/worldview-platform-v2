@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../common/ToastContext';
 import { API_ENDPOINTS, apiRequest } from '../../utils/api';
 import './CommentSection.css';
 
 const CommentSection = ({ worldviewId }) => {
   const { isAuthenticated } = useAuth();
+  const { showSuccess, showError, showInfo } = useToast();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
@@ -16,7 +18,12 @@ const CommentSection = ({ worldviewId }) => {
       try {
         setLoading(true);
         const data = await apiRequest(`${API_ENDPOINTS.COMMENTS}/worldview/${worldviewId}`);
-        setComments(data.comments || []);
+        // 确保每个评论的replies都是数组
+        const processedComments = (data.comments || []).map(comment => ({
+          ...comment,
+          replies: Array.isArray(comment.replies) ? comment.replies : []
+        }));
+        setComments(processedComments);
         setLoading(false);
       } catch (err) {
         console.error('获取评论失败:', err);
@@ -34,7 +41,7 @@ const CommentSection = ({ worldviewId }) => {
     if (!newComment.trim()) return;
     
     if (!isAuthenticated) {
-      alert('请先登录后再评论');
+      showInfo('请先登录后再评论');
       return;
     }
     
@@ -46,7 +53,7 @@ const CommentSection = ({ worldviewId }) => {
         body: JSON.stringify({
           content: newComment,
           worldviewId,
-          parentCommentId: replyTo
+          parentCommentId: replyTo ? replyTo.id : null
         })
       });
       
@@ -54,7 +61,7 @@ const CommentSection = ({ worldviewId }) => {
         // 如果是回复，更新对应评论的回复列表
         setComments(prevComments => 
           prevComments.map(comment => {
-            if (comment.id === replyTo) {
+            if (comment.id === replyTo.id) {
               return {
                 ...comment,
                 replies: [...comment.replies, data]
@@ -70,8 +77,12 @@ const CommentSection = ({ worldviewId }) => {
       
       setNewComment('');
       setReplyTo(null);
+      
+      // 显示成功提示
+      showSuccess(replyTo ? '回复成功！' : '评论发表成功！');
     } catch (err) {
       console.error('提交评论失败:', err);
+      showError('评论提交失败，请重试');
     }
     
     setSubmitting(false);
@@ -79,7 +90,7 @@ const CommentSection = ({ worldviewId }) => {
 
   const handleLike = async (commentId) => {
     if (!isAuthenticated) {
-      alert('请先登录后再点赞');
+      showInfo('请先登录后再点赞');
       return;
     }
     
@@ -112,6 +123,7 @@ const CommentSection = ({ worldviewId }) => {
       setComments(updateCommentLikes(comments));
     } catch (err) {
       console.error('点赞失败:', err);
+      showError('点赞失败，请重试');
     }
   };
 
@@ -160,7 +172,7 @@ const CommentSection = ({ worldviewId }) => {
             className="btn btn-primary"
             disabled={submitting || !newComment.trim()}
           >
-            {submitting ? '提交中...' : '发表评论'}
+            {submitting ? '发送中...' : (replyTo ? '回复评论' : '发表评论')}
           </button>
         </form>
       )}
@@ -219,7 +231,7 @@ const CommentItem = ({ comment, onReply, onLike, formatDate }) => {
           {isAuthenticated && (
             <button 
               className="comment-action"
-              onClick={() => onReply(comment.author)}
+              onClick={() => onReply(comment)}
             >
               回复
             </button>

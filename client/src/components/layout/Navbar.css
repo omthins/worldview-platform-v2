@@ -48,6 +48,9 @@ body.search-blur .search-suggestions {
   color: var(--primary-color);
   text-decoration: none;
   transition: color var(--transition-speed);
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .navbar-brand:hover {
@@ -141,10 +144,15 @@ body.search-blur .search-suggestions {
   margin: 0;
   padding: 0;
   gap: 0.5rem;
+  align-items: center;
+  height: 100%;
 }
 
 .nav-item {
   margin-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .nav-link {
@@ -153,6 +161,9 @@ body.search-blur .search-suggestions {
   padding: 0.75rem 1.25rem;
   border-radius: 8px;
   transition: background-color var(--transition-speed), color var(--transition-speed);
+  display: flex;
+  align-items: center;
+  height: fit-content;
 }
 
 .nav-link:hover {
@@ -176,6 +187,7 @@ body.search-blur .search-suggestions {
   padding: 0.75rem 1.25rem;
   border-radius: 8px;
   transition: background-color var(--transition-speed), color var(--transition-speed);
+  height: fit-content;
 }
 
 .dropdown-toggle:hover {

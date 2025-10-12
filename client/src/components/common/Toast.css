@@ -1,0 +1,132 @@
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  min-width: 300px;
+  max-width: 450px;
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: translateX(0);
+  opacity: 1;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+}
+
+.toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast.hide {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.toast.success {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(56, 142, 60, 0.95));
+  color: white;
+}
+
+.toast.error {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.95), rgba(211, 47, 47, 0.95));
+  color: white;
+}
+
+.toast.info {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.95), rgba(25, 118, 210, 0.95));
+  color: white;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 16px 20px;
+}
+
+.toast-icon {
+  margin-right: 14px;
+  font-weight: 600;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.toast-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.toast-progress {
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: width 0.1s linear;
+}
+
+/* 添加动画效果 */
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.toast.show {
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.toast.hide {
+  animation: slideOut 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}

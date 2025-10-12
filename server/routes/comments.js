@@ -30,7 +30,8 @@ router.get('/worldview/:worldviewId', async (req, res) => {
             model: User,
             as: 'author',
             attributes: ['id', 'username', 'avatar']
-          }]
+          }],
+          order: [['createdAt', 'ASC']]
         }
       ],
       order: [['createdAt', 'DESC']],
