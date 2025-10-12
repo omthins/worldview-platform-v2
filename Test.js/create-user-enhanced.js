@@ -195,14 +195,89 @@ async function listUsers() {
   }
 }
 
+// 更改用户ID
+async function changeUserId() {
+  try {
+    console.log('\n===== 更改用户ID =====\n');
+    
+    // 获取当前用户ID
+    const currentId = await askQuestion('请输入要更改的用户ID: ');
+    if (!currentId || !isValidId(currentId)) {
+      console.log('错误: 请输入有效的用户ID');
+      return;
+    }
+    
+    // 查找用户
+    const user = await User.findByPk(currentId);
+    if (!user) {
+      console.log(`错误: 找不到ID为 "${currentId}" 的用户`);
+      return;
+    }
+    
+    console.log(`\n当前用户信息:`);
+    console.log(`ID: ${user.id}`);
+    console.log(`用户名: ${user.username}`);
+    console.log(`电子邮件: ${user.email}`);
+    
+    // 获取新ID
+    const newId = await askQuestion('\n请输入新的用户ID (支持字母和数字组合): ');
+    if (!newId || !isValidId(newId)) {
+      console.log('错误: 新ID只能包含字母和数字，不能为空');
+      return;
+    }
+    
+    // 检查新ID是否已存在
+    const existingUser = await User.findByPk(newId);
+    if (existingUser) {
+      console.log(`错误: 用户ID "${newId}" 已存在`);
+      return;
+    }
+    
+    // 确认更改
+    const confirm = await askQuestion(`\n确认将用户ID从 "${currentId}" 更改为 "${newId}" 吗? (y/n): `);
+    if (confirm.toLowerCase() !== 'y') {
+      console.log('操作已取消');
+      return;
+    }
+    
+    // 更新用户ID - 由于ID是主键，我们需要创建新用户并删除旧用户
+    const userData = {
+      id: newId,
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      avatar: user.avatar,
+      bio: user.bio,
+      createdAt: user.createdAt,
+      updatedAt: new Date()
+    };
+    
+    // 创建新用户
+    await User.create(userData);
+    
+    // 删除旧用户
+    await User.destroy({
+      where: { id: currentId }
+    });
+    
+    console.log('\n===== 用户ID更改成功 =====');
+    console.log(`原ID: ${currentId}`);
+    console.log(`新ID: ${newId}`);
+    
+  } catch (error) {
+    console.error('更改用户ID失败:', error);
+  }
+}
+
 // 主菜单
 async function mainMenu() {
   console.log('\n===== 用户管理系统 =====');
   console.log('1. 创建新用户');
   console.log('2. 查看所有用户');
-  console.log('3. 退出');
+  console.log('3. 更改用户ID');
+  console.log('4. 退出');
   
-  const choice = await askQuestion('\n请选择操作 (1-3): ');
+  const choice = await askQuestion('\n请选择操作 (1-4): ');
   
   switch (choice) {
     case '1':
@@ -214,6 +289,10 @@ async function mainMenu() {
       await mainMenu();
       break;
     case '3':
+      await changeUserId();
+      await mainMenu();
+      break;
+    case '4':
       console.log('再见！');
       rl.close();
       await sequelize.close();
