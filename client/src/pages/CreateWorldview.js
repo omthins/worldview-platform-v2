@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
+import { apiRequest, API_ENDPOINTS } from '../utils/api';
 import './CreateWorldview.css';
 
 const CreateWorldview = () => {
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  
+  // 检查用户是否已登录
+  React.useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -18,19 +26,26 @@ const CreateWorldview = () => {
   });
   
   const [errors, setErrors] = useState([]);
+  const [successMessage, setSuccessMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
 
   const categories = ['奇幻', '科幻', '现实', '历史', '神话', '其他'];
 
-  const { title, description, content, category, tags, coverImage, isPublic } = formData;
+  const { title, description, content, category, tags, coverImage, isPublic } = formData || {};
 
   const onChange = e => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
+    console.log('表单字段变化:', { name, value, type, checked });
+    setFormData(prev => {
+      const currentData = prev || {};
+      const newData = {
+        ...currentData,
+        [name]: type === 'checkbox' ? checked : value
+      };
+      console.log('更新后的表单数据:', newData);
+      return newData;
     });
   };
 
@@ -58,33 +73,25 @@ const CreateWorldview = () => {
     reader.readAsDataURL(file);
     
     // 上传图片
-    const formData = new FormData();
-    formData.append('image', file);
+    const uploadFormData = new FormData();
+    uploadFormData.append('image', file);
     
     try {
       setUploading(true);
-      const res = await fetch('/api/upload/image', {
+      const data = await apiRequest(API_ENDPOINTS.UPLOAD_IMAGE, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: formData
+        body: uploadFormData,
+        headers: {} // 不设置Content-Type，让浏览器自动设置multipart/form-data
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        setFormData({
-          ...formData,
-          coverImage: data.imageUrl
-        });
-        setErrors([]);
-      } else {
-        setErrors(data.errors || [{ msg: '图片上传失败' }]);
-      }
+      setFormData(prev => ({
+        ...prev,
+        coverImage: data.imageUrl
+      }));
+      setErrors([]);
     } catch (err) {
       console.error('图片上传失败:', err);
-      setErrors([{ msg: '图片上传失败，请稍后再试' }]);
+      setErrors([{ msg: err.message || '图片上传失败' }]);
     } finally {
       setUploading(false);
     }
@@ -92,53 +99,101 @@ const CreateWorldview = () => {
 
   const removeImage = () => {
     setImagePreview('');
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       coverImage: ''
-    });
+    }));
   };
 
   const onSubmit = async e => {
     e.preventDefault();
     
-    if (!title || !description || !content) {
-      setErrors([{ msg: '请填写所有必填字段' }]);
+    // 确保formData存在且包含所有必要字段
+    const safeFormData = formData || {};
+    const { title, description, content } = safeFormData;
+    
+    // 调试代码：打印表单值
+    console.log('表单提交时的值:', { title, description, content });
+    
+    // 清除之前的错误
+    setErrors([]);
+    
+    // 验证必填字段
+    const newErrors = [];
+    if (!title || !title.trim()) {
+      console.log('标题验证失败:', title);
+      newErrors.push({ msg: '标题是必填字段，请填写标题' });
+    }
+    if (!description || !description.trim()) {
+      console.log('简介验证失败:', description);
+      newErrors.push({ msg: '简介是必填字段，请填写简介' });
+    }
+    if (!content || !content.trim()) {
+      console.log('内容验证失败:', content);
+      newErrors.push({ msg: '内容是必填字段，请填写内容' });
+    }
+    
+    // 如果有错误，显示并返回
+    if (newErrors.length > 0) {
+      console.log('验证错误:', newErrors);
+      setErrors(newErrors);
       return;
     }
     
     setSubmitting(true);
+    setSuccessMessage('');
     
     try {
       const tagsArray = tags ? tags.split(',').map(tag => tag.trim()) : [];
       
-      const res = await fetch('/api/worldviews', {
+      const worldviewData = {
+        title: title || '',
+        description: description || '',
+        content: content || '',
+        category: category || '其他',
+        tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
+        coverImage: coverImage || '',
+        isPublic: isPublic !== undefined ? isPublic : true
+      };
+      
+      const data = await apiRequest(API_ENDPOINTS.WORLDVIEWS, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          content,
-          category,
-          tags: tagsArray,
-          coverImage,
-          isPublic
-        })
+        body: JSON.stringify(worldviewData)
       });
       
-      const data = await res.json();
+      // 设置成功消息
+      setSuccessMessage(isPublic ? '世界观发布成功！' : '世界观创建成功！');
       
-      if (res.ok) {
+      // 短暂延迟后跳转
+      setTimeout(() => {
         navigate(`/worldview/${data.id}`);
-      } else {
-        setErrors(data.errors || [{ msg: '创建世界观失败' }]);
-        setSubmitting(false);
-      }
+      }, 1500);
     } catch (err) {
-      console.error('创建世界观失败:', err);
-      setErrors([{ msg: '服务器错误，请稍后再试' }]);
+      console.error('发布世界观失败:', err);
+      
+      // 处理后端返回的验证错误
+      if (err.message && typeof err.message === 'string') {
+        try {
+          // 尝试解析JSON格式的错误信息
+          const errorData = JSON.parse(err.message);
+          if (errorData.errors && Array.isArray(errorData.errors)) {
+            // 如果是验证错误数组，显示每个错误
+            setErrors(errorData.errors.map(e => ({ msg: e.msg || e.message })));
+          } else {
+            setErrors([{ msg: errorData.message || err.message }]);
+          }
+        } catch (parseErr) {
+          // 如果不是JSON格式，直接显示错误信息
+          setErrors([{ msg: err.message }]);
+        }
+      } else if (err.errors && Array.isArray(err.errors)) {
+        // 如果是错误数组，显示每个错误
+        setErrors(err.errors.map(e => ({ msg: e.msg || e.message })));
+      } else {
+        // 默认错误信息
+        setErrors([{ msg: err.message || '发布世界观失败' }]);
+      }
+      
       setSubmitting(false);
     }
   };
@@ -146,7 +201,7 @@ const CreateWorldview = () => {
   return (
     <div className="create-worldview">
       <div className="create-header">
-        <h1>创建世界观</h1>
+        <h1>发布世界观</h1>
         <p>分享你的创意世界</p>
       </div>
       
@@ -158,62 +213,88 @@ const CreateWorldview = () => {
         </div>
       )}
       
+      {successMessage && (
+        <div className="alert alert-success">
+          {successMessage}
+        </div>
+      )}
+      
       <form onSubmit={onSubmit} className="create-form">
         <div className="form-group">
-          <label htmlFor="title">标题 *</label>
+          <label htmlFor="title">标题 <span className="required">*</span></label>
           <input
             type="text"
             id="title"
             name="title"
-            value={title}
+            value={title || ''}
             onChange={onChange}
-            className="form-control"
+            className={`form-control ${errors.some(e => e.msg.includes('标题')) ? 'is-invalid' : ''}`}
             placeholder="给你的世界观起个名字"
+            autoComplete="off"
             required
           />
+          {errors.some(e => e.msg.includes('标题')) && (
+            <div className="invalid-feedback">
+              {errors.find(e => e.msg.includes('标题')).msg}
+            </div>
+          )}
         </div>
         
         <div className="form-group">
-          <label htmlFor="description">简介 *</label>
+          <label htmlFor="description">简介 <span className="required">*</span></label>
           <textarea
             id="description"
             name="description"
-            value={description}
+            value={description || ''}
             onChange={onChange}
-            className="form-control"
+            className={`form-control ${errors.some(e => e.msg.includes('简介')) ? 'is-invalid' : ''}`}
             rows="3"
             placeholder="简要描述你的世界观"
+            autoComplete="off"
             required
           ></textarea>
+          {errors.some(e => e.msg.includes('简介')) && (
+            <div className="invalid-feedback">
+              {errors.find(e => e.msg.includes('简介')).msg}
+            </div>
+          )}
         </div>
         
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="category">分类</label>
-            <select
-              id="category"
-              name="category"
-              value={category}
-              onChange={onChange}
-              className="form-control"
-            >
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
+            <div className="category-input-container">
+              <input
+                type="text"
+                id="category"
+                name="category"
+                value={category || ''}
+                onChange={onChange}
+                className="form-control"
+                placeholder="输入分类，如：奇幻、科幻、历史等"
+                list="category-suggestions"
+                autoComplete="off"
+              />
+              <datalist id="category-suggestions">
+                {categories.map(cat => (
+                  <option key={cat} value={cat} />
+                ))}
+              </datalist>
+            </div>
           </div>
           
           <div className="form-group">
             <label htmlFor="tags">标签</label>
             <input
-              type="text"
-              id="tags"
-              name="tags"
-              value={tags}
-              onChange={onChange}
-              className="form-control"
-              placeholder="用逗号分隔多个标签"
-            />
+            type="text"
+            id="tags"
+            name="tags"
+            value={tags || ''}
+            onChange={onChange}
+            className="form-control"
+            placeholder="用逗号分隔多个标签，如：魔法,冒险,中世纪"
+            autoComplete="off"
+          />
           </div>
         </div>
         
@@ -252,21 +333,28 @@ const CreateWorldview = () => {
             onChange={onChange}
             className="form-control"
             placeholder="或输入图片URL"
+            autoComplete="off"
           />
         </div>
         
         <div className="form-group">
-          <label htmlFor="content">内容 *</label>
+          <label htmlFor="content">内容 <span className="required">*</span></label>
           <textarea
             id="content"
             name="content"
-            value={content}
+            value={content || ''}
             onChange={onChange}
-            className="form-control content-editor"
+            className={`form-control content-editor ${errors.some(e => e.msg.includes('内容')) ? 'is-invalid' : ''}`}
             rows="15"
             placeholder="在这里详细描述你的世界观，支持Markdown格式..."
+            autoComplete="off"
             required
           ></textarea>
+          {errors.some(e => e.msg.includes('内容')) && (
+            <div className="invalid-feedback">
+              {errors.find(e => e.msg.includes('内容')).msg}
+            </div>
+          )}
           <div className="editor-hint">
             支持Markdown格式，可以使用标题、列表、链接等格式化内容
           </div>
@@ -280,7 +368,7 @@ const CreateWorldview = () => {
               checked={isPublic}
               onChange={onChange}
             />
-            公开发布（取消后将只有你自己能看到）
+            公开发布（取消勾选后将创建为私有世界观，只有你自己能看到）
           </label>
         </div>
         
@@ -290,7 +378,7 @@ const CreateWorldview = () => {
             className="btn btn-primary"
             disabled={submitting}
           >
-            {submitting ? '创建中...' : '创建世界观'}
+            {submitting ? '处理中...' : (isPublic ? '发布世界观' : '创建世界观')}
           </button>
           
           <button

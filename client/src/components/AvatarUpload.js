@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { apiRequest, API_ENDPOINTS } from '../utils/api';
 import './AvatarUpload.css';
 
 const AvatarUpload = ({ currentAvatar, onAvatarChange }) => {
@@ -42,27 +43,17 @@ const AvatarUpload = ({ currentAvatar, onAvatarChange }) => {
     formData.append('avatar', file);
 
     try {
-      const response = await fetch('/api/users/avatar', {
+      const data = await apiRequest(API_ENDPOINTS.USERS_AVATAR, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: formData
+        body: formData,
+        headers: {} // 不设置Content-Type，让浏览器自动设置multipart/form-data
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        onAvatarChange(data.avatarUrl);
-        setError('');
-      } else {
-        setError(data.message || '上传失败');
-        // 恢复原始预览
-        setPreview(currentAvatar || '');
-      }
+      onAvatarChange(data.avatarUrl);
+      setError('');
     } catch (err) {
       console.error('上传头像失败:', err);
-      setError('上传失败，请重试');
+      setError(err.message || '上传头像失败');
       // 恢复原始预览
       setPreview(currentAvatar || '');
     } finally {

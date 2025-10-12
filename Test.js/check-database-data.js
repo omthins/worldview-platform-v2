@@ -1,5 +1,5 @@
-const { User, Worldview, Comment, UserWorldviewLike, UserCommentLike } = require('./server/models');
-const sequelize = require('./server/config/database');
+const { User, Worldview, Comment, UserWorldviewLike, UserCommentLike } = require('../server/models');
+const sequelize = require('../server/config/database');
 
 async function checkDatabase() {
   try {

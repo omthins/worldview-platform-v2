@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
 // 确保上传目录存在
@@ -42,7 +43,7 @@ const upload = multer({
 });
 
 // 图片上传路由
-router.post('/image', upload.single('image'), (req, res) => {
+router.post('/image', authenticateToken, upload.single('image'), (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ errors: [{ msg: '没有上传文件' }] });
@@ -54,7 +55,7 @@ router.post('/image', upload.single('image'), (req, res) => {
     res.json({ imageUrl });
   } catch (err) {
     console.error('图片上传错误:', err);
-    res.status(500).json({ errors: [{ msg: '服务器错误' }] });
+    res.status(500).json({ errors: [{ msg: `服务器错误: ${err.message}` }] });
   }
 });
 
@@ -64,13 +65,20 @@ router.use((err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({ errors: [{ msg: '文件大小超过限制（5MB）' }] });
     }
+    if (err.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({ errors: [{ msg: '文件数量超过限制' }] });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({ errors: [{ msg: '上传了意外的文件字段' }] });
+    }
+    return res.status(400).json({ errors: [{ msg: `文件上传错误: ${err.message}` }] });
   }
   
   if (err.message === '只允许上传图片文件') {
     return res.status(400).json({ errors: [{ msg: err.message }] });
   }
   
-  res.status(500).json({ errors: [{ msg: '服务器错误' }] });
+  res.status(500).json({ errors: [{ msg: `服务器错误: ${err.message}` }] });
 });
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Navbar.css';
@@ -7,6 +7,9 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const searchInputRef = useRef(null);
   const navigate = useNavigate();
 
   const onLogout = () => {
@@ -14,21 +17,74 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = (e, searchType = '', searchTerm = '') => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+    const term = searchTerm || searchQuery.trim();
+    if (term) {
+      // 立即去除模糊效果
+      setSearchFocused(false);
+      document.body.classList.remove('search-blur');
+      
+      // 清空搜索框并移除焦点
       setSearchQuery('');
+      setSearchSuggestions([]);
+      if (searchInputRef.current) {
+        searchInputRef.current.blur();
+      }
+      
+      let searchUrl = '/?search=';
+      if (searchType) {
+        searchUrl = `/?${searchType}=${encodeURIComponent(term)}`;
+      } else {
+        searchUrl += encodeURIComponent(term);
+      }
+      navigate(searchUrl);
     }
   };
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    if (value.trim()) {
+      const suggestions = [
+        { type: 'worldview', label: `搜索世界观: ${value}`, term: value },
+        { type: 'creator', label: `搜索创作者: ${value}`, term: value },
+        { type: 'id', label: `搜索ID: ${value}`, term: value },
+        { type: 'wid', label: `搜索WID: ${value}`, term: value }
+      ];
+      setSearchSuggestions(suggestions);
+    } else {
+      setSearchSuggestions([]);
+    }
+  };
+
+  const handleSearchInputFocus = () => {
+    setSearchFocused(true);
+    document.body.classList.add('search-blur');
+  };
+
+  const handleSearchInputBlur = () => {
+    // 延迟关闭，以便点击建议项
+    setTimeout(() => {
+      setSearchFocused(false);
+      document.body.classList.remove('search-blur');
+    }, 200);
+  };
+
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('search-blur');
+    };
+  }, []);
 
   const authLinks = (
     <>
       <li className="nav-item">
-        <Link to="/dashboard" className="nav-link">控制台</Link>
+        <Link to="/dashboard" className="nav-link">个人中心</Link>
       </li>
       <li className="nav-item">
-        <Link to="/create-worldview" className="nav-link">创建世界观</Link>
+        <Link to="/create-worldview" className="nav-link">发布世界观</Link>
       </li>
       <li className="nav-item dropdown">
         <button 
@@ -71,14 +127,32 @@ const Navbar = () => {
           幻境界
         </Link>
         <form onSubmit={handleSearch} className="navbar-search">
-          <input
-            type="text"
-            placeholder="搜索世界观、作者名、世界编号、作者ID..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-          <button type="submit" className="search-btn">搜索</button>
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="搜索世界观、作者名、世界编号、作者ID..."
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+              onFocus={handleSearchInputFocus}
+              onBlur={handleSearchInputBlur}
+              className="search-input"
+              ref={searchInputRef}
+            />
+            <button type="submit" className="search-btn">搜索</button>
+            {searchFocused && searchSuggestions.length > 0 && (
+              <div className="search-suggestions">
+                {searchSuggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="search-suggestion-item"
+                    onMouseDown={(e) => handleSearch(e, suggestion.type, suggestion.term)}
+                  >
+                    {suggestion.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </form>
         <ul className="nav-menu">
           <li className="nav-item">

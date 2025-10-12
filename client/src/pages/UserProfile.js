@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { apiRequest } from '../utils/api';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -11,32 +12,26 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!id) {
+        setError('用户ID未提供');
+        setLoading(false);
+        return;
+      }
+      
       try {
         setLoading(true);
         
         // 获取用户基本信息
-        const userRes = await fetch(`/api/users/${id}`);
-        const userData = await userRes.json();
-        
-        if (userRes.ok) {
-          setUserData(userData);
-        } else {
-          setError(userData.message || '获取用户信息失败');
-          setLoading(false);
-          return;
-        }
+        const userData = await apiRequest(`/api/users/${id}`);
+        setUserData(userData);
         
         // 获取用户的世界观
-        const worldviewsRes = await fetch(`/api/worldviews/user/${id}`);
-        const worldviewsData = await worldviewsRes.json();
-        
-        if (worldviewsRes.ok) {
-          setUserWorldviews(Array.isArray(worldviewsData) ? worldviewsData : (worldviewsData.worldviews || []));
-        }
+        const worldviewsData = await apiRequest(`/api/worldviews/user/${id}`);
+        setUserWorldviews(Array.isArray(worldviewsData) ? worldviewsData : (worldviewsData.worldviews || []));
         
         setLoading(false);
       } catch (err) {
-        setError('获取用户信息失败');
+        setError(err.message || '获取用户信息失败');
         console.error('获取用户数据失败:', err);
         setLoading(false);
       }
@@ -108,7 +103,7 @@ const UserProfile = () => {
             {userWorldviews.length > 0 ? (
               <div className="user-worldviews-grid">
                 {userWorldviews.map(worldview => (
-                  <div key={worldview._id} className="user-worldview-card">
+                  <div key={worldview.id} className="user-worldview-card">
                     {worldview.coverImage && (
                       <div className="user-worldview-cover">
                         <img src={worldview.coverImage} alt={worldview.title} />
@@ -123,7 +118,7 @@ const UserProfile = () => {
                         <span className="user-worldview-date">{formatDate(worldview.createdAt)}</span>
                         <span className="user-worldview-views">👁 {worldview.views}</span>
                       </div>
-                      <a href={`/worldview/${worldview._id}`} className="btn btn-outline">查看详情</a>
+                      <a href={`/worldview/${worldview.id}`} className="btn btn-outline">查看详情</a>
                     </div>
                   </div>
                 ))}

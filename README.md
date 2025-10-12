@@ -87,7 +87,7 @@ worldview-platform/
 ### 世界观
 - `GET /api/worldviews` - 获取世界观列表
 - `GET /api/worldviews/:id` - 获取单个世界观
-- `POST /api/worldviews` - 创建世界观
+- `POST /api/worldviews` - 发布世界观
 - `PUT /api/worldviews/:id` - 更新世界观
 - `DELETE /api/worldviews/:id` - 删除世界观
 
@@ -214,7 +214,7 @@ worldview-platform/
 ### Worldviews
 - `GET /api/worldviews` - Get worldview list
 - `GET /api/worldviews/:id` - Get single worldview
-- `POST /api/worldviews` - Create worldview
+- `POST /api/worldviews` - Publish worldview
 - `PUT /api/worldviews/:id` - Update worldview
 - `DELETE /api/worldviews/:id` - Delete worldview
 

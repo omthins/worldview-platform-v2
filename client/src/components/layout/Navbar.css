@@ -11,6 +11,28 @@
   transition: background-color var(--transition-speed);
 }
 
+/* 搜索框聚焦时的页面模糊效果 */
+body.search-blur {
+  overflow: hidden;
+}
+
+main {
+  transition: filter 0.3s ease;
+}
+
+body.search-blur main {
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+body.search-blur .navbar {
+  z-index: 1001;
+}
+
+body.search-blur .search-suggestions {
+  z-index: 1002;
+}
+
 .navbar .container {
   display: flex;
   justify-content: space-between;
@@ -39,6 +61,13 @@
   margin: 0 2rem;
   flex: 1;
   max-width: 500px;
+  position: relative;
+}
+
+.search-container {
+  position: relative;
+  width: 100%;
+  display: flex;
 }
 
 .search-input {
@@ -71,6 +100,39 @@
 
 .search-btn:hover {
   background-color: var(--primary-hover-color);
+}
+
+/* 搜索建议样式 */
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--card-bg-color);
+  border-radius: 0 0 8px 8px;
+  box-shadow: var(--card-shadow);
+  z-index: 1000;
+  margin-top: 0.25rem;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-top: none;
+}
+
+.search-suggestion-item {
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.search-suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.search-suggestion-item:hover {
+  background-color: var(--navbar-hover-bg-color);
 }
 
 .nav-menu {

@@ -18,7 +18,15 @@ app.use(cors({
   origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true
 }));
-app.use(express.json());
+
+// JSON解析中间件，但跳过文件上传请求
+app.use((req, res, next) => {
+  if (req.path.includes('/upload') || req.path.includes('/avatar')) {
+    return next();
+  }
+  express.json()(req, res, next);
+});
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads/avatars', express.static(path.join(__dirname, 'uploads/avatars')));
 
@@ -35,6 +43,49 @@ app.use('/api/upload', uploadRoutes);
 // 默认路由
 app.get('/', (req, res) => {
   res.send('世界观发布平台 API 运行中');
+});
+
+// 全局错误处理中间件
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  
+  // Sequelize 验证错误
+  if (err.name === 'SequelizeValidationError') {
+    const errors = err.errors.map(e => ({
+      field: e.path,
+      message: e.message
+    }));
+    return res.status(400).json({ 
+      message: '数据验证失败', 
+      errors 
+    });
+  }
+  
+  // Sequelize 唯一约束错误
+  if (err.name === 'SequelizeUniqueConstraintError') {
+    const errors = err.errors.map(e => ({
+      field: e.path,
+      message: `${e.path} 已存在`
+    }));
+    return res.status(400).json({ 
+      message: '数据唯一性验证失败', 
+      errors 
+    });
+  }
+  
+  // JWT 错误
+  if (err.name === 'JsonWebTokenError') {
+    return res.status(401).json({ message: '无效的访问令牌' });
+  }
+  
+  if (err.name === 'TokenExpiredError') {
+    return res.status(401).json({ message: '访问令牌已过期' });
+  }
+  
+  // 默认错误
+  res.status(err.status || 500).json({ 
+    message: err.message || '服务器内部错误' 
+  });
 });
 
 const PORT = process.env.PORT || 5000;

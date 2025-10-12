@@ -13,6 +13,10 @@ router.get('/', async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const category = req.query.category;
     const search = req.query.search;
+    const worldview = req.query.worldview;
+    const creator = req.query.creator;
+    const id = req.query.id;
+    const wid = req.query.wid;
     const offset = (page - 1) * limit;
     
     // 构建查询条件
@@ -22,6 +26,7 @@ router.get('/', async (req, res) => {
       whereCondition.category = category;
     }
     
+    // 处理不同类型的搜索参数
     if (search) {
       // 检查搜索词是否为数字（可能是世界观编号或作者ID）
       const isNumeric = /^\d+$/.test(search);
@@ -44,6 +49,18 @@ router.get('/', async (req, res) => {
           { '$author.username$': { [Op.iLike]: `%${search}%` } }
         ];
       }
+    } else if (worldview) {
+      // 搜索世界观标题
+      whereCondition.title = { [Op.iLike]: `%${worldview}%` };
+    } else if (creator) {
+      // 搜索创作者用户名
+      whereCondition['$author.username$'] = { [Op.iLike]: `%${creator}%` };
+    } else if (id) {
+      // 搜索世界观ID
+      whereCondition.id = parseInt(id);
+    } else if (wid) {
+      // 搜索世界观编号
+      whereCondition.worldviewNumber = parseInt(wid);
     }
     
     const { count, rows: worldviews } = await Worldview.findAndCountAll({
@@ -73,8 +90,8 @@ router.get('/', async (req, res) => {
       total: count
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: '服务器错误' });
+    console.error('获取世界观列表错误:', error);
+    res.status(500).json({ message: `服务器错误: ${error.message}` });
   }
 });
 
@@ -122,7 +139,7 @@ router.post('/', authenticateToken, [
   body('title').notEmpty().withMessage('标题不能为空'),
   body('description').notEmpty().withMessage('描述不能为空'),
   body('content').notEmpty().withMessage('内容不能为空'),
-  body('category').isIn(['奇幻', '科幻', '现实', '历史', '神话', '其他']).withMessage('无效的分类')
+  body('category').notEmpty().withMessage('分类不能为空').isLength({ max: 50 }).withMessage('分类长度不能超过50个字符')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -173,7 +190,7 @@ router.put('/:id', authenticateToken, [
   body('title').optional().notEmpty().withMessage('标题不能为空'),
   body('description').optional().notEmpty().withMessage('描述不能为空'),
   body('content').optional().notEmpty().withMessage('内容不能为空'),
-  body('category').optional().isIn(['奇幻', '科幻', '现实', '历史', '神话', '其他']).withMessage('无效的分类')
+  body('category').optional().notEmpty().withMessage('分类不能为空').isLength({ max: 50 }).withMessage('分类长度不能超过50个字符')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -288,6 +305,46 @@ router.post('/:id/like', authenticateToken, async (req, res) => {
         likesCount: worldview.likingUsers ? worldview.likingUsers.length + 1 : 1
       });
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
+// 获取指定用户点赞的世界观
+router.get('/user/:userId/liked', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+    
+    const { count, rows: worldviews } = await Worldview.findAndCountAll({
+      where: { isPublic: true },
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'username', 'avatar']
+        },
+        {
+          model: User,
+          as: 'likingUsers',
+          attributes: ['id', 'username'],
+          where: { id: req.params.userId },
+          through: { attributes: [] }
+        }
+      ],
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
+    
+    res.json({
+      worldviews,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      total: count
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '服务器错误' });

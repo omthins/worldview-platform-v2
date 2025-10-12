@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { User, Worldview, UserWorldviewLike } = require('../models');
+const { Op } = require('sequelize');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
@@ -75,10 +76,12 @@ router.post('/avatar', authenticateToken, upload.single('avatar'), async (req, r
       { where: { id: userId } }
     );
     
-    res.json({ avatarUrl });
+    // 返回完整的头像URL
+    const fullAvatarUrl = `http://localhost:5000${avatarUrl}`;
+    res.json({ avatarUrl: fullAvatarUrl });
   } catch (error) {
     console.error('头像上传错误:', error);
-    res.status(500).json({ message: '服务器错误' });
+    res.status(500).json({ message: `服务器错误: ${error.message}` });
   }
 });
 
@@ -88,13 +91,20 @@ router.use((err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({ message: '文件大小超过限制（5MB）' });
     }
+    if (err.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({ message: '文件数量超过限制' });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({ message: '上传了意外的文件字段' });
+    }
+    return res.status(400).json({ message: `文件上传错误: ${err.message}` });
   }
   
   if (err.message === '只允许上传图片文件') {
     return res.status(400).json({ message: err.message });
   }
   
-  res.status(500).json({ message: '服务器错误' });
+  res.status(500).json({ message: `服务器错误: ${err.message}` });
 });
 
 // 获取用户点赞的世界观
@@ -106,7 +116,7 @@ router.get('/liked', authenticateToken, async (req, res) => {
       include: [{
         model: Worldview,
         as: 'likedWorldviews',
-        attributes: ['id', 'title', 'coverImage', 'createdAt', 'views', 'likes'],
+        attributes: ['id', 'title', 'coverImage', 'createdAt', 'views'],
         through: { attributes: [] },
         include: [{
           model: User,
@@ -135,7 +145,7 @@ router.get('/:id', async (req, res) => {
       include: [{
         model: Worldview,
         as: 'worldviews',
-        attributes: ['id', 'title', 'coverImage', 'createdAt', 'views', 'likes']
+        attributes: ['id', 'title', 'coverImage', 'createdAt', 'views']
       }]
     });
     
@@ -169,7 +179,7 @@ router.put('/profile', authenticateToken, [
       const existingUser = await User.findOne({ 
         where: { 
           username,
-          id: { [User.sequelize.Op.ne]: userId }
+          id: { [Op.ne]: userId }
         }
       });
       

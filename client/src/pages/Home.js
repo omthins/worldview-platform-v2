@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import WorldviewCard from '../components/worldview/WorldviewCard';
 import { API_ENDPOINTS, apiRequest } from '../utils/api';
 import './Home.css';
@@ -10,33 +10,60 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState(null);
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const fetchWorldviews = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log('开始获取世界观列表...');
-      const params = new URLSearchParams({
-        page: currentPage,
-        limit: 20 // 增加每页显示数量
-      });
+      try {
+        setLoading(true);
+        setError(null);
+        console.log('开始获取世界观列表...');
+        
+        // 构建查询参数
+        const params = new URLSearchParams({
+          page: currentPage,
+          limit: 20
+        });
 
-      const data = await apiRequest(`${API_ENDPOINTS.WORLDVIEWS}?${params}`);
-      console.log('获取到的世界观数据:', data);
-      
-      setWorldviews(data.worldviews);
-      setTotalPages(data.totalPages);
-      setLoading(false);
-    } catch (err) {
-      console.error('获取世界观列表失败:', err);
-      setError(err.message || '获取世界观列表失败');
-      setLoading(false);
-    }
-  };
+        // 添加搜索参数
+        const search = searchParams.get('search');
+        const worldview = searchParams.get('worldview');
+        const creator = searchParams.get('creator');
+        const id = searchParams.get('id');
+        const wid = searchParams.get('wid');
+
+        if (search) {
+          params.append('search', search);
+        }
+        if (worldview) {
+          params.append('worldview', worldview);
+        }
+        if (creator) {
+          params.append('creator', creator);
+        }
+        if (id) {
+          params.append('id', id);
+        }
+        if (wid) {
+          params.append('wid', wid);
+        }
+
+        const data = await apiRequest(`${API_ENDPOINTS.WORLDVIEWS}?${params}`);
+        console.log('获取到的世界观数据:', data);
+        
+        setWorldviews(data.worldviews);
+        setTotalPages(data.totalPages);
+        setLoading(false);
+      } catch (err) {
+        console.error('获取世界观列表失败:', err);
+        setError(err.message || '获取世界观列表失败');
+        setLoading(false);
+      }
+    };
 
     fetchWorldviews();
-  }, [currentPage]);
+  }, [currentPage, location.search, searchParams]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -50,7 +77,7 @@ const Home = () => {
           <h1>探索无限的世界观</h1>
           <p>发现、创建和分享各种精彩的世界观设定</p>
           <Link to="/create-worldview" className="btn btn-primary btn-lg">
-            创建你的世界观
+            发布你的世界观
           </Link>
         </div>
       </div>
@@ -102,7 +129,7 @@ const Home = () => {
           <div className="empty-state">
             <h3>没有找到世界观</h3>
             <p>试试调整搜索条件或创建一个新的世界观</p>
-            <Link to="/create-worldview" className="btn">创建世界观</Link>
+            <Link to="/create-worldview" className="btn">发布世界观</Link>
           </div>
         )}
       </div>

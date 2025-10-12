@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { apiRequest, API_ENDPOINTS } from '../utils/api';
 import AvatarUpload from '../components/AvatarUpload';
 import './Profile.css';
 
@@ -42,34 +43,15 @@ const Profile = () => {
   const fetchUserData = async () => {
     try {
       // 获取用户的世界观
-      const worldviewsRes = await fetch('/api/worldviews/user', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const worldviewsData = await worldviewsRes.json();
-      
-      if (worldviewsRes.ok) {
-        setUserWorldviews(worldviewsData.worldviews);
-      }
+      const worldviewsData = await apiRequest(`/api/worldviews/user/${user.id}`);
+      setUserWorldviews(worldviewsData.worldviews);
       
       // 获取用户点赞的世界观
       try {
-        const likedRes = await fetch('/api/users/liked', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        
-        if (likedRes.ok) {
-          const likedData = await likedRes.json();
-          setUserLikedWorldviews(likedData.likedWorldviews || []);
-        } else {
-          // 如果API端点不存在，设置为空数组
-          setUserLikedWorldviews([]);
-        }
+        const likedData = await apiRequest('/api/users/liked');
+        setUserLikedWorldviews(likedData.likedWorldviews || []);
       } catch (err) {
-        // 如果请求失败，设置为空数组
+        // 如果API端点不存在，设置为空数组
         console.log('获取点赞的世界观失败，可能是功能未实现:', err);
         setUserLikedWorldviews([]);
       }
@@ -98,25 +80,15 @@ const Profile = () => {
     setMessage('');
     
     try {
-      const res = await fetch('/api/users/profile', {
+      const data = await apiRequest(API_ENDPOINTS.USERS_PROFILE, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
         body: JSON.stringify(profileData)
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        setMessage('个人资料更新成功！');
-        updateUser(data.user);
-      } else {
-        setMessage(data.message || '更新失败，请重试');
-      }
+      setMessage('个人资料更新成功！');
+      updateUser(data.user);
     } catch (err) {
-      setMessage('更新失败，请重试');
+      setMessage(err.message || '更新失败，请重试');
       console.error('更新个人资料失败:', err);
     }
     
@@ -135,32 +107,22 @@ const Profile = () => {
     setPasswordMessage('');
     
     try {
-      const res = await fetch('/api/users/password', {
+      await apiRequest(API_ENDPOINTS.USERS_PASSWORD, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
         body: JSON.stringify({
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword
         })
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        setPasswordMessage('密码修改成功！');
-        setPasswordData({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        });
-      } else {
-        setPasswordMessage(data.message || '密码修改失败，请重试');
-      }
+      setPasswordMessage('密码修改成功！');
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
     } catch (err) {
-      setPasswordMessage('密码修改失败，请重试');
+      setPasswordMessage(err.message || '密码修改失败，请重试');
       console.error('修改密码失败:', err);
     }
     
@@ -410,7 +372,7 @@ const Profile = () => {
               ) : (
                 <div className="empty-state">
                   <p>您还没有创建任何世界观</p>
-                  <a href="/create-worldview" className="btn btn-primary">创建世界观</a>
+                  <a href="/create-worldview" className="btn btn-primary">发布世界观</a>
                 </div>
               )}
             </div>
