@@ -1,7 +1,38 @@
+/**
+ * 创建测试数据脚本
+ * 
+ * 功能：
+ * - 创建测试用户（如果不存在）
+ * - 创建多个测试世界观（如果不存在）
+ * - 为测试世界观分配不同的类别和标签
+ * 
+ * 使用方法：
+ * 1. 确保数据库连接正常
+ * 2. 运行脚本：node create-test-data.js
+ * 
+ * 注意事项：
+ * - 此脚本会创建测试用户和测试世界观
+ * - 如果已存在，则不会重复创建
+ * - 测试用户邮箱：test@example.com
+ * - 测试用户密码：password123
+ */
+
+// 导入必要的模块
 const sequelize = require('./server/config/database');
 const { User, Worldview } = require('./server/models');
 const bcrypt = require('bcryptjs');
 
+// 测试用户配置
+const TEST_USER_CONFIG = {
+  email: 'test@example.com',
+  username: 'testuser',
+  password: 'password123',
+  avatar: 'https://picsum.photos/seed/testuser/200/200.jpg'
+};
+
+/**
+ * 主函数：创建测试数据
+ */
 async function createTestData() {
   try {
     // 连接数据库
@@ -9,14 +40,14 @@ async function createTestData() {
     console.log('数据库连接成功');
 
     // 创建测试用户
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    const hashedPassword = await bcrypt.hash(TEST_USER_CONFIG.password, 10);
     const testUser = await User.findOrCreate({
-      where: { email: 'test@example.com' },
+      where: { email: TEST_USER_CONFIG.email },
       defaults: {
-        username: 'testuser',
-        email: 'test@example.com',
+        username: TEST_USER_CONFIG.username,
+        email: TEST_USER_CONFIG.email,
         password: hashedPassword,
-        avatar: 'https://picsum.photos/seed/testuser/200/200.jpg'
+        avatar: TEST_USER_CONFIG.avatar
       }
     });
 
@@ -56,6 +87,7 @@ async function createTestData() {
       }
     ];
 
+    // 循环创建测试世界观
     for (const worldview of testWorldviews) {
       await Worldview.findOrCreate({
         where: { title: worldview.title },
@@ -73,4 +105,5 @@ async function createTestData() {
   }
 }
 
+// 执行主函数
 createTestData();

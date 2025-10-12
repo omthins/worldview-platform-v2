@@ -1,3 +1,24 @@
+/**
+ * 用户ID迁移脚本 - 优化版本
+ * 
+ * 功能：
+ * - 将所有用户ID迁移为连续的整数ID（1, 2, 3, ...）
+ * - 使用优化的SQL语句，减少循环操作，提高性能
+ * - 分两个阶段执行：添加新列并填充数据、删除旧列并重命名新列
+ * - 使用事务确保数据完整性
+ * 
+ * 使用方法：
+ * 1. 确保数据库连接正常
+ * 2. 运行脚本：node migrate-ids-v3.js
+ * 
+ * 注意事项：
+ * - 此脚本会修改数据库结构，请先备份数据库
+ * - 确保没有正在运行的应用程序访问数据库
+ * - 此操作不可逆，请谨慎执行
+ * - 相比v2版本，此版本使用更高效的SQL操作
+ */
+
+// 导入必要的模块
 const { Sequelize } = require('sequelize');
 
 // 创建数据库连接
@@ -13,6 +34,10 @@ const sequelize = new Sequelize(
   }
 );
 
+/**
+ * 主函数：迁移用户ID
+ * 使用优化的SQL语句，分两个阶段执行迁移过程
+ */
 async function migrateIds() {
   try {
     console.log('开始迁移ID...');
@@ -21,7 +46,8 @@ async function migrateIds() {
     await sequelize.authenticate();
     console.log('数据库连接成功');
     
-    // 开始事务
+    // 第一阶段：添加新列并填充数据
+    console.log('第一阶段：添加新列并填充数据...');
     const transaction = await sequelize.transaction();
     
     try {
@@ -145,6 +171,7 @@ async function migrateIds() {
     }
     
     // 第二阶段：删除旧列并重命名新列
+    console.log('第二阶段：删除旧列并重命名新列...');
     const renameTransaction = await sequelize.transaction();
     
     try {
@@ -223,8 +250,10 @@ async function migrateIds() {
   } catch (error) {
     console.error('ID迁移失败:', error);
   } finally {
+    // 关闭数据库连接
     await sequelize.close();
   }
 }
 
+// 执行主函数
 migrateIds();

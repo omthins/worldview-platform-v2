@@ -1,6 +1,30 @@
+/**
+ * 数据库检查脚本：查看所有表的数据内容
+ * 
+ * 功能：
+ * 1. 检查并显示用户表中的所有用户信息
+ * 2. 检查并显示世界观表中的所有世界观信息
+ * 3. 检查并显示评论表中的所有评论信息
+ * 4. 检查并显示用户点赞世界观的关联数据
+ * 5. 检查并显示用户点赞评论的关联数据
+ * 
+ * 使用方法：
+ * 1. 确保已配置好数据库连接（在server/config/database.js中）
+ * 2. 在项目根目录运行：node Test.js/check-database-data.js
+ * 
+ * 注意事项：
+ * - 此脚本用于开发调试，可随时运行查看数据状态
+ * - 数据量大时，输出可能会很长
+ * - 脚本会自动关闭数据库连接
+ */
+
+// 导入数据库模型和配置
 const { User, Worldview, Comment, UserWorldviewLike, UserCommentLike } = require('../server/models');
 const sequelize = require('../server/config/database');
 
+/**
+ * 主函数：检查并显示所有表的数据内容
+ */
 async function checkDatabase() {
   try {
     // 连接数据库
@@ -58,4 +82,5 @@ async function checkDatabase() {
   }
 }
 
+// 执行主函数
 checkDatabase();

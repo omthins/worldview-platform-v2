@@ -1,6 +1,28 @@
+/**
+ * 更新世界观编号脚本
+ * 
+ * 功能：
+ * - 为数据库中的所有世界观按创建时间顺序分配编号
+ * - 编号从1开始，按照创建时间升序排列
+ * 
+ * 使用方法：
+ * 1. 确保数据库连接正常
+ * 2. 运行脚本：node update-worldview-numbers.js
+ * 
+ * 注意事项：
+ * - 此脚本会修改数据库中的世界观记录
+ * - 建议在执行前备份数据库
+ * - 执行过程中不要中断，否则可能导致编号不连续
+ */
+
+// 导入必要的模块
 const sequelize = require('./server/config/database');
 const Worldview = require('./server/models/worldview');
 
+/**
+ * 主函数：更新世界观编号
+ * 按照创建时间顺序为所有世界观分配连续编号
+ */
 async function updateWorldviewNumbers() {
   try {
     console.log('开始更新世界观编号...');
@@ -25,8 +47,10 @@ async function updateWorldviewNumbers() {
   } catch (error) {
     console.error('更新世界观编号时出错:', error);
   } finally {
+    // 关闭数据库连接
     await sequelize.close();
   }
 }
 
+// 执行主函数
 updateWorldviewNumbers();
