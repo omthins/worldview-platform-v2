@@ -1,7 +1,7 @@
 const sequelize = require('../config/database');
-const User = require('./user');
-const Worldview = require('./worldview');
-const Comment = require('./comment');
+const User = require('./User');
+const Worldview = require('./Worldview');
+const Comment = require('./Comment');
 
 // 定义模型关联
 User.hasMany(Worldview, { foreignKey: 'authorId', as: 'worldviews' });

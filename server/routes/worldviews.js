@@ -21,6 +21,8 @@ router.get('/', async (req, res) => {
     
     // 构建查询条件
     let whereCondition = { isPublic: true };
+    let authorIdFilter = null;
+    let authorNameFilter = null;
     
     if (category && category !== '全部') {
       whereCondition.category = category;
@@ -37,47 +39,66 @@ router.get('/', async (req, res) => {
           { title: { [Op.iLike]: `%${search}%` } },
           { description: { [Op.iLike]: `%${search}%` } },
           { tags: { [Op.contains]: [search] } },
-          { worldviewNumber: parseInt(search) },
-          { '$author.id$': parseInt(search) }
+          { worldviewNumber: parseInt(search) }
         ];
+        
+        // 对于作者ID的搜索，我们需要在include中添加条件
+        authorIdFilter = parseInt(search);
       } else {
         // 如果不是数字，搜索标题、描述、标签和作者名
         whereCondition[Op.or] = [
           { title: { [Op.iLike]: `%${search}%` } },
           { description: { [Op.iLike]: `%${search}%` } },
-          { tags: { [Op.contains]: [search] } },
-          { '$author.username$': { [Op.iLike]: `%${search}%` } }
+          { tags: { [Op.contains]: [search] } }
         ];
+        
+        // 对于作者名的搜索，我们需要在include中添加条件
+        authorNameFilter = search;
       }
     } else if (worldview) {
       // 搜索世界观标题
       whereCondition.title = { [Op.iLike]: `%${worldview}%` };
     } else if (creator) {
       // 搜索创作者用户名
-      whereCondition['$author.username$'] = { [Op.iLike]: `%${creator}%` };
+      authorNameFilter = creator;
     } else if (id) {
-      // 搜索世界观ID
-      whereCondition.id = parseInt(id);
+      // 搜索世界观ID (UUID类型)
+      whereCondition.id = id;
     } else if (wid) {
       // 搜索世界观编号
       whereCondition.worldviewNumber = parseInt(wid);
     }
     
+    // 构建include条件
+    const includeConditions = [
+      {
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username', 'avatar']
+      },
+      {
+        model: User,
+        as: 'likingUsers',
+        attributes: ['id', 'username'],
+        through: { attributes: [] }
+      }
+    ];
+    
+    // 如果有作者ID过滤条件，添加到include中
+    if (authorIdFilter) {
+      includeConditions[0].where = { id: authorIdFilter };
+    }
+    
+    // 如果有作者名过滤条件，添加到include中
+    if (authorNameFilter) {
+      includeConditions[0].where = { 
+        username: { [Op.iLike]: `%${authorNameFilter}%` } 
+      };
+    }
+    
     const { count, rows: worldviews } = await Worldview.findAndCountAll({
       where: whereCondition,
-      include: [
-        {
-          model: User,
-          as: 'author',
-          attributes: ['id', 'username', 'avatar']
-        },
-        {
-          model: User,
-          as: 'likingUsers',
-          attributes: ['id', 'username'],
-          through: { attributes: [] }
-        }
-      ],
+      include: includeConditions,
       order: [['createdAt', 'DESC']],
       limit,
       offset
