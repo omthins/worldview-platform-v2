@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { API_ENDPOINTS, apiRequest } from '../../utils/api';
 import './CommentSection.css';
 
 const CommentSection = ({ worldviewId }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
@@ -14,8 +15,7 @@ const CommentSection = ({ worldviewId }) => {
     const fetchComments = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/comments/worldview/${worldviewId}`);
-        const data = await res.json();
+        const data = await apiRequest(`${API_ENDPOINTS.COMMENTS}/worldview/${worldviewId}`);
         setComments(data.comments || []);
         setLoading(false);
       } catch (err) {
@@ -41,12 +41,8 @@ const CommentSection = ({ worldviewId }) => {
     setSubmitting(true);
     
     try {
-      const res = await fetch('/api/comments', {
+      const data = await apiRequest(API_ENDPOINTS.COMMENTS, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
         body: JSON.stringify({
           content: newComment,
           worldviewId,
@@ -54,30 +50,26 @@ const CommentSection = ({ worldviewId }) => {
         })
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        if (replyTo) {
-          // 如果是回复，更新对应评论的回复列表
-          setComments(prevComments => 
-            prevComments.map(comment => {
-              if (comment.id === replyTo) {
-                return {
-                  ...comment,
-                  replies: [...comment.replies, data]
-                };
-              }
-              return comment;
-            })
-          );
-        } else {
-          // 如果是顶级评论，添加到评论列表
-          setComments(prevComments => [data, ...prevComments]);
-        }
-        
-        setNewComment('');
-        setReplyTo(null);
+      if (replyTo) {
+        // 如果是回复，更新对应评论的回复列表
+        setComments(prevComments => 
+          prevComments.map(comment => {
+            if (comment.id === replyTo) {
+              return {
+                ...comment,
+                replies: [...comment.replies, data]
+              };
+            }
+            return comment;
+          })
+        );
+      } else {
+        // 如果是顶级评论，添加到评论列表
+        setComments(prevComments => [data, ...prevComments]);
       }
+      
+      setNewComment('');
+      setReplyTo(null);
     } catch (err) {
       console.error('提交评论失败:', err);
     }
@@ -92,39 +84,32 @@ const CommentSection = ({ worldviewId }) => {
     }
     
     try {
-      const res = await fetch(`/api/comments/${commentId}/like`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+      const data = await apiRequest(`${API_ENDPOINTS.COMMENTS}/${commentId}/like`, {
+        method: 'POST'
       });
       
-      const data = await res.json();
+      // 更新评论点赞数
+      const updateCommentLikes = (comments) => {
+        return comments.map(comment => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              likesCount: data.likesCount
+            };
+          }
+          
+          if (comment.replies && comment.replies.length > 0) {
+            return {
+              ...comment,
+              replies: updateCommentLikes(comment.replies)
+            };
+          }
+          
+          return comment;
+        });
+      };
       
-      if (res.ok) {
-        // 更新评论点赞数
-        const updateCommentLikes = (comments) => {
-          return comments.map(comment => {
-            if (comment.id === commentId) {
-              return {
-                ...comment,
-                likesCount: data.likesCount
-              };
-            }
-            
-            if (comment.replies && comment.replies.length > 0) {
-              return {
-                ...comment,
-                replies: updateCommentLikes(comment.replies)
-              };
-            }
-            
-            return comment;
-          });
-        };
-        
-        setComments(updateCommentLikes(comments));
-      }
+      setComments(updateCommentLikes(comments));
     } catch (err) {
       console.error('点赞失败:', err);
     }
@@ -211,7 +196,7 @@ const CommentSection = ({ worldviewId }) => {
 
 // 评论项组件
 const CommentItem = ({ comment, onReply, onLike, formatDate }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   
   return (
     <div className="comment-item">

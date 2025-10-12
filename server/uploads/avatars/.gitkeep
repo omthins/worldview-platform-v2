@@ -1,0 +1,2 @@
+# This file ensures the avatars directory structure is maintained in Git
+# The actual uploaded avatar files will be ignored by .gitignore

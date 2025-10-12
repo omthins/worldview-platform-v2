@@ -1,5 +1,5 @@
 const sequelize = require('./server/config/database');
-const Worldview = require('./server/models/Worldview');
+const Worldview = require('./server/models/worldview');
 
 async function updateWorldviewNumbers() {
   try {

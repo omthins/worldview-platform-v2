@@ -1,19 +1,20 @@
 .home {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 15px;
+  padding: 0 1.5rem;
 }
 
 .hero {
   text-align: center;
-  padding: 3rem 0;
+  padding: 4rem 0;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
-  border-radius: 8px;
-  margin-bottom: 2rem;
+  border-radius: 12px;
+  margin-bottom: 3rem;
   box-shadow: var(--card-shadow);
   position: relative;
   overflow: hidden;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .hero::before {
@@ -31,20 +32,26 @@
 .hero-content {
   position: relative;
   z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
   font-weight: 700;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .hero p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  max-width: 600px;
+  font-size: 1.4rem;
+  margin-bottom: 2.5rem;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.6;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .btn-primary {
@@ -52,11 +59,12 @@
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color var(--transition-speed), transform var(--transition-speed);
+  transition: all var(--transition-speed);
   box-shadow: var(--card-shadow);
+  font-weight: 500;
 }
 
 .btn-primary:hover {
@@ -64,6 +72,7 @@
   text-decoration: none;
   color: white;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .btn-lg {
@@ -80,6 +89,7 @@
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: var(--card-shadow);
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .search-form {
@@ -92,15 +102,15 @@
   background-color: var(--input-bg-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+  transition: all var(--transition-speed);
 }
 
 .search-form .form-control:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(63, 81, 181, 0.25);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 74, 144, 226), 0.1);
   outline: none;
 }
 
@@ -108,17 +118,18 @@
   background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color var(--transition-speed), transform var(--transition-speed);
+  transition: all var(--transition-speed);
   font-weight: 500;
 }
 
 .search-form .btn:hover {
   background-color: var(--primary-hover-color);
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .categories {
@@ -148,6 +159,8 @@
   background-color: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .worldviews-container {
@@ -160,6 +173,7 @@
   justify-content: center;
   align-items: center;
   padding: 3rem;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .loading-spinner {
@@ -169,6 +183,7 @@
   border-top: 4px solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  box-shadow: 0 0 10px rgba(var(--primary-color-rgb, 74, 144, 226), 0.3);
 }
 
 .empty-state {
@@ -177,16 +192,19 @@
   background-color: var(--card-bg-color);
   border-radius: 8px;
   box-shadow: var(--card-shadow);
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .empty-state h3 {
   color: var(--text-color);
   margin-bottom: 1rem;
+  font-size: 1.5rem;
 }
 
 .empty-state p {
   color: var(--text-secondary-color);
   margin-bottom: 1.5rem;
+  font-size: 1.1rem;
 }
 
 .empty-state .btn {
@@ -194,17 +212,59 @@
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color var(--transition-speed), transform var(--transition-speed);
+  transition: all var(--transition-speed);
   text-decoration: none;
   display: inline-block;
+  font-weight: 500;
 }
 
 .empty-state .btn:hover {
   background-color: var(--primary-hover-color);
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.error-state {
+  text-align: center;
+  padding: 3rem;
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  border-left: 4px solid var(--error-color);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.error-state h3 {
+  color: var(--error-color);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.error-state p {
+  color: var(--text-secondary-color);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.error-state .btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  font-weight: 500;
+}
+
+.error-state .btn:hover {
+  background-color: var(--primary-hover-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes spin {
@@ -225,16 +285,42 @@
 
 .worldviews-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-/* 确保在大屏幕上始终显示4列 */
-@media (min-width: 1201px) {
+.worldview-card {
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-speed);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.worldview-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+/* 确保在大屏幕上始终显示5列 */
+@media (min-width: 1400px) {
   .worldviews-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+/* 超大屏幕 */
+@media (min-width: 1800px) {
+  .worldviews-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2.5rem;
   }
 }
 
@@ -248,36 +334,54 @@
   background-color: var(--card-bg-color);
   border-radius: 8px;
   box-shadow: var(--card-shadow);
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .pagination-btn {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color var(--transition-speed), transform var(--transition-speed);
+  transition: all var(--transition-speed);
   font-weight: 500;
+  font-size: 1rem;
 }
 
 .pagination-btn:hover:not(:disabled) {
   background-color: var(--primary-hover-color);
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .pagination-btn:disabled {
   background-color: var(--border-color);
   cursor: not-allowed;
   transform: none;
+  opacity: 0.6;
 }
 
 .page-info {
   font-weight: 500;
   color: var(--text-color);
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   background-color: var(--tag-bg-color);
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 1rem;
+  min-width: 120px;
+  text-align: center;
+}
+
+@media (max-width: 1400px) {
+  .worldviews-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  
+  .hero h1 {
+    font-size: 2.8rem;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -287,7 +391,7 @@
   }
   
   .hero h1 {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
   }
 }
 
@@ -298,11 +402,11 @@
   }
   
   .hero h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
   
   .hero p {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 }
 

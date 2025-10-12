@@ -14,7 +14,10 @@ const uploadRoutes = require('./routes/upload');
 const app = express();
 
 // 中间件
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  credentials: true
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads/avatars', express.static(path.join(__dirname, 'uploads/avatars')));

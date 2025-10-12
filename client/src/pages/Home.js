@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import WorldviewCard from '../components/worldview/WorldviewCard';
+import { API_ENDPOINTS, apiRequest } from '../utils/api';
 import './Home.css';
 
 const Home = () => {
@@ -8,27 +9,31 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchWorldviews = async () => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams({
-          page: currentPage,
-          limit: 16 // 改为每页16个，以适应4x4的网格布局
-        });
+    try {
+      setLoading(true);
+      setError(null);
+      console.log('开始获取世界观列表...');
+      const params = new URLSearchParams({
+        page: currentPage,
+        limit: 20 // 增加每页显示数量
+      });
 
-        const res = await fetch(`/api/worldviews?${params}`);
-        const data = await res.json();
-        
-        setWorldviews(data.worldviews);
-        setTotalPages(data.totalPages);
-        setLoading(false);
-      } catch (err) {
-        console.error('获取世界观列表失败:', err);
-        setLoading(false);
-      }
-    };
+      const data = await apiRequest(`${API_ENDPOINTS.WORLDVIEWS}?${params}`);
+      console.log('获取到的世界观数据:', data);
+      
+      setWorldviews(data.worldviews);
+      setTotalPages(data.totalPages);
+      setLoading(false);
+    } catch (err) {
+      console.error('获取世界观列表失败:', err);
+      setError(err.message || '获取世界观列表失败');
+      setLoading(false);
+    }
+  };
 
     fetchWorldviews();
   }, [currentPage]);
@@ -54,6 +59,12 @@ const Home = () => {
         {loading ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
+          </div>
+        ) : error ? (
+          <div className="error-state">
+            <h3>加载失败</h3>
+            <p>{error}</p>
+            <button className="btn" onClick={() => window.location.reload()}>重试</button>
           </div>
         ) : worldviews && worldviews.length > 0 ? (
           <>

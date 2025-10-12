@@ -38,52 +38,54 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <main className="container mt-4">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route 
-            path="/login" 
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            } 
-          />
-          <Route 
-            path="/register" 
-            element={
-              <PublicRoute>
-                <Register />
-              </PublicRoute>
-            } 
-          />
-          <Route 
-            path="/dashboard" 
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/create-worldview" 
-            element={
-              <PrivateRoute>
-                <CreateWorldview />
-              </PrivateRoute>
-            } 
-          />
-          <Route path="/worldview/:id" element={<WorldviewDetail />} />
-          <Route 
-            path="/profile" 
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            } 
-          />
-          <Route path="/profile/:id" element={<UserProfile />} />
-        </Routes>
+      <main>
+        <div className="container">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route 
+              path="/login" 
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/register" 
+              element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              } 
+            />
+            <Route 
+              path="/create-worldview" 
+              element={
+                <PrivateRoute>
+                  <CreateWorldview />
+                </PrivateRoute>
+              } 
+            />
+            <Route path="/worldview/:id" element={<WorldviewDetail />} />
+            <Route 
+              path="/profile" 
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              } 
+            />
+            <Route path="/profile/:id" element={<UserProfile />} />
+          </Routes>
+        </div>
       </main>
     </div>
   );

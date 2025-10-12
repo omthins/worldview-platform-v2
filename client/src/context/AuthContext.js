@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import axios from 'axios';
+import { API_ENDPOINTS, apiRequest } from '../utils/api';
 
 // 创建上下文
 const AuthContext = createContext();
@@ -52,30 +52,26 @@ const authReducer = (state, action) => {
   }
 };
 
-// 设置请求头
-const setAuthToken = (token) => {
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    delete axios.defaults.headers.common['Authorization'];
-  }
-};
-
 // Provider 组件
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   // 加载用户
   const loadUser = async () => {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token);
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      dispatch({
+        type: AUTH_FAILURE
+      });
+      return;
     }
 
     try {
-      const res = await axios.get('/api/auth/me');
+      const res = await apiRequest(`${API_ENDPOINTS.AUTH}/me`);
       dispatch({
         type: USER_LOADED,
-        payload: res.data
+        payload: res
       });
     } catch (err) {
       dispatch({
@@ -87,12 +83,14 @@ export const AuthProvider = ({ children }) => {
   // 注册
   const register = async (formData) => {
     try {
-      const res = await axios.post('/api/auth/register', formData);
+      const res = await apiRequest(`${API_ENDPOINTS.AUTH}/register`, {
+        method: 'POST',
+        body: JSON.stringify(formData)
+      });
       dispatch({
         type: AUTH_SUCCESS,
-        payload: res.data
+        payload: res
       });
-      setAuthToken(res.data.token);
       return { success: true };
     } catch (err) {
       dispatch({
@@ -108,12 +106,14 @@ export const AuthProvider = ({ children }) => {
   // 登录
   const login = async (formData) => {
     try {
-      const res = await axios.post('/api/auth/login', formData);
+      const res = await apiRequest(`${API_ENDPOINTS.AUTH}/login`, {
+        method: 'POST',
+        body: JSON.stringify(formData)
+      });
       dispatch({
         type: AUTH_SUCCESS,
-        payload: res.data
+        payload: res
       });
-      setAuthToken(res.data.token);
       return { success: true };
     } catch (err) {
       dispatch({
@@ -131,7 +131,6 @@ export const AuthProvider = ({ children }) => {
     dispatch({
       type: LOGOUT
     });
-    setAuthToken(null);
   };
 
   // 更新用户信息

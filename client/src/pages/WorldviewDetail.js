@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 // import { useAuth } from '../context/AuthContext';
+import { API_ENDPOINTS, apiRequest } from '../utils/api';
 import CommentSection from '../components/comments/CommentSection';
 import './WorldviewDetail.css';
 
@@ -17,18 +18,15 @@ const WorldviewDetail = () => {
     const fetchWorldview = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/worldviews/${id}`);
-        const data = await res.json();
-        
-        if (res.status === 404) {
-          navigate('/not-found');
-          return;
-        }
+        const data = await apiRequest(`${API_ENDPOINTS.WORLDVIEWS}/${id}`);
         
         setWorldview(data);
         setLoading(false);
       } catch (err) {
         console.error('获取世界观详情失败:', err);
+        if (err.message === '世界观不存在') {
+          navigate('/not-found');
+        }
         setLoading(false);
       }
     };
