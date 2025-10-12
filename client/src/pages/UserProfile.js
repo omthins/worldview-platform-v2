@@ -104,31 +104,19 @@ const UserProfile = () => {
               <div className="user-worldviews-grid">
                 {userWorldviews.map(worldview => (
                   <div key={worldview.id} className="user-worldview-card">
-                    <a href={`/worldview/${worldview.id}`} className="card-image-link">
-                      {worldview.coverImage ? (
-                        <div className="user-worldview-cover">
-                          <img src={worldview.coverImage} alt={worldview.title} />
-                        </div>
-                      ) : (
-                        <div className="user-worldview-cover">
-                          <div className="card-image-placeholder">
-                            {worldview.title}
-                          </div>
-                        </div>
-                      )}
-                    </a>
+                    {worldview.coverImage && (
+                      <div className="user-worldview-cover">
+                        <img src={worldview.coverImage} alt={worldview.title} />
+                      </div>
+                    )}
                     <div className="user-worldview-content">
-                      <a href={`/worldview/${worldview.id}`} className="card-title-link">
-                        <h3>{worldview.title}</h3>
-                      </a>
+                      <h3>{worldview.title}</h3>
                       <div className="user-worldview-number">编号: #{worldview.worldviewNumber}</div>
                       <p>{worldview.description}</p>
                       <div className="user-worldview-meta">
                         <span className="user-worldview-category">{worldview.category}</span>
-                        <div className="card-stats">
-                          <span className="user-worldview-date">{formatDate(worldview.createdAt)}</span>
-                          <span className="user-worldview-views">👁 {worldview.views}</span>
-                        </div>
+                        <span className="user-worldview-date">{formatDate(worldview.createdAt)}</span>
+                        <span className="user-worldview-views">👁 {worldview.views}</span>
                       </div>
                       <a href={`/worldview/${worldview.id}`} className="btn btn-outline">查看详情</a>
                     </div>
