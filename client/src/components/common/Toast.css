@@ -100,46 +100,6 @@
   transition: width 0.1s linear;
 }
 
-/* 触屏优化 */
-@media (pointer: coarse) {
-  .toast {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    min-width: auto;
-    max-width: none;
-    width: calc(100% - 20px);
-    border-radius: 16px;
-  }
-  
-  .toast-content {
-    padding: 18px 20px;
-  }
-  
-  .toast-icon {
-    width: 32px;
-    height: 32px;
-    font-size: 22px;
-  }
-  
-  .toast-message {
-    font-size: 16px;
-  }
-  
-  .toast-close {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
-    font-size: 22px;
-    margin-left: 15px;
-  }
-  
-  .toast-progress {
-    height: 4px;
-  }
-}
-
 /* 添加动画效果 */
 @keyframes slideIn {
   from {

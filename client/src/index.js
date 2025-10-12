@@ -5,7 +5,6 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import App from './App';
 import './index.css';
-import './styles/touch.css'; // 导入触屏优化样式
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { ToastProvider } from './components/common/ToastContext';
@@ -11,7 +11,6 @@ import WorldviewDetail from './pages/WorldviewDetail';
 import CreateWorldview from './pages/CreateWorldview';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
-import { initTouchOptimizations, addRippleToButtons } from './utils/touch';
 import './App.css';
 
 // 私有路由组件
@@ -37,28 +36,6 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
-  useEffect(() => {
-    // 初始化触屏优化
-    initTouchOptimizations();
-    
-    // 添加按钮波纹效果
-    addRippleToButtons();
-    
-    // 监听路由变化，为新加载的内容添加波纹效果
-    const observer = new MutationObserver(() => {
-      addRippleToButtons();
-    });
-    
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-    
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
   return (
     <ToastProvider>
       <div className="App">

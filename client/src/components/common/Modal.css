@@ -77,47 +77,6 @@
   border-left: 4px solid var(--error-color);
 }
 
-/* 触屏优化 */
-@media (pointer: coarse) {
-  .modal-overlay {
-    padding: 20px;
-  }
-  
-  .modal-content {
-    width: 95%;
-    max-width: none;
-    max-height: 90vh;
-    border-radius: 16px;
-  }
-  
-  .modal-header {
-    padding: 1.25rem 1.5rem;
-  }
-  
-  .modal-title {
-    font-size: 1.3rem;
-  }
-  
-  .modal-close-btn {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    font-size: 1.5rem;
-  }
-  
-  .modal-body {
-    padding: 1.5rem;
-    font-size: 1rem;
-  }
-  
-  .error-item {
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 8px;
-  }
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;

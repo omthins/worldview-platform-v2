@@ -62,39 +62,97 @@
 .user-worldviews-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
 }
 
 .user-worldview-card {
   background-color: var(--card-bg-color);
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: var(--card-shadow);
   overflow: hidden;
-  transition: transform 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #f0f0f0;
+  position: relative;
 }
 
 .user-worldview-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+  border-color: rgba(102, 126, 234, 0.2);
+}
+
+.card-image-link {
+  display: block;
+  text-decoration: none;
+}
+
+.card-image-link:hover .user-worldview-cover img {
+  transform: scale(1.05);
+}
+
+.card-title-link {
+  text-decoration: none;
+}
+
+.card-image-placeholder {
+  height: 220px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  position: relative;
+}
+
+.card-image-placeholder::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></svg>');
+  background-size: 20px 20px;
+  opacity: 0.3;
 }
 
 .user-worldview-cover {
-  height: 180px;
+  height: 220px;
   overflow: hidden;
+  position: relative;
 }
 
 .user-worldview-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--transition-speed);
 }
 
 .user-worldview-content {
-  padding: 1.5rem;
+  padding: 1.8rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .user-worldview-content h3 {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   color: var(--text-color);
+  font-size: 1.4rem;
+  line-height: 1.3;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.user-worldview-content h3:hover {
+  color: var(--primary-color);
 }
 
 .user-worldview-number {
@@ -106,28 +164,40 @@
 
 .user-worldview-content p {
   color: var(--text-secondary-color);
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  line-height: 1.6;
+  font-size: 1rem;
+  flex: 1;
 }
 
 .user-worldview-meta {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
 }
 
 .user-worldview-category {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 3px 8px;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  color: #495057;
+  padding: 4px 12px;
+  border-radius: 16px;
   font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.user-worldview-category:hover {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .user-worldview-date {
@@ -138,22 +208,55 @@
   color: var(--text-secondary-color);
 }
 
+.card-stats {
+  display: flex;
+  gap: 1rem;
+  color: var(--text-secondary-color);
+  font-size: 0.9rem;
+}
+
 .btn-outline {
   display: inline-block;
   background-color: transparent;
   border: 1px solid var(--primary-color);
   color: var(--primary-color);
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 8px 16px;
+  border-radius: 8px;
   text-decoration: none;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s;
+  font-weight: 500;
+  text-align: center;
+  margin-top: auto;
 }
 
 .btn-outline:hover {
   background-color: var(--primary-color);
   color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1400px) {
+  .user-worldviews-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .user-worldviews-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .user-worldviews-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -163,6 +266,14 @@
   }
   
   .user-worldviews-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-worldviews-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
