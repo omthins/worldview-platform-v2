@@ -1,11 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './WorldviewCard.css';
 
 const WorldviewCard = ({ worldview, showNumber = false }) => {
+  const navigate = useNavigate();
+  
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const handleAuthorClick = (e) => {
+    e.stopPropagation();
+    navigate(`/profile/${worldview.author.id}`);
   };
 
   return (
@@ -35,7 +42,9 @@ const WorldviewCard = ({ worldview, showNumber = false }) => {
                 alt="作者头像" 
                 className="author-avatar"
               />
-              <span>{worldview.author.username}</span>
+              <span onClick={handleAuthorClick} className="author-link">
+                {worldview.author.username}
+              </span>
             </div>
             
             <div className="card-stats">

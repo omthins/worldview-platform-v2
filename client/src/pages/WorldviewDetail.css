@@ -48,6 +48,12 @@
 .author-name {
   font-weight: 600;
   color: var(--text-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.author-name:hover {
+  color: var(--primary-color);
 }
 
 .publish-date {
@@ -222,10 +228,18 @@
   border: 3px solid var(--primary-color);
 }
 
-.author-details h4 {
+.author-details .author-name {
+  display: block;
   margin-bottom: 0.75rem;
   color: var(--text-color);
   font-size: 1.3rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.author-details .author-name:hover {
+  color: var(--primary-color);
 }
 
 .author-details p {

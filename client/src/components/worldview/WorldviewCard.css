@@ -119,6 +119,18 @@
   border: 2px solid var(--border-color);
 }
 
+.author-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.author-link:hover {
+  color: var(--primary-color);
+}
+
 .card-stats {
   display: flex;
   gap: 1rem;

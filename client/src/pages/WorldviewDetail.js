@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 // import { useAuth } from '../context/AuthContext';
 import { API_ENDPOINTS, apiRequest } from '../utils/api';
@@ -55,16 +55,18 @@ const WorldviewDetail = () => {
         
         <div className="worldview-meta">
           <div className="author-info">
-            <img 
-              src={worldview.author?.avatar || 'https://picsum.photos/seed/avatar/40/40.jpg'} 
-              alt="作者头像" 
-              className="author-avatar"
-            />
-            <div>
-              <div className="author-name">{worldview.author?.username || '未知作者'}</div>
-              <div className="publish-date">发布于 {formatDate(worldview.createdAt)}</div>
+              <img 
+                src={worldview.author?.avatar || 'https://picsum.photos/seed/avatar/40/40.jpg'} 
+                alt="作者头像" 
+                className="author-avatar"
+              />
+              <div>
+                <Link to={`/profile/${worldview.author?.id}`} className="author-name">
+                  {worldview.author?.username || '未知作者'}
+                </Link>
+                <div className="publish-date">发布于 {formatDate(worldview.createdAt)}</div>
+              </div>
             </div>
-          </div>
           
           <div className="worldview-actions">
             <div className="view-count">
@@ -108,10 +110,12 @@ const WorldviewDetail = () => {
               className="author-avatar-large"
             />
             <div className="author-details">
-              <h4>{worldview.author?.username || '未知作者'}</h4>
-              <p>{worldview.author?.bio || '这个用户很神秘，什么都没有留下...'}</p>
-              <div className="author-id">作者ID: {worldview.author?.id}</div>
-            </div>
+                <Link to={`/profile/${worldview.author?.id}`} className="author-name">
+                  {worldview.author?.username || '未知作者'}
+                </Link>
+                <p>{worldview.author?.bio || '这个人很神秘，什么都没有留下'}</p>
+                <div className="author-id">作者ID: {worldview.author?.id}</div>
+              </div>
           </div>
         </div>
       </div>
