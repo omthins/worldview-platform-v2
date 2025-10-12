@@ -291,6 +291,55 @@
   color: var(--text-secondary-color);
 }
 
+/* 触屏优化 */
+@media (pointer: coarse) {
+  .worldview-card {
+    margin-bottom: 2rem;
+  }
+  
+  .card-image-link {
+    min-height: 48px;
+    position: relative;
+  }
+  
+  .card-image-link::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0);
+    transition: background 0.2s ease;
+  }
+  
+  .card-image-link:active::after {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .author-link {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .author-link:active {
+    background-color: var(--hover-bg);
+    transform: scale(0.98);
+  }
+  
+  .action-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .card-content {
