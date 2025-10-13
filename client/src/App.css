@@ -7,6 +7,14 @@
 main {
   flex: 1;
   padding: 2rem 0;
+  padding-top: 100px; /* 为固定导航栏留出空间 */
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  main {
+    padding-top: 140px; /* 移动设备导航栏更高，需要更多空间 */
+  }
 }
 
 .container {

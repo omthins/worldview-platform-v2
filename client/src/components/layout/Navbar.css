@@ -4,8 +4,10 @@
   -webkit-backdrop-filter: var(--navbar-blur); /* Safari支持 */
   box-shadow: var(--card-shadow);
   padding: 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   height: 80px;
   transition: background-color var(--transition-speed);
