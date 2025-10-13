@@ -105,6 +105,19 @@ const CreateWorldview = () => {
     }));
   };
 
+  // 处理图片URL，确保相对路径可以正确显示
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    
+    // 如果已经是完整URL，直接返回
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    
+    // 如果是相对路径，添加服务器地址前缀
+    return `http://localhost:5000${imagePath}`;
+  };
+
   const onSubmit = async e => {
     e.preventDefault();
     
@@ -303,7 +316,7 @@ const CreateWorldview = () => {
           <div className="image-upload-container">
             {(imagePreview || coverImage) ? (
               <div className="image-preview">
-                <img src={imagePreview || coverImage} alt="封面预览" />
+                <img src={imagePreview || getImageUrl(coverImage)} alt="封面预览" />
                 <button type="button" className="remove-image-btn" onClick={removeImage}>
                   ×
                 </button>

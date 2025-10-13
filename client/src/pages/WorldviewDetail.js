@@ -39,6 +39,19 @@ const WorldviewDetail = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  // 处理图片URL，确保相对路径能正确显示
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    
+    // 如果已经是完整URL，直接返回
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    
+    // 如果是相对路径，添加服务器地址前缀
+    return `http://localhost:5000${imagePath}`;
+  };
+
   if (loading) {
     return <div className="text-center mt-5">加载中...</div>;
   }
@@ -85,7 +98,7 @@ const WorldviewDetail = () => {
       
       {worldview.coverImage && (
         <div className="worldview-cover">
-          <img src={worldview.coverImage} alt={worldview.title} />
+          <img src={getImageUrl(worldview.coverImage)} alt={worldview.title} />
         </div>
       )}
       
