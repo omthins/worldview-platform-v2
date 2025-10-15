@@ -16,6 +16,19 @@ const WorldviewCard = ({ worldview, showNumber = false }) => {
     navigate(`/profile/${worldview.author.id}`);
   };
 
+  // 处理图片URL，确保相对路径转换为完整URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // 如果已经是完整URL，直接返回
+    if (imageUrl.startsWith('http')) {
+      return imageUrl;
+    }
+    
+    // 如果是相对路径，添加服务器基础URL
+    return `http://localhost:5000${imageUrl}`;
+  };
+
   return (
     <div className="worldview-card">
       <Link to={`/worldview/${worldview.id}`} className="card-image-link">
