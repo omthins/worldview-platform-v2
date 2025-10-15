@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { apiRequest } from '../utils/api';
+import { apiRequest, getImageUrl } from '../utils/api';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -106,7 +106,7 @@ const UserProfile = () => {
                   <div key={worldview.id} className="user-worldview-card">
                     {worldview.coverImage && (
                       <div className="user-worldview-cover">
-                        <img src={worldview.coverImage} alt={worldview.title} />
+                        <img src={getImageUrl(worldview.coverImage)} alt={worldview.title} />
                       </div>
                     )}
                     <div className="user-worldview-content">

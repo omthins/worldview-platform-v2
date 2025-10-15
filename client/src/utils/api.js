@@ -80,7 +80,12 @@ export const apiRequest = async (url, options = {}) => {
     console.log('Response data:', data);
     
     if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
+      // 创建一个包含错误信息的Error对象
+      const error = new Error(data.message || 'Something went wrong');
+      error.response = {
+        data: data
+      };
+      throw error;
     }
     
     return data;
@@ -88,4 +93,27 @@ export const apiRequest = async (url, options = {}) => {
     console.error('API request error:', error);
     throw error;
   }
+};
+
+// 处理图片URL，确保正确显示
+export const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  
+  // 如果已经是完整URL，直接返回
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  
+  // 如果是相对路径，使用完整URL而不是代理
+  if (imagePath.startsWith('/uploads/')) {
+    return `${API_BASE_URL}${imagePath}`;
+  }
+  
+  // 如果是其他相对路径，使用完整URL
+  if (imagePath.startsWith('/')) {
+    return `${API_BASE_URL}${imagePath}`;
+  }
+  
+  // 其他情况，添加前导斜杠和API基础URL
+  return `${API_BASE_URL}/${imagePath}`;
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 // import { useAuth } from '../context/AuthContext';
-import { API_ENDPOINTS, apiRequest } from '../utils/api';
+import { API_ENDPOINTS, apiRequest, getImageUrl } from '../utils/api';
 import CommentSection from '../components/comments/CommentSection';
 import './WorldviewDetail.css';
 
@@ -85,7 +85,7 @@ const WorldviewDetail = () => {
       
       {worldview.coverImage && (
         <div className="worldview-cover">
-          <img src={worldview.coverImage} alt={worldview.title} />
+          <img src={getImageUrl(worldview.coverImage)} alt={worldview.title} />
         </div>
       )}
       

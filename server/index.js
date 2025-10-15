@@ -27,8 +27,29 @@ app.use((req, res, next) => {
   express.json()(req, res, next);
 });
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/uploads/avatars', express.static(path.join(__dirname, 'uploads/avatars')));
+// 静态文件服务
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res, filePath) => {
+    // 设置CORS头，允许跨域访问
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    // 设置缓存控制
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    
+    // 根据文件类型设置Content-Type
+    if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) {
+      res.setHeader('Content-Type', 'image/jpeg');
+    } else if (filePath.endsWith('.png')) {
+      res.setHeader('Content-Type', 'image/png');
+    } else if (filePath.endsWith('.gif')) {
+      res.setHeader('Content-Type', 'image/gif');
+    } else if (filePath.endsWith('.webp')) {
+      res.setHeader('Content-Type', 'image/webp');
+    }
+  }
+}));
 
 // 连接数据库
 connectDB();

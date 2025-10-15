@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { apiRequest, API_ENDPOINTS } from '../utils/api';
+import { apiRequest, API_ENDPOINTS, getImageUrl } from '../utils/api';
 import AvatarUpload from '../components/AvatarUpload';
 import './Profile.css';
 
@@ -348,7 +348,7 @@ const Profile = () => {
                     <div key={worldview.id} className="worldview-card">
                       <div className="worldview-image">
                         <img 
-                          src={worldview.coverImage || 'https://picsum.photos/seed/worldview/300/200.jpg'} 
+                          src={getImageUrl(worldview.coverImage) || 'https://picsum.photos/seed/worldview/300/200.jpg'} 
                           alt={worldview.title} 
                         />
                       </div>
@@ -387,7 +387,7 @@ const Profile = () => {
                     <div key={worldview.id} className="worldview-card">
                       <div className="worldview-image">
                         <img 
-                          src={worldview.coverImage || 'https://picsum.photos/seed/worldview/300/200.jpg'} 
+                          src={getImageUrl(worldview.coverImage) || 'https://picsum.photos/seed/worldview/300/200.jpg'} 
                           alt={worldview.title} 
                         />
                       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getImageUrl } from '../../utils/api';
 import './WorldviewCard.css';
 
 const WorldviewCard = ({ worldview, showNumber = false }) => {
@@ -20,7 +21,7 @@ const WorldviewCard = ({ worldview, showNumber = false }) => {
       <Link to={`/worldview/${worldview.id}`} className="card-image-link">
         <div className="card-image">
           {worldview.coverImage ? (
-            <img src={worldview.coverImage} alt={worldview.title} />
+            <img src={getImageUrl(worldview.coverImage)} alt={worldview.title} />
           ) : (
             <div className="card-image-placeholder">
               <span>{worldview.category}</span>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { apiRequest, API_ENDPOINTS } from '../utils/api';
+import { apiRequest, API_ENDPOINTS, getImageUrl } from '../utils/api';
 import './CreateWorldview.css';
 
 const CreateWorldview = () => {
@@ -303,7 +303,7 @@ const CreateWorldview = () => {
           <div className="image-upload-container">
             {(imagePreview || coverImage) ? (
               <div className="image-preview">
-                <img src={imagePreview || coverImage} alt="封面预览" />
+                <img src={imagePreview || getImageUrl(coverImage)} alt="封面预览" />
                 <button type="button" className="remove-image-btn" onClick={removeImage}>
                   ×
                 </button>
