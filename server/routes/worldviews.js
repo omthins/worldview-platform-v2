@@ -170,8 +170,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', authenticateToken, [
   body('title').notEmpty().withMessage('标题不能为空'),
   body('description').notEmpty().withMessage('描述不能为空'),
-  body('content').notEmpty().withMessage('内容不能为空'),
-  body('category').notEmpty().withMessage('分类不能为空').isLength({ max: 50 }).withMessage('分类长度不能超过50个字符')
+  body('content').notEmpty().withMessage('内容不能为空')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -179,7 +178,7 @@ router.post('/', authenticateToken, [
       return res.status(400).json({ errors: errors.array() });
     }
     
-    const { title, description, content, category, tags, coverImage, isPublic } = req.body;
+    const { title, description, content, coverImage, isPublic } = req.body;
     
     // 获取当前最大的世界观编号
     const maxWorldview = await Worldview.findOne({
@@ -194,8 +193,8 @@ router.post('/', authenticateToken, [
       title,
       description,
       content,
-      category,
-      tags: tags || [],
+      category: '默认分类', // 设置默认分类
+      tags: [], // 空标签数组
       coverImage: coverImage || '',
       authorId: req.user.id,
       isPublic: isPublic !== undefined ? isPublic : true
@@ -241,15 +240,13 @@ router.put('/:id', authenticateToken, [
       return res.status(403).json({ message: '无权修改此世界观' });
     }
     
-    const { title, description, content, category, tags, coverImage, isPublic } = req.body;
+    const { title, description, content, coverImage, isPublic } = req.body;
     
     // 更新字段
     const updateData = {};
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (content !== undefined) updateData.content = content;
-    if (category !== undefined) updateData.category = category;
-    if (tags !== undefined) updateData.tags = tags;
     if (coverImage !== undefined) updateData.coverImage = coverImage;
     if (isPublic !== undefined) updateData.isPublic = isPublic;
     
