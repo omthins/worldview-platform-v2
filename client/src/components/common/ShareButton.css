@@ -1,0 +1,121 @@
+.share-button {
+  color: #666;
+  border: none;
+  background: transparent;
+}
+
+.share-button:hover {
+  color: #1890ff;
+  background: transparent;
+}
+
+.share-popover {
+  width: 300px;
+}
+
+.share-popover-content {
+  padding: 8px;
+}
+
+.share-title {
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+  text-align: center;
+}
+
+.share-platforms {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 16px;
+}
+
+.share-platform-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  padding: 8px 12px;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  background: #fff;
+  transition: all 0.3s;
+}
+
+.share-platform-button:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+  background: #f0f8ff;
+}
+
+.share-platform-button .anticon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.share-platform-button span {
+  font-size: 12px;
+}
+
+.share-link-section,
+.share-embed-section {
+  margin-bottom: 12px;
+}
+
+.share-link-label,
+.share-embed-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.share-link-container,
+.share-embed-container {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.share-link-input,
+.share-embed-input {
+  flex: 1;
+}
+
+.share-link-input .ant-input,
+.share-embed-input .ant-input {
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .share-popover {
+    width: 280px;
+  }
+  
+  .share-platforms {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .share-platform-button {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+/* 动画效果 */
+.share-platform-button {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -119,18 +119,7 @@
   font-size: 0.8rem;
 }
 
-.worldview-cover {
-  margin: 2.5rem 0;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
 
-.worldview-cover img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
 
 .worldview-content {
   background-color: var(--card-bg-color);

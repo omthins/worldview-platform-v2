@@ -4,20 +4,9 @@ const bcrypt = require('bcryptjs');
 
 const User = sequelize.define('User', {
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
-    defaultValue: () => {
-      // 生成随机字母数字ID，默认以字母开头
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let result = '';
-      // 确保第一个字符是字母
-      result += chars.charAt(Math.floor(Math.random() * 52));
-      // 其余字符可以是字母或数字
-      for (let i = 0; i < 7; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return result;
-    }
+    autoIncrement: true
   },
   username: {
     type: DataTypes.STRING,
@@ -37,7 +26,7 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   avatar: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     defaultValue: ''
   },
   bio: {

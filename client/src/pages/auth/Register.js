@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Modal from '../../components/common/Modal';
+import DefaultAvatarSelector from '../../components/DefaultAvatarSelector';
 import './Register.css';
 
 const Register = () => {
@@ -9,16 +10,21 @@ const Register = () => {
     username: '',
     email: '',
     password: '',
-    password2: ''
+    password2: '',
+    avatar: ''
   });
   const [errors, setErrors] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const { username, email, password, password2 } = formData;
+  const { username, email, password, password2, avatar } = formData;
 
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleAvatarSelect = (avatarUrl) => {
+    setFormData({ ...formData, avatar: avatarUrl });
+  };
 
   const onSubmit = async e => {
     e.preventDefault();
@@ -29,7 +35,7 @@ const Register = () => {
       return;
     }
     
-    const result = await register({ username, email, password });
+    const result = await register({ username, email, password, avatar });
     
     if (result.success) {
       navigate('/dashboard');
@@ -54,6 +60,7 @@ const Register = () => {
               value={username}
               onChange={onChange}
               className="form-control"
+              autoComplete="off"
               required
             />
           </div>
@@ -67,6 +74,7 @@ const Register = () => {
               value={email}
               onChange={onChange}
               className="form-control"
+              autoComplete="off"
               required
             />
           </div>
@@ -80,6 +88,7 @@ const Register = () => {
               value={password}
               onChange={onChange}
               className="form-control"
+              autoComplete="off"
               required
             />
           </div>
@@ -93,7 +102,16 @@ const Register = () => {
               value={password2}
               onChange={onChange}
               className="form-control"
+              autoComplete="off"
               required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>选择头像</label>
+            <DefaultAvatarSelector 
+              onAvatarSelect={handleAvatarSelect}
+              currentAvatar={avatar}
             />
           </div>
           

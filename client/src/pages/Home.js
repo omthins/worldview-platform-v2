@@ -76,9 +76,6 @@ const Home = () => {
         <div className="hero-content">
           <h1>探索无限的世界观</h1>
           <p>发现、创建和分享各种精彩的世界观设定</p>
-          <Link to="/create-worldview" className="btn btn-primary btn-lg">
-            发布你的世界观
-          </Link>
         </div>
       </div>
 
@@ -95,7 +92,7 @@ const Home = () => {
           </div>
         ) : worldviews && worldviews.length > 0 ? (
           <>
-            <div className="worldviews-grid">
+            <div className="worldviews-list">
               {worldviews.map(worldview => (
                 <WorldviewCard key={worldview.id} worldview={worldview} showNumber={true} />
               ))}
@@ -127,9 +124,14 @@ const Home = () => {
           </>
         ) : (
           <div className="empty-state">
-            <h3>没有找到世界观</h3>
-            <p>试试调整搜索条件或创建一个新的世界观</p>
-            <Link to="/create-worldview" className="btn">发布世界观</Link>
+            <h3>
+              {searchParams.get('creator') ? '没有找到该创作者的世界观' : 
+               searchParams.get('worldview') ? '没有找到匹配的世界观' :
+               searchParams.get('id') ? '没有找到该UUID的世界观' :
+               searchParams.get('wid') ? '没有找到该编号的世界观' :
+               '没有找到世界观'}
+            </h3>
+            <p>试试调整搜索条件</p>
           </div>
         )}
       </div>

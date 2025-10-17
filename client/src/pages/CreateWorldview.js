@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { apiRequest, API_ENDPOINTS, getImageUrl } from '../utils/api';
+import { apiRequest, API_ENDPOINTS } from '../utils/api';
 import './CreateWorldview.css';
 
 const CreateWorldview = () => {
@@ -19,21 +19,14 @@ const CreateWorldview = () => {
     title: '',
     description: '',
     content: '',
-    category: '其他',
-    tags: '',
-    coverImage: '',
     isPublic: true
   });
   
   const [errors, setErrors] = useState([]);
   const [successMessage, setSuccessMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [imagePreview, setImagePreview] = useState('');
 
-  const categories = ['奇幻', '科幻', '现实', '历史', '神话', '其他'];
-
-  const { title, description, content, category, tags, coverImage, isPublic } = formData || {};
+  const { title, description, content, isPublic } = formData || {};
 
   const onChange = e => {
     const { name, value, type, checked } = e.target;
@@ -49,74 +42,7 @@ const CreateWorldview = () => {
     });
   };
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    // 验证文件类型
-    if (!file.type.match('image.*')) {
-      setErrors([{ msg: '请选择图片文件' }]);
-      return;
-    }
-    
-    // 验证文件大小（5MB）
-    if (file.size > 5 * 1024 * 1024) {
-      setErrors([{ msg: '图片大小不能超过5MB' }]);
-      return;
-    }
-    
-    // 创建预览
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
-    
-    // 上传图片
-    const uploadFormData = new FormData();
-    uploadFormData.append('image', file);
-    
-    try {
-      setUploading(true);
-      const data = await apiRequest(API_ENDPOINTS.UPLOAD_IMAGE, {
-        method: 'POST',
-        body: uploadFormData,
-        headers: {} // 不设置Content-Type，让浏览器自动设置multipart/form-data
-      });
-      
-      setFormData(prev => ({
-        ...prev,
-        coverImage: data.imageUrl
-      }));
-      setErrors([]);
-    } catch (err) {
-      console.error('图片上传失败:', err);
-      setErrors([{ msg: err.message || '图片上传失败' }]);
-    } finally {
-      setUploading(false);
-    }
-  };
 
-  const removeImage = () => {
-    setImagePreview('');
-    setFormData(prev => ({
-      ...prev,
-      coverImage: ''
-    }));
-  };
-
-  // 处理图片URL，确保相对路径可以正确显示
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    
-    // 如果已经是完整URL，直接返回
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-      return imagePath;
-    }
-    
-    // 如果是相对路径，添加服务器地址前缀
-    return `http://localhost:5000${imagePath}`;
-  };
 
   const onSubmit = async e => {
     e.preventDefault();
@@ -157,15 +83,10 @@ const CreateWorldview = () => {
     setSuccessMessage('');
     
     try {
-      const tagsArray = tags ? tags.split(',').map(tag => tag.trim()) : [];
-      
       const worldviewData = {
         title: title || '',
         description: description || '',
         content: content || '',
-        category: category || '其他',
-        tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
-        coverImage: coverImage || '',
         isPublic: isPublic !== undefined ? isPublic : true
       };
       
@@ -273,82 +194,9 @@ const CreateWorldview = () => {
           )}
         </div>
         
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="category">分类</label>
-            <div className="category-input-container">
-              <input
-                type="text"
-                id="category"
-                name="category"
-                value={category || ''}
-                onChange={onChange}
-                className="form-control"
-                placeholder="输入分类，如：奇幻、科幻、历史等"
-                list="category-suggestions"
-                autoComplete="off"
-              />
-              <datalist id="category-suggestions">
-                {categories.map(cat => (
-                  <option key={cat} value={cat} />
-                ))}
-              </datalist>
-            </div>
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="tags">标签</label>
-            <input
-            type="text"
-            id="tags"
-            name="tags"
-            value={tags || ''}
-            onChange={onChange}
-            className="form-control"
-            placeholder="用逗号分隔多个标签，如：魔法,冒险,中世纪"
-            autoComplete="off"
-          />
-          </div>
-        </div>
+
         
-        <div className="form-group">
-          <label htmlFor="coverImage">封面图片</label>
-          <div className="image-upload-container">
-            {(imagePreview || coverImage) ? (
-              <div className="image-preview">
-                <img src={imagePreview || getImageUrl(coverImage)} alt="封面预览" />
-                <button type="button" className="remove-image-btn" onClick={removeImage}>
-                  ×
-                </button>
-              </div>
-            ) : (
-              <div className="image-upload-area">
-                <input
-                  type="file"
-                  id="imageUpload"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="image-upload-input"
-                  disabled={uploading}
-                />
-                <label htmlFor="imageUpload" className="image-upload-label">
-                  {uploading ? '上传中...' : '点击上传图片'}
-                </label>
-                <div className="upload-hint">支持 JPG、PNG、GIF 格式，大小不超过 5MB</div>
-              </div>
-            )}
-          </div>
-          <input
-            type="text"
-            id="coverImage"
-            name="coverImage"
-            value={coverImage}
-            onChange={onChange}
-            className="form-control"
-            placeholder="或输入图片URL"
-            autoComplete="off"
-          />
-        </div>
+
         
         <div className="form-group">
           <label htmlFor="content">内容 <span className="required">*</span></label>

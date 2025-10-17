@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest, API_ENDPOINTS, getImageUrl } from '../utils/api';
 import AvatarUpload from '../components/AvatarUpload';
+import DefaultAvatarSelector from '../components/DefaultAvatarSelector';
 import './Profile.css';
 
 const Profile = () => {
@@ -269,18 +270,39 @@ const Profile = () => {
                 
                 <div className="form-group">
                   <label>头像</label>
-                  <AvatarUpload 
-                    currentAvatar={profileData.avatar}
-                    onAvatarChange={async (avatarUrl) => {
-                      // 更新本地状态
-                      setProfileData({...profileData, avatar: avatarUrl});
-                      
-                      // 直接更新用户上下文中的头像
-                      if (updateUser) {
-                        updateUser({...user, avatar: avatarUrl});
-                      }
-                    }}
-                  />
+                  <div className="avatar-options-container">
+                    <div className="avatar-option-section">
+                      <h5>预设头像</h5>
+                      <DefaultAvatarSelector 
+                        onAvatarSelect={async (avatarUrl) => {
+                          // 更新本地状态
+                          setProfileData({...profileData, avatar: avatarUrl});
+                          
+                          // 直接更新用户上下文中的头像
+                          if (updateUser) {
+                            updateUser({...user, avatar: avatarUrl});
+                          }
+                        }}
+                        currentAvatar={profileData.avatar}
+                      />
+                    </div>
+                    
+                    <div className="avatar-option-section">
+                      <h5>上传自定义头像</h5>
+                      <AvatarUpload 
+                        currentAvatar={profileData.avatar}
+                        onAvatarChange={async (avatarUrl) => {
+                          // 更新本地状态
+                          setProfileData({...profileData, avatar: avatarUrl});
+                          
+                          // 直接更新用户上下文中的头像
+                          if (updateUser) {
+                            updateUser({...user, avatar: avatarUrl});
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 <button 

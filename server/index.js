@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -10,6 +11,7 @@ const userRoutes = require('./routes/users');
 const worldviewRoutes = require('./routes/worldviews');
 const commentRoutes = require('./routes/comments');
 const uploadRoutes = require('./routes/upload');
+const notificationRoutes = require('./routes/notifications');
 
 const app = express();
 
@@ -60,6 +62,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/worldviews', worldviewRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/upload', uploadRoutes);
+
+app.use('/api/notifications', notificationRoutes);
 
 // 默认路由
 app.get('/', (req, res) => {

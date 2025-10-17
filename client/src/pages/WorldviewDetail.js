@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 // import { useAuth } from '../context/AuthContext';
-import { API_ENDPOINTS, apiRequest, getImageUrl } from '../utils/api';
+import { API_ENDPOINTS, apiRequest } from '../utils/api';
 import CommentSection from '../components/comments/CommentSection';
 import './WorldviewDetail.css';
 
@@ -39,18 +39,7 @@ const WorldviewDetail = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // 处理图片URL，确保相对路径能正确显示
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    
-    // 如果已经是完整URL，直接返回
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-      return imagePath;
-    }
-    
-    // 如果是相对路径，添加服务器地址前缀
-    return `http://localhost:5000${imagePath}`;
-  };
+
 
   if (loading) {
     return <div className="text-center mt-5">加载中...</div>;
@@ -96,11 +85,7 @@ const WorldviewDetail = () => {
         </div>
       </div>
       
-      {worldview.coverImage && (
-        <div className="worldview-cover">
-          <img src={getImageUrl(worldview.coverImage)} alt={worldview.title} />
-        </div>
-      )}
+
       
       <div className="worldview-content">
         <div className="worldview-description">

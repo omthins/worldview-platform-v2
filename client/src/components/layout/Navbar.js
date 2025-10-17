@@ -50,8 +50,8 @@ const Navbar = () => {
       const suggestions = [
         { type: 'worldview', label: `搜索世界观: ${value}`, term: value },
         { type: 'creator', label: `搜索创作者: ${value}`, term: value },
-        { type: 'id', label: `搜索ID: ${value}`, term: value },
-        { type: 'wid', label: `搜索WID: ${value}`, term: value }
+        { type: 'id', label: `搜索UUID: ${value}`, term: value },
+        { type: 'wid', label: `搜索编号: ${value}`, term: value }
       ];
       setSearchSuggestions(suggestions);
     } else {
@@ -158,7 +158,10 @@ const Navbar = () => {
           <li className="nav-item">
             <Link to="/" className="nav-link">首页</Link>
           </li>
+
+
           {isAuthenticated ? authLinks : guestLinks}
+
         </ul>
       </div>
     </nav>

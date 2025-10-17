@@ -9,24 +9,7 @@
   padding: 4rem 0;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
-  border-radius: 12px;
   margin-bottom: 3rem;
-  box-shadow: var(--card-shadow);
-  position: relative;
-  overflow: hidden;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></svg>');
-  background-size: 20px 20px;
-  opacity: 0.3;
 }
 
 .hero-content {
@@ -59,11 +42,8 @@
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  transition: all var(--transition-speed);
-  box-shadow: var(--card-shadow);
   font-weight: 500;
 }
 
@@ -71,8 +51,6 @@
   background-color: var(--primary-hover-color);
   text-decoration: none;
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .btn-lg {
@@ -85,16 +63,15 @@
   flex-direction: column;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  padding: 2rem;
   background-color: var(--card-bg-color);
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: var(--card-shadow);
-  animation: fadeIn 0.5s ease-in-out;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .search-form {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  align-items: center;
 }
 
 .search-form .form-control {
@@ -102,15 +79,13 @@
   background-color: var(--input-bg-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   font-size: 1rem;
-  transition: all var(--transition-speed);
+  min-height: 44px;
 }
 
 .search-form .form-control:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 74, 144, 226), 0.1);
   outline: none;
 }
 
@@ -118,54 +93,47 @@
   background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: all var(--transition-speed);
   font-weight: 500;
+  min-height: 44px;
+  transition: background-color 0.2s ease;
 }
 
 .search-form .btn:hover {
   background-color: var(--primary-hover-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .categories {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  align-items: center;
 }
 
 .category-btn {
-  padding: 8px 16px;
+  padding: 0.75rem 1.25rem;
   border: 1px solid var(--border-color);
   background-color: var(--card-bg-color);
   color: var(--text-color);
-  border-radius: 20px;
   cursor: pointer;
-  transition: all var(--transition-speed);
   font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
 .category-btn:hover {
   background-color: var(--hover-bg-color);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .category-btn.active {
   background-color: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .worldviews-container {
   margin-top: 2rem;
-  animation: fadeIn 0.5s ease-in-out;
 }
 
 .loading-container {
@@ -173,7 +141,6 @@
   justify-content: center;
   align-items: center;
   padding: 3rem;
-  animation: fadeIn 0.5s ease-in-out;
 }
 
 .loading-spinner {
@@ -181,18 +148,12 @@
   height: 40px;
   border: 4px solid var(--border-color);
   border-top: 4px solid var(--primary-color);
-  border-radius: 50%;
   animation: spin 1s linear infinite;
-  box-shadow: 0 0 10px rgba(var(--primary-color-rgb, 74, 144, 226), 0.3);
 }
 
 .empty-state {
   text-align: center;
   padding: 3rem;
-  background-color: var(--card-bg-color);
-  border-radius: 8px;
-  box-shadow: var(--card-shadow);
-  animation: fadeIn 0.5s ease-in-out;
 }
 
 .empty-state h3 {
@@ -212,10 +173,8 @@
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
-  transition: all var(--transition-speed);
   text-decoration: none;
   display: inline-block;
   font-weight: 500;
@@ -223,18 +182,12 @@
 
 .empty-state .btn:hover {
   background-color: var(--primary-hover-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .error-state {
   text-align: center;
   padding: 3rem;
-  background-color: var(--card-bg-color);
-  border-radius: 8px;
-  box-shadow: var(--card-shadow);
   border-left: 4px solid var(--error-color);
-  animation: fadeIn 0.5s ease-in-out;
 }
 
 .error-state h3 {
@@ -254,17 +207,13 @@
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
-  transition: all var(--transition-speed);
   font-weight: 500;
 }
 
 .error-state .btn:hover {
   background-color: var(--primary-hover-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes spin {
@@ -272,55 +221,28 @@
   100% { transform: rotate(360deg); }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-.worldviews-grid {
+
+.worldviews-list {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 3rem;
-  animation: fadeIn 0.5s ease-in-out;
 }
 
-.worldview-card {
-  background-color: var(--card-bg-color);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: var(--card-shadow);
-  transition: all var(--transition-speed);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  animation: fadeIn 0.5s ease-in-out;
-}
 
-.worldview-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-}
 
-/* 确保在大屏幕上始终显示5列 */
+/* 列表视图响应式设计 */
 @media (min-width: 1400px) {
-  .worldviews-grid {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 2.5rem;
+  .worldviews-list {
+    gap: 1.5rem;
   }
 }
 
 /* 超大屏幕 */
 @media (min-width: 1800px) {
-  .worldviews-grid {
-    grid-template-columns: repeat(6, 1fr);
-    gap: 2.5rem;
+  .worldviews-list {
+    gap: 1.5rem;
   }
 }
 
@@ -329,12 +251,9 @@
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background-color: var(--card-bg-color);
-  border-radius: 8px;
-  box-shadow: var(--card-shadow);
-  animation: fadeIn 0.5s ease-in-out;
+  margin-top: 3rem;
+  padding: 2rem;
+  border-top: 1px solid var(--border-color);
 }
 
 .pagination-btn {
@@ -342,23 +261,19 @@
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
   cursor: pointer;
-  transition: all var(--transition-speed);
   font-weight: 500;
   font-size: 1rem;
+  transition: background-color 0.2s ease;
 }
 
 .pagination-btn:hover:not(:disabled) {
   background-color: var(--primary-hover-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .pagination-btn:disabled {
   background-color: var(--border-color);
   cursor: not-allowed;
-  transform: none;
   opacity: 0.6;
 }
 
@@ -366,41 +281,24 @@
   font-weight: 500;
   color: var(--text-color);
   padding: 0.75rem 1.5rem;
-  background-color: var(--tag-bg-color);
-  border-radius: 8px;
   font-size: 1rem;
   min-width: 120px;
   text-align: center;
 }
 
 @media (max-width: 1400px) {
-  .worldviews-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-  }
-  
   .hero h1 {
     font-size: 2.8rem;
   }
 }
 
 @media (max-width: 1200px) {
-  .worldviews-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-  
   .hero h1 {
     font-size: 2.5rem;
   }
 }
 
 @media (max-width: 900px) {
-  .worldviews-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-  
   .hero h1 {
     font-size: 2.2rem;
   }
@@ -419,11 +317,6 @@
     font-size: 1rem;
   }
   
-  .worldviews-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-  
   .filters {
     padding: 1rem;
   }
@@ -438,11 +331,6 @@
 }
 
 @media (max-width: 480px) {
-  .worldviews-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
   .hero {
     padding: 2rem 0;
   }

@@ -1,18 +1,22 @@
 .profile-page {
+  min-height: 100vh;
+  background-color: var(--bg-color);
   padding: 2rem 0;
-  min-height: calc(100vh - 60px);
 }
 
 .profile-header {
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border-color);
+  padding: 2rem;
+  background: var(--card-bg-color);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
 }
 
 .profile-avatar {
   margin-right: 2rem;
+  flex-shrink: 0;
 }
 
 .profile-avatar img {
@@ -20,85 +24,84 @@
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--card-bg-color);
-  box-shadow: var(--card-shadow);
+  border: 4px solid #f0f0f0;
 }
 
 .profile-info h1 {
-  margin-bottom: 0.5rem;
-  font-size: 2rem;
-  font-weight: 700;
+  margin: 0 0 0.5rem 0;
   color: var(--text-color);
+  font-size: 2rem;
 }
 
 .profile-email {
   color: var(--text-secondary-color);
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
 }
 
 .profile-id {
-  color: var(--text-secondary-color);
-  margin-bottom: 1rem;
+  color: #888;
+  margin: 0 0 1rem 0;
   font-size: 0.9rem;
-  font-family: monospace;
-  background-color: var(--card-bg-color);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  display: inline-block;
 }
 
 .profile-bio {
-  font-size: 1rem;
-  line-height: 1.5;
-  max-width: 600px;
-  color: var(--text-color);
+  color: var(--text-secondary-color);
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0;
 }
 
 .profile-tabs {
   display: flex;
   margin-bottom: 2rem;
   border-bottom: 1px solid var(--border-color);
+  background: var(--card-bg-color);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
 }
 
 .tab-btn {
-  background: none;
+  padding: 1rem 2rem;
   border: none;
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
+  background: transparent;
   cursor: pointer;
+  font-size: 1rem;
+  color: var(--text-secondary-color);
+  transition: all 0.3s ease;
   border-bottom: 3px solid transparent;
-  transition: all 0.2s;
-  color: var(--text-color);
 }
 
 .tab-btn:hover {
-  color: var(--primary-color);
+  background-color: var(--hover-bg-color);
+  color: var(--text-color);
 }
 
 .tab-btn.active {
   color: var(--primary-color);
   border-bottom-color: var(--primary-color);
-  font-weight: 600;
+  background-color: var(--hover-bg-color);
 }
 
 .profile-content {
-  background-color: var(--card-bg-color);
-  border-radius: 8px;
-  box-shadow: var(--card-shadow);
+  background: var(--card-bg-color);
+  border-radius: 0 0 8px 8px;
   padding: 2rem;
-}
-
-.profile-form-container,
-.password-form-container {
-  max-width: 600px;
+  box-shadow: var(--card-shadow);
 }
 
 .profile-form-container h2,
-.password-form-container h2 {
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+.password-form-container h2,
+.user-worldviews h2,
+.user-liked-worldviews h2 {
+  margin: 0 0 1.5rem 0;
   color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.profile-form,
+.password-form {
+  max-width: 500px;
 }
 
 .form-group {
@@ -108,127 +111,122 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 500;
   color: var(--text-color);
+  font-weight: 500;
 }
 
 .form-control {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--form-border-color);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 1rem;
-  transition: border-color var(--transition-speed);
-  background-color: var(--form-bg-color);
-  color: var(--text-color);
+  transition: border-color 0.3s ease;
 }
 
 .form-control:focus {
-  border-color: var(--form-focus-border-color);
   outline: none;
-  box-shadow: 0 0 0 2px var(--form-focus-shadow-color);
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
 
 .btn {
-  display: inline-block;
   padding: 0.75rem 1.5rem;
-  background-color: var(--primary-color);
-  color: white;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color var(--transition-speed);
-}
-
-.btn:hover {
-  background-color: var(--primary-hover-color);
-}
-
-.btn:disabled {
-  background-color: var(--text-secondary-color);
-  cursor: not-allowed;
-}
-
-.btn-outline {
-  background-color: transparent;
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-}
-
-.btn-outline:hover {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .btn-primary {
   background-color: var(--primary-color);
+  color: white;
 }
 
 .btn-primary:hover {
   background-color: var(--primary-hover-color);
 }
 
+.btn-primary:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid #007bff;
+  color: #007bff;
+}
+
+.btn-outline:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-block {
+  width: 100%;
+}
+
 .alert {
-  padding: 0.75rem 1.25rem;
-  margin-bottom: 1.5rem;
+  padding: 1rem;
   border-radius: 4px;
+  margin-bottom: 1rem;
 }
 
 .alert-info {
-  background-color: var(--alert-info-bg);
-  color: var(--alert-info-text);
-  border: 1px solid var(--alert-info-border);
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
 }
 
 .login-prompt {
   text-align: center;
-  padding: 3rem 0;
+  padding: 3rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .login-prompt h2 {
-  margin-bottom: 1rem;
-  color: var(--text-color);
+  margin: 0 0 1rem 0;
+  color: #333;
 }
 
 .login-prompt p {
+  color: #666;
   margin-bottom: 2rem;
-  color: var(--text-secondary-color);
 }
 
 .worldviews-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  gap: 1.5rem;
   margin-top: 1.5rem;
 }
 
 .worldview-card {
-  border: 1px solid var(--border-color);
+  background: #f8f9fa;
   border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  background-color: var(--card-bg-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
 }
 
 .worldview-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--hover-shadow);
-}
-
-.worldview-image {
-  height: 200px;
-  overflow: hidden;
+  transform: translateY(-2px);
 }
 
 .worldview-image img {
   width: 100%;
-  height: 100%;
+  height: 200px;
   object-fit: cover;
 }
 
@@ -237,31 +235,21 @@
 }
 
 .worldview-content h3 {
-  margin-bottom: 0.5rem;
-  font-size: 1.25rem;
-  color: var(--text-color);
-}
-
-.worldview-content p {
-  margin-bottom: 1rem;
-  color: var(--text-secondary-color);
-}
-
-.worldview-content h3 {
-  margin-bottom: 0.5rem;
-  color: var(--text-color);
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.2rem;
 }
 
 .worldview-number {
+  color: #666;
   font-size: 0.9rem;
-  color: var(--primary-color);
-  font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .worldview-content p {
+  color: #555;
+  line-height: 1.5;
   margin-bottom: 1rem;
-  color: var(--text-secondary-color);
 }
 
 .worldview-meta {
@@ -269,7 +257,7 @@
   gap: 1rem;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  color: var(--text-secondary-color);
+  color: #888;
 }
 
 .worldview-actions {
@@ -279,13 +267,38 @@
 
 .empty-state {
   text-align: center;
-  padding: 3rem 0;
-  color: var(--text-secondary-color);
+  padding: 3rem;
+  color: #666;
 }
 
 .empty-state p {
   margin-bottom: 1.5rem;
-  font-size: 1.1rem;
+}
+
+/* 头像选择器相关样式 */
+.avatar-options-container {
+  margin-top: 1rem;
+}
+
+.avatar-option-section {
+  margin-bottom: 2rem;
+}
+
+.avatar-option-section h5 {
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+.avatar-option-section:last-child {
+  margin-bottom: 0;
+}
+
+.avatar-upload {
+  margin-top: 0;
 }
 
 /* 响应式设计 */
@@ -293,27 +306,57 @@
   .profile-header {
     flex-direction: column;
     text-align: center;
+    padding: 1.5rem;
   }
   
   .profile-avatar {
     margin-right: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .profile-avatar img {
+    width: 120px;
+    height: 120px;
   }
   
   .profile-tabs {
-    overflow-x: auto;
+    flex-wrap: wrap;
   }
   
   .tab-btn {
-    white-space: nowrap;
+    flex: 1;
+    min-width: 120px;
+    padding: 0.75rem 1rem;
   }
   
   .worldviews-grid {
     grid-template-columns: 1fr;
   }
   
+  .avatar-options-container {
+    margin-top: 0.5rem;
+  }
+  
+  .avatar-option-section {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-page {
+    padding: 1rem 0;
+  }
+  
+  .profile-content {
+    padding: 1rem;
+  }
+  
   .worldview-meta {
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
+  }
+  
+  .worldview-actions {
+    flex-direction: column;
   }
 }

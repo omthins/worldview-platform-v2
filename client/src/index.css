@@ -1,11 +1,56 @@
-/* 亮色模式变量 */
+/* 默认使用深色主题变量 */
 :root {
+  --bg-color: #121212;
+  --card-bg-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --text-secondary-color: #aaaaaa;
+  --border-color: #333333;
+  --primary-color: #5c6bc0;
+  --primary-color-light: #8c9eff;
+  --primary-hover-color: #3949ab;
+  --navbar-bg-color: rgba(30, 30, 30, 0.85);
+  --navbar-text-color: #e0e0e0;
+  --navbar-hover-bg-color: rgba(60, 60, 60, 0.7);
+  --dropdown-bg-color: #2a2a2a;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --form-bg-color: #2a2a2a;
+  --form-border-color: #444444;
+  --form-focus-border-color: #5c6bc0;
+  --form-focus-shadow-color: rgba(92, 107, 192, 0.25);
+  --alert-danger-bg-color: #3d1a1a;
+  --alert-danger-text-color: #ff8a80;
+  --alert-danger-border-color: #5d2a2a;
+  --alert-success-bg-color: #1a3d1a;
+  --alert-success-text-color: #81c784;
+  --alert-success-border-color: #2a5d2a;
+  --alert-info-bg: #1a2d3d;
+  --alert-info-text: #80c7ff;
+  --alert-info-border: #2a5d7a;
+  --btn-danger-color: #e53935;
+  --btn-danger-hover-color: #c62828;
+  --error-bg: #3d1a1a;
+  --error-color: #ff8a80;
+  --hover-transform: translateY(-5px);
+  --hover-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --navbar-blur: blur(10px);
+  --transition-speed: 0.3s;
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --text-secondary: #aaaaaa;
+  --tag-bg-color: #2a3a5a;
+  --tag-text-color: #8c9eff;
+  --card-hover-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 亮色模式变量（备用） */
+.light-mode {
   --bg-color: #f8f9fa;
   --card-bg-color: #ffffff;
   --text-color: #212529;
   --text-secondary-color: #6c757d;
   --border-color: #dee2e6;
   --primary-color: #3f51b5;
+  --primary-color-light: #757de8;
   --primary-hover-color: #303f9f;
   --navbar-bg-color: rgba(255, 255, 255, 0.85);
   --navbar-text-color: #333333;
@@ -41,7 +86,7 @@
   --card-hover-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* 暗色模式变量 */
+/* 暗色模式变量（与默认相同） */
 .dark-mode {
   --bg-color: #121212;
   --card-bg-color: #1e1e1e;
@@ -49,6 +94,7 @@
   --text-secondary-color: #aaaaaa;
   --border-color: #333333;
   --primary-color: #5c6bc0;
+  --primary-color-light: #8c9eff;
   --primary-hover-color: #3949ab;
   --navbar-bg-color: rgba(30, 30, 30, 0.85);
   --navbar-text-color: #e0e0e0;

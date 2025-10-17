@@ -45,7 +45,7 @@ const Worldview = sequelize.define('Worldview', {
     defaultValue: true
   },
   authorId: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: 'Users',

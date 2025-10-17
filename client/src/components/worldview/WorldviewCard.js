@@ -1,85 +1,78 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { getImageUrl } from '../../utils/api';
+import { Link } from 'react-router-dom';
 import './WorldviewCard.css';
 
 const WorldviewCard = ({ worldview, showNumber = false }) => {
-  const navigate = useNavigate();
-  
+  const { id, title, description, author, views, likes, createdAt, category } = worldview;
+
+  // 格式化日期
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const date = new Date(dateString);
+    return date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
-  const handleAuthorClick = (e) => {
-    e.stopPropagation();
-    navigate(`/profile/${worldview.author.id}`);
-  };
-
-  // 处理图片URL，确保相对路径转换为完整URL
-  const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return null;
-    
-    // 如果已经是完整URL，直接返回
-    if (imageUrl.startsWith('http')) {
-      return imageUrl;
+  // 格式化数字
+  const formatNumber = (num) => {
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'k';
     }
-    
-    // 如果是相对路径，添加服务器基础URL
-    return `http://localhost:5000${imageUrl}`;
+    return num;
+  };
+
+  // 获取作者头像
+  const getAuthorAvatar = (author) => {
+    if (author?.avatar) {
+      return author.avatar;
+    }
+    // 如果没有头像，使用首字母
+    return author?.username ? author.username.charAt(0).toUpperCase() : '?';
   };
 
   return (
     <div className="worldview-card">
-      <Link to={`/worldview/${worldview.id}`} className="card-image-link">
-        <div className="card-image">
-          {worldview.coverImage ? (
-            <img src={getImageUrl(worldview.coverImage)} alt={worldview.title} />
-          ) : (
-            <div className="card-image-placeholder">
-              <span>{worldview.category}</span>
-            </div>
+      <div className="card-content">
+        <div className="card-header">
+          <Link to={`/worldview/${id}`} className="card-title">
+            <h3>{title}</h3>
+          </Link>
+          {category && (
+            <span className="card-category">{category}</span>
           )}
         </div>
-      </Link>
-      
-      <div className="card-content">
-        <h3 className="card-title">
-          {worldview.title}
-        </h3>
         
-        <p className="card-description">{worldview.description}</p>
-        
-        <div className="card-meta">
-          <div className="card-author">
-            <img 
-              src={worldview.author.avatar || 'https://picsum.photos/seed/avatar/30/30.jpg'} 
-              alt="作者头像" 
-              className="author-avatar"
-            />
-            <span onClick={handleAuthorClick} className="author-link">
-              {worldview.author.username}
-            </span>
-          </div>
-          
-          <div className="card-stats">
-            <span className="card-views">
-              <i className="icon-eye"></i> {worldview.views}
-            </span>
-            <span className="card-likes">
-              <i className="icon-heart"></i> {worldview.likingUsers ? worldview.likingUsers.length : 0}
-            </span>
-          </div>
+        <div className="card-description">
+          <p>{description}</p>
         </div>
         
         <div className="card-divider"></div>
-      </div>
-      
-      <div className="card-footer">
-        <span className="card-date">{formatDate(worldview.createdAt)}</span>
-        {worldview.tags && worldview.tags.length > 0 && (
-          <span className="tag">#{worldview.tags[0]}</span>
-        )}
+        
+        <div className="card-footer">
+          <div className="card-author">
+            <div className="author-avatar">
+              {author?.avatar ? (
+                <img src={author.avatar} alt={author.username} />
+              ) : (
+                <span className="avatar-initial">{getAuthorAvatar(author)}</span>
+              )}
+            </div>
+            <span className="author-name">{author?.username || '匿名用户'}</span>
+          </div>
+          
+          <div className="card-stats">
+            <div className="stat-item">
+              <span className="stat-icon">👁</span>
+              <span className="stat-value">{formatNumber(views || 0)}</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-icon">❤️</span>
+              <span className="stat-value">{formatNumber(likes || 0)}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

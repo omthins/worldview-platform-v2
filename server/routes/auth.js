@@ -19,7 +19,7 @@ router.post('/register', [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, password } = req.body;
+    const { username, email, password, avatar } = req.body;
 
     // 检查用户是否已存在
     const existingUser = await User.findOne({
@@ -36,7 +36,8 @@ router.post('/register', [
     const user = await User.create({
       username,
       email,
-      password
+      password,
+      avatar: avatar || ''
     });
 
     // 创建 JWT

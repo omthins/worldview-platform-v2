@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { ToastProvider } from './components/common/ToastContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/layout/Navbar';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
@@ -11,6 +12,9 @@ import WorldviewDetail from './pages/WorldviewDetail';
 import CreateWorldview from './pages/CreateWorldview';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
+
+
+import Chat from './pages/Chat';
 import './App.css';
 
 // 私有路由组件
@@ -37,12 +41,13 @@ const PublicRoute = ({ children }) => {
 
 function App() {
   return (
-    <ToastProvider>
-      <div className="App">
-        <Navbar />
-        <main>
-          <div className="container">
-            <Routes>
+    <ThemeProvider>
+      <ToastProvider>
+        <div className="App">
+          <Navbar />
+          <main>
+            <div className="container">
+              <Routes>
               <Route path="/" element={<Home />} />
               <Route 
                 path="/login" 
@@ -86,11 +91,22 @@ function App() {
                 } 
               />
               <Route path="/profile/:id" element={<UserProfile />} />
-            </Routes>
-          </div>
-        </main>
-      </div>
-    </ToastProvider>
+
+
+              <Route 
+                path="/chat" 
+                element={
+                  <PrivateRoute>
+                    <Chat />
+                  </PrivateRoute>
+                } 
+              />
+              </Routes>
+            </div>
+          </main>
+        </div>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }
 

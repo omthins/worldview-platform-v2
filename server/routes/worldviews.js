@@ -84,16 +84,15 @@ router.get('/', async (req, res) => {
       }
     ];
     
-    // 如果有作者ID过滤条件，添加到include中
-    if (authorIdFilter) {
-      includeConditions[0].where = { id: authorIdFilter };
-    }
-    
-    // 如果有作者名过滤条件，添加到include中
+    // 处理作者过滤条件 - 优先使用具体的搜索参数
     if (authorNameFilter) {
+      // 如果有作者名过滤条件（来自creator参数）
       includeConditions[0].where = { 
         username: { [Op.iLike]: `%${authorNameFilter}%` } 
       };
+    } else if (authorIdFilter) {
+      // 如果有作者ID过滤条件（来自search参数中的数字）
+      includeConditions[0].where = { id: authorIdFilter };
     }
     
     const { count, rows: worldviews } = await Worldview.findAndCountAll({
@@ -112,6 +111,12 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('获取世界观列表错误:', error);
+    
+    // 特殊处理UUID格式错误
+    if (error.message && error.message.includes('invalid input syntax for type uuid')) {
+      return res.status(400).json({ message: 'UUID格式不正确，请输入有效的UUID' });
+    }
+    
     res.status(500).json({ message: `服务器错误: ${error.message}` });
   }
 });
@@ -151,6 +156,12 @@ router.get('/:id', async (req, res) => {
     res.json(worldview);
   } catch (error) {
     console.error(error);
+    
+    // 特殊处理UUID格式错误
+    if (error.message && error.message.includes('invalid input syntax for type uuid')) {
+      return res.status(400).json({ message: 'UUID格式不正确，请输入有效的UUID' });
+    }
+    
     res.status(500).json({ message: '服务器错误' });
   }
 });
