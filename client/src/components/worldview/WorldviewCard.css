@@ -59,6 +59,16 @@
   flex-grow: 1;
 }
 
+.description-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.description-link:hover {
+  color: var(--primary-color);
+}
+
 .card-description p {
   margin: 0;
   display: -webkit-box;
@@ -67,6 +77,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.5;
+  cursor: pointer;
+}
+
+.author-name-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.author-name-link:hover .author-name {
+  color: var(--primary-color);
 }
 
 .card-divider {
@@ -81,6 +101,23 @@
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
+}
+
+.card-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.card-actions .btn {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  text-decoration: none;
 }
 
 .card-author {

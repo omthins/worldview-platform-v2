@@ -124,6 +124,12 @@ router.get('/', async (req, res) => {
 // 获取单个世界观详情
 router.get('/:id', async (req, res) => {
   try {
+    // 验证id是否为有效的UUID格式
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(req.params.id)) {
+      return res.status(400).json({ message: '世界观ID格式不正确' });
+    }
+    
     const worldview = await Worldview.findByPk(req.params.id, {
       include: [
         {
@@ -224,6 +230,12 @@ router.put('/:id', authenticateToken, [
   body('category').optional().notEmpty().withMessage('分类不能为空').isLength({ max: 50 }).withMessage('分类长度不能超过50个字符')
 ], async (req, res) => {
   try {
+    // 验证id是否为有效的UUID格式
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(req.params.id)) {
+      return res.status(400).json({ message: '世界观ID格式不正确' });
+    }
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -271,6 +283,12 @@ router.put('/:id', authenticateToken, [
 // 删除世界观
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
+    // 验证id是否为有效的UUID格式
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(req.params.id)) {
+      return res.status(400).json({ message: '世界观ID格式不正确' });
+    }
+    
     const worldview = await Worldview.findByPk(req.params.id);
     
     if (!worldview) {
@@ -294,6 +312,12 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 // 点赞/取消点赞世界观
 router.post('/:id/like', authenticateToken, async (req, res) => {
   try {
+    // 验证id是否为有效的UUID格式
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(req.params.id)) {
+      return res.status(400).json({ message: '世界观ID格式不正确' });
+    }
+    
     const worldview = await Worldview.findByPk(req.params.id, {
       include: [{
         model: User,
@@ -343,6 +367,12 @@ router.post('/:id/like', authenticateToken, async (req, res) => {
 // 获取指定用户点赞的世界观
 router.get('/user/:userId/liked', async (req, res) => {
   try {
+    // 验证userId是否为有效的UUID格式
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(req.params.userId)) {
+      return res.status(400).json({ message: '用户ID格式不正确' });
+    }
+    
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;

@@ -12,6 +12,7 @@ import WorldviewDetail from './pages/WorldviewDetail';
 import CreateWorldview from './pages/CreateWorldview';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
+import EditWorldview from './pages/EditWorldview';
 
 
 import Chat from './pages/Chat';
@@ -82,6 +83,14 @@ function App() {
                 } 
               />
               <Route path="/worldview/:id" element={<WorldviewDetail />} />
+              <Route 
+                path="/edit-worldview/:id" 
+                element={
+                  <PrivateRoute>
+                    <EditWorldview />
+                  </PrivateRoute>
+                } 
+              />
               <Route 
                 path="/profile" 
                 element={

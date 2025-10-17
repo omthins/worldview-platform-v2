@@ -77,12 +77,7 @@ const WorldviewDetail = () => {
           </div>
         </div>
         
-        <div className="worldview-tags">
-          <span className="category-tag">{worldview.category}</span>
-          {worldview.tags && worldview.tags.map((tag, index) => (
-            <span key={index} className="tag">{tag}</span>
-          ))}
-        </div>
+
       </div>
       
 

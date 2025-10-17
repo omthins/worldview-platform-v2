@@ -137,14 +137,14 @@
 
 .worldview-description h3 {
   margin-bottom: 1.5rem;
-  color: var(--text-color);
+  color: #ffffff !important;
   font-size: 1.5rem;
 }
 
 .worldview-description p {
   font-size: 1.1rem;
   line-height: 1.7;
-  color: var(--text-secondary-color);
+  color: #ffffff !important;
 }
 
 .worldview-body {
@@ -157,7 +157,7 @@
 .worldview-body h3 {
   margin-top: 2.5rem;
   margin-bottom: 1.5rem;
-  color: var(--text-color);
+  color: #ffffff;
 }
 
 .worldview-body h1 {
@@ -174,6 +174,7 @@
 
 .worldview-body p {
   margin-bottom: 1.5rem;
+  color: #ffffff !important;
 }
 
 .worldview-body ul, 
@@ -184,6 +185,68 @@
 
 .worldview-body li {
   margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+/* 确保ReactMarkdown渲染的所有文本元素都使用正确的颜色 */
+.worldview-body h1, 
+.worldview-body h2, 
+.worldview-body h3,
+.worldview-body h4,
+.worldview-body h5,
+.worldview-body h6 {
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff !important;
+}
+
+.worldview-body p,
+.worldview-body ul,
+.worldview-body ol,
+.worldview-body li,
+.worldview-body blockquote,
+.worldview-body table,
+.worldview-body tr,
+.worldview-body td,
+.worldview-body th {
+  color: #ffffff !important;
+}
+
+.worldview-body a {
+  color: var(--primary-color);
+}
+
+.worldview-body a:hover {
+  color: var(--primary-hover-color);
+}
+
+.worldview-body blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+}
+
+.worldview-body code {
+  background-color: var(--form-bg-color);
+  color: #ffffff;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.worldview-body pre {
+  background-color: var(--form-bg-color);
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.worldview-body pre code {
+  background-color: transparent;
+  padding: 0;
 }
 
 .worldview-footer {
@@ -200,7 +263,7 @@
 
 .author-bio h3 {
   margin-bottom: 1.5rem;
-  color: var(--text-color);
+  color: #ffffff;
   font-size: 1.5rem;
 }
 
@@ -220,7 +283,7 @@
 .author-details .author-name {
   display: block;
   margin-bottom: 0.75rem;
-  color: var(--text-color);
+  color: #ffffff;
   font-size: 1.3rem;
   font-weight: 600;
   text-decoration: none;
@@ -233,7 +296,7 @@
 
 .author-details p {
   margin-bottom: 1.2rem;
-  color: var(--text-secondary-color);
+  color: #ffffff;
   line-height: 1.6;
 }
 

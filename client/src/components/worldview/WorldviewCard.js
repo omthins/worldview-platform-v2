@@ -2,18 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './WorldviewCard.css';
 
-const WorldviewCard = ({ worldview, showNumber = false }) => {
-  const { id, title, description, author, views, likes, createdAt, category } = worldview;
-
-  // 格式化日期
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+const WorldviewCard = ({ worldview, showNumber = false, showEdit = false }) => {
+  const { id, title, description, author, views, likes } = worldview;
 
   // 格式化数字
   const formatNumber = (num) => {
@@ -39,13 +29,12 @@ const WorldviewCard = ({ worldview, showNumber = false }) => {
           <Link to={`/worldview/${id}`} className="card-title">
             <h3>{title}</h3>
           </Link>
-          {category && (
-            <span className="card-category">{category}</span>
-          )}
         </div>
         
         <div className="card-description">
-          <p>{description}</p>
+          <Link to={`/worldview/${id}`} className="description-link">
+            <p>{description}</p>
+          </Link>
         </div>
         
         <div className="card-divider"></div>
@@ -59,18 +48,30 @@ const WorldviewCard = ({ worldview, showNumber = false }) => {
                 <span className="avatar-initial">{getAuthorAvatar(author)}</span>
               )}
             </div>
-            <span className="author-name">{author?.username || '匿名用户'}</span>
+            <Link to={`/profile/${author?.id}`} className="author-name-link">
+              <span className="author-name">{author?.username || '匿名用户'}</span>
+            </Link>
           </div>
           
-          <div className="card-stats">
-            <div className="stat-item">
-              <span className="stat-icon">👁</span>
-              <span className="stat-value">{formatNumber(views || 0)}</span>
+          <div className="card-footer-right">
+            <div className="card-stats">
+              <div className="stat-item">
+                <span className="stat-icon">👁</span>
+                <span className="stat-value">{formatNumber(views || 0)}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-icon">❤️</span>
+                <span className="stat-value">{formatNumber(likes || 0)}</span>
+              </div>
             </div>
-            <div className="stat-item">
-              <span className="stat-icon">❤️</span>
-              <span className="stat-value">{formatNumber(likes || 0)}</span>
-            </div>
+            
+            {showEdit && (
+              <div className="card-actions">
+                <Link to={`/edit-worldview/${id}`} className="btn btn-sm btn-primary">
+                  编辑
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

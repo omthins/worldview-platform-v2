@@ -28,7 +28,7 @@ const Dashboard = () => {
         setMyWorldviews(myData.worldviews);
         
         // 获取用户点赞的世界观
-        const likedData = await apiRequest('/api/worldviews/liked');
+        const likedData = await apiRequest(`/api/worldviews/user/${user.id}/liked`);
         setLikedWorldviews(likedData.worldviews);
         
         setLoading(false);

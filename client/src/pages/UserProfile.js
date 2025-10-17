@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { apiRequest, getImageUrl } from '../utils/api';
+import { apiRequest } from '../utils/api';
+import WorldviewCard from '../components/worldview/WorldviewCard';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -27,7 +28,7 @@ const UserProfile = () => {
         
         // 获取用户的世界观
         const worldviewsData = await apiRequest(`/api/worldviews/user/${id}`);
-        setUserWorldviews(Array.isArray(worldviewsData) ? worldviewsData : (worldviewsData.worldviews || []));
+        setUserWorldviews(worldviewsData.worldviews || []);
         
         setLoading(false);
       } catch (err) {
@@ -40,27 +41,7 @@ const UserProfile = () => {
     fetchUserData();
   }, [id]);
 
-  const formatDate = (dateString) => {
-    const options = { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric'
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
 
-  // 处理图片URL，确保相对路径能正确显示
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    
-    // 如果已经是完整URL，直接返回
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-      return imagePath;
-    }
-    
-    // 如果是相对路径，添加服务器地址前缀
-    return `http://localhost:5000${imagePath}`;
-  };
 
   if (loading) {
     return (
@@ -114,26 +95,13 @@ const UserProfile = () => {
           <div className="user-worldviews-section">
             <h2>用户的世界观</h2>
             {userWorldviews.length > 0 ? (
-              <div className="user-worldviews-grid">
+              <div className="worldviews-grid">
                 {userWorldviews.map(worldview => (
-                  <div key={worldview.id} className="user-worldview-card">
-                    {worldview.coverImage && (
-                      <div className="user-worldview-cover">
-                        <img src={getImageUrl(worldview.coverImage)} alt={worldview.title} />
-                      </div>
-                    )}
-                    <div className="user-worldview-content">
-                      <h3>{worldview.title}</h3>
-                      <div className="user-worldview-number">编号: #{worldview.worldviewNumber}</div>
-                      <p>{worldview.description}</p>
-                      <div className="user-worldview-meta">
-                        <span className="user-worldview-category">{worldview.category}</span>
-                        <span className="user-worldview-date">{formatDate(worldview.createdAt)}</span>
-                        <span className="user-worldview-views">👁 {worldview.views}</span>
-                      </div>
-                      <a href={`/worldview/${worldview.id}`} className="btn btn-outline">查看详情</a>
-                    </div>
-                  </div>
+                  <WorldviewCard 
+                    key={worldview.id} 
+                    worldview={worldview}
+                    showNumber={true}
+                  />
                 ))}
               </div>
             ) : (

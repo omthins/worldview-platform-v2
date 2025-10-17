@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { apiRequest, API_ENDPOINTS, getImageUrl } from '../utils/api';
+import { apiRequest, API_ENDPOINTS } from '../utils/api';
 import AvatarUpload from '../components/AvatarUpload';
 import DefaultAvatarSelector from '../components/DefaultAvatarSelector';
+import WorldviewCard from '../components/worldview/WorldviewCard';
 import './Profile.css';
 
 const Profile = () => {
@@ -139,18 +140,7 @@ const Profile = () => {
   //   return new Date(dateString).toLocaleDateString(undefined, options);
   // };
 
-  // 处理图片URL，确保相对路径能正确显示
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    
-    // 如果已经是完整URL，直接返回
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-      return imagePath;
-    }
-    
-    // 如果是相对路径，添加服务器地址前缀
-    return `http://localhost:5000${imagePath}`;
-  };
+
 
   // 如果有ID参数，则重定向到UserProfile页面
   if (id) {
@@ -380,28 +370,12 @@ const Profile = () => {
               {userWorldviews.length > 0 ? (
                 <div className="worldviews-grid">
                   {userWorldviews.map(worldview => (
-                    <div key={worldview.id} className="worldview-card">
-                      <div className="worldview-image">
-                        <img 
-                          src={getImageUrl(worldview.coverImage) || 'https://picsum.photos/seed/worldview/300/200.jpg'} 
-                          alt={worldview.title} 
-                        />
-                      </div>
-                      <div className="worldview-content">
-                        <h3>{worldview.title}</h3>
-                        <div className="worldview-number">编号: #{worldview.worldviewNumber}</div>
-                        <p>{worldview.description}</p>
-                        <div className="worldview-meta">
-                          <span>浏览: {worldview.views}</span>
-                          <span>点赞: {worldview.likes?.length || 0}</span>
-                          <span>评论: {worldview.comments?.length || 0}</span>
-                        </div>
-                        <div className="worldview-actions">
-                          <a href={`/worldview/${worldview.id}`} className="btn btn-sm btn-outline">查看</a>
-                        <a href={`/edit-worldview/${worldview.id}`} className="btn btn-sm btn-primary">编辑</a>
-                        </div>
-                      </div>
-                    </div>
+                    <WorldviewCard 
+                      key={worldview.id} 
+                      worldview={worldview}
+                      showNumber={true}
+                      showEdit={true}
+                    />
                   ))}
                 </div>
               ) : (
@@ -419,26 +393,11 @@ const Profile = () => {
               {userLikedWorldviews.length > 0 ? (
                 <div className="worldviews-grid">
                   {userLikedWorldviews.map(worldview => (
-                    <div key={worldview.id} className="worldview-card">
-                      <div className="worldview-image">
-                        <img 
-                          src={getImageUrl(worldview.coverImage) || 'https://picsum.photos/seed/worldview/300/200.jpg'} 
-                          alt={worldview.title} 
-                        />
-                      </div>
-                      <div className="worldview-content">
-                        <h3>{worldview.title}</h3>
-                        <p>作者: {worldview.author?.username || '未知'}</p>
-                        <div className="worldview-meta">
-                          <span>浏览: {worldview.views || 0}</span>
-                          <span>点赞: {worldview.likes?.length || 0}</span>
-                          <span>评论: {worldview.comments?.length || 0}</span>
-                        </div>
-                        <div className="worldview-actions">
-                          <a href={`/worldview/${worldview.id}`} className="btn btn-sm btn-primary">查看</a>
-                        </div>
-                      </div>
-                    </div>
+                    <WorldviewCard 
+                      key={worldview.id} 
+                      worldview={worldview}
+                      showNumber={true}
+                    />
                   ))}
                 </div>
               ) : (
