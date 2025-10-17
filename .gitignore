@@ -100,6 +100,10 @@ temp/
 ehthumbs.db
 Thumbs.db
 
+# IDE and tool specific folders
+.codebuddy/
+.trae/
+
 # Upload directories (keep the structure but ignore contents)
 server/uploads/avatars/*
 server/uploads/images/*
