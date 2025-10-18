@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './DefaultAvatarSelector.css';
 
 const DefaultAvatarSelector = ({ onAvatarSelect, currentAvatar = '' }) => {
-  const [selectedAvatar, setSelectedAvatar] = useState(currentAvatar);
+  const [selectedAvatarId, setSelectedAvatarId] = useState('');
 
   // 预设头像选项 - 包括用户提供的SVG和其他选项
   const defaultAvatars = [
@@ -69,42 +69,17 @@ const DefaultAvatarSelector = ({ onAvatarSelect, currentAvatar = '' }) => {
 
   const handleAvatarSelect = (avatar) => {
     const svgDataUrl = `data:image/svg+xml;base64,${btoa(avatar.svg)}`;
-    setSelectedAvatar(svgDataUrl);
+    setSelectedAvatarId(avatar.id);
     onAvatarSelect(svgDataUrl);
-  };
-
-  const handleCustomUpload = () => {
-    // 触发文件上传
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const imageUrl = event.target.result;
-          setSelectedAvatar(imageUrl);
-          onAvatarSelect(imageUrl);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    fileInput.click();
   };
 
   return (
     <div className="default-avatar-selector">
-      <div className="avatar-selector-header">
-        <h4>选择头像</h4>
-        <p>从预设头像中选择或上传自定义头像</p>
-      </div>
-      
       <div className="avatar-grid">
         {defaultAvatars.map((avatar) => (
           <div 
             key={avatar.id}
-            className={`avatar-option ${selectedAvatar.includes(avatar.id) ? 'selected' : ''}`}
+            className={`avatar-option ${selectedAvatarId === avatar.id ? 'selected' : ''}`}
             onClick={() => handleAvatarSelect(avatar)}
             title={avatar.name}
           >
@@ -114,29 +89,7 @@ const DefaultAvatarSelector = ({ onAvatarSelect, currentAvatar = '' }) => {
             />
           </div>
         ))}
-        
-        <div 
-          className="avatar-option custom-upload"
-          onClick={handleCustomUpload}
-          title="上传自定义头像"
-        >
-          <div className="custom-upload-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-            <span>上传</span>
-          </div>
-        </div>
       </div>
-      
-      {selectedAvatar && (
-        <div className="selected-avatar-preview">
-          <h5>当前选择:</h5>
-          <img src={selectedAvatar} alt="已选头像" className="preview-image" />
-        </div>
-      )}
     </div>
   );
 };

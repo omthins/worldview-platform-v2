@@ -106,7 +106,8 @@
 
 .content-editor {
   min-height: 300px;
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
 }
 
 .editor-hint {
@@ -121,10 +122,16 @@
   gap: 0.5rem;
   cursor: pointer;
   color: var(--text-color);
+  line-height: 1.5;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #2c3e50;
+  cursor: pointer;
+  vertical-align: middle;
 }
 
 .form-actions {
@@ -149,8 +156,11 @@
 }
 
 .btn-primary:disabled {
-  background-color: var(--text-secondary-color);
+  background-color: #95a5a6;
+  color: #bdc3c7;
   cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
 }
 
 .btn-outline {
@@ -167,6 +177,109 @@
 .btn-outline:hover {
   background-color: var(--primary-color);
   color: white;
+}
+
+/* 字符计数器样式 */
+.character-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
+  margin-top: 0.25rem;
+}
+
+.character-count.warning {
+  color: #ff9800;
+}
+
+.character-count.error {
+  color: #f44336;
+  font-weight: 500;
+}
+
+/* 编辑器头部样式 */
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.preview-toggle {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+}
+
+.preview-toggle:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.preview-toggle.active {
+  background-color: #95a5a6;
+}
+
+/* 预览容器样式 */
+.preview-container {
+  border: 1px solid var(--form-border-color);
+  border-radius: 4px;
+  padding: 10px;
+  background-color: var(--form-bg-color);
+  min-height: 300px;
+  overflow: hidden;
+}
+
+.markdown-preview {
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  color: var(--text-color);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-preview p {
+  margin-bottom: 1rem;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-preview code {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.markdown-preview pre {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.markdown-preview blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--text-secondary-color);
+  font-style: italic;
 }
 
 /* 分类输入框样式 */

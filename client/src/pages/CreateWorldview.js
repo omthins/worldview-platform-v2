@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest, API_ENDPOINTS } from '../utils/api';
+import ReactMarkdown from 'react-markdown';
 import './CreateWorldview.css';
 
 const CreateWorldview = () => {
@@ -25,8 +26,27 @@ const CreateWorldview = () => {
   const [errors, setErrors] = useState([]);
   const [successMessage, setSuccessMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const { title, description, content, isPublic } = formData || {};
+
+  // 字数限制
+  const TITLE_MAX_LENGTH = 255;
+  const DESCRIPTION_MAX_LENGTH = 1000;
+
+  // 初始化表单验证状态
+  React.useEffect(() => {
+    setIsFormValid(validateForm(formData));
+  }, []);
+
+  // 验证表单是否完整
+  const validateForm = (data) => {
+    const { title, description, content } = data || {};
+    return title && title.trim() && 
+           description && description.trim() && 
+           content && content.trim();
+  };
 
   const onChange = e => {
     const { name, value, type, checked } = e.target;
@@ -38,8 +58,19 @@ const CreateWorldview = () => {
         [name]: type === 'checkbox' ? checked : value
       };
       console.log('更新后的表单数据:', newData);
+      
+      // 更新表单验证状态
+      setIsFormValid(validateForm(newData));
+      
       return newData;
     });
+
+    // 自动调整文本域高度
+    if (name === 'content') {
+      const textarea = e.target;
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
   };
 
 
@@ -155,7 +186,7 @@ const CreateWorldview = () => {
       
       <form onSubmit={onSubmit} className="create-form">
         <div className="form-group">
-          <label htmlFor="title">标题 <span className="required">*</span></label>
+          <label htmlFor="title">标题</label>
           <input
             type="text"
             id="title"
@@ -165,8 +196,16 @@ const CreateWorldview = () => {
             className={`form-control ${errors.some(e => e.msg.includes('标题')) ? 'is-invalid' : ''}`}
             placeholder="给你的世界观起个名字"
             autoComplete="off"
+            maxLength={TITLE_MAX_LENGTH}
             required
           />
+          <div className={`character-count ${
+            title && title.length > TITLE_MAX_LENGTH * 0.8 ? 'warning' : ''
+          } ${
+            title && title.length >= TITLE_MAX_LENGTH ? 'error' : ''
+          }`}>
+            {title ? title.length : 0}/{TITLE_MAX_LENGTH}
+          </div>
           {errors.some(e => e.msg.includes('标题')) && (
             <div className="invalid-feedback">
               {errors.find(e => e.msg.includes('标题')).msg}
@@ -175,7 +214,7 @@ const CreateWorldview = () => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="description">简介 <span className="required">*</span></label>
+          <label htmlFor="description">简介</label>
           <textarea
             id="description"
             name="description"
@@ -185,8 +224,16 @@ const CreateWorldview = () => {
             rows="3"
             placeholder="简要描述你的世界观"
             autoComplete="off"
+            maxLength={DESCRIPTION_MAX_LENGTH}
             required
           ></textarea>
+          <div className={`character-count ${
+            description && description.length > DESCRIPTION_MAX_LENGTH * 0.8 ? 'warning' : ''
+          } ${
+            description && description.length >= DESCRIPTION_MAX_LENGTH ? 'error' : ''
+          }`}>
+            {description ? description.length : 0}/{DESCRIPTION_MAX_LENGTH}
+          </div>
           {errors.some(e => e.msg.includes('简介')) && (
             <div className="invalid-feedback">
               {errors.find(e => e.msg.includes('简介')).msg}
@@ -199,18 +246,51 @@ const CreateWorldview = () => {
 
         
         <div className="form-group">
-          <label htmlFor="content">内容 <span className="required">*</span></label>
-          <textarea
-            id="content"
-            name="content"
-            value={content || ''}
-            onChange={onChange}
-            className={`form-control content-editor ${errors.some(e => e.msg.includes('内容')) ? 'is-invalid' : ''}`}
-            rows="15"
-            placeholder="在这里详细描述你的世界观，支持Markdown格式..."
-            autoComplete="off"
-            required
-          ></textarea>
+          <div className="editor-header">
+            <label htmlFor="content">内容</label>
+            <button
+              type="button"
+              className={`preview-toggle ${showPreview ? 'active' : ''}`}
+              onClick={() => {
+                const newPreviewState = !showPreview;
+                setShowPreview(newPreviewState);
+                
+                // 如果切换回编辑模式，调整输入框高度
+                if (!newPreviewState) {
+                  setTimeout(() => {
+                    const contentTextarea = document.getElementById('content');
+                    if (contentTextarea) {
+                      contentTextarea.style.height = 'auto';
+                      contentTextarea.style.height = contentTextarea.scrollHeight + 'px';
+                    }
+                  }, 100);
+                }
+              }}
+            >
+              {showPreview ? '编辑' : '预览'}
+            </button>
+          </div>
+          
+          {!showPreview ? (
+            <textarea
+              id="content"
+              name="content"
+              value={content || ''}
+              onChange={onChange}
+              className={`form-control content-editor ${errors.some(e => e.msg.includes('内容')) ? 'is-invalid' : ''}`}
+              rows="15"
+              placeholder="在这里详细描述你的世界观，支持Markdown格式..."
+              autoComplete="off"
+              required
+            ></textarea>
+          ) : (
+            <div className="preview-container">
+              <ReactMarkdown className="markdown-preview">
+                {content || '*暂无内容*'}
+              </ReactMarkdown>
+            </div>
+          )}
+          
           {errors.some(e => e.msg.includes('内容')) && (
             <div className="invalid-feedback">
               {errors.find(e => e.msg.includes('内容')).msg}
@@ -237,7 +317,7 @@ const CreateWorldview = () => {
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={submitting}
+            disabled={submitting || !isFormValid}
           >
             {submitting ? '处理中...' : (isPublic ? '发布世界观' : '创建世界观')}
           </button>

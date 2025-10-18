@@ -2,27 +2,10 @@
   margin: 1rem 0;
 }
 
-.avatar-selector-header {
-  margin-bottom: 1.5rem;
-}
-
-.avatar-selector-header h4 {
-  margin: 0 0 0.5rem 0;
-  color: var(--text-color);
-  font-size: 1.1rem;
-}
-
-.avatar-selector-header p {
-  margin: 0;
-  color: var(--text-secondary-color);
-  font-size: 0.9rem;
-}
-
 .avatar-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 1rem;
-  margin-bottom: 1.5rem;
 }
 
 .avatar-option {
@@ -47,7 +30,8 @@
 
 .avatar-option.selected {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.3);
+  box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.4);
+  transform: scale(1.05);
 }
 
 .avatar-svg {
@@ -61,58 +45,6 @@
 .avatar-svg svg {
   width: 60px;
   height: 60px;
-}
-
-.custom-upload {
-  border-style: dashed;
-  border-color: #adb5bd;
-}
-
-.custom-upload:hover {
-  border-color: var(--primary-color);
-  background-color: var(--hover-bg-color);
-}
-
-.custom-upload-icon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #6c757d;
-  text-align: center;
-}
-
-.custom-upload-icon svg {
-  width: 24px;
-  height: 24px;
-  margin-bottom: 0.25rem;
-}
-
-.custom-upload-icon span {
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.selected-avatar-preview {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: var(--card-bg-color);
-  border-radius: 8px;
-  border-left: 4px solid var(--primary-color);
-}
-
-.selected-avatar-preview h5 {
-  margin: 0 0 0.75rem 0;
-  color: var(--text-color);
-  font-size: 1rem;
-}
-
-.preview-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  border: 2px solid #007bff;
-  object-fit: cover;
 }
 
 /* 响应式设计 */

@@ -96,9 +96,24 @@ export const AuthProvider = ({ children }) => {
       dispatch({
         type: AUTH_FAILURE
       });
+      
+      // 处理新的错误格式
+      const errorData = err.response?.data;
+      let errors = [];
+      
+      if (errorData?.details && Array.isArray(errorData.details)) {
+        errors = errorData.details.map(detail => ({ msg: detail }));
+      } else if (errorData?.errors && Array.isArray(errorData.errors)) {
+        errors = errorData.errors.map(error => ({ msg: error.msg || error }));
+      } else if (errorData?.message) {
+        errors = [{ msg: errorData.message }];
+      } else {
+        errors = [{ msg: '注册失败，请检查网络连接或稍后重试' }];
+      }
+      
       return { 
         success: false, 
-        errors: err.response?.data?.errors || [{ msg: '注册失败' }] 
+        errors 
       };
     }
   };
@@ -119,9 +134,24 @@ export const AuthProvider = ({ children }) => {
       dispatch({
         type: AUTH_FAILURE
       });
+      
+      // 处理新的错误格式
+      const errorData = err.response?.data;
+      let errors = [];
+      
+      if (errorData?.details && Array.isArray(errorData.details)) {
+        errors = errorData.details.map(detail => ({ msg: detail }));
+      } else if (errorData?.errors && Array.isArray(errorData.errors)) {
+        errors = errorData.errors.map(error => ({ msg: error.msg || error }));
+      } else if (errorData?.message) {
+        errors = [{ msg: errorData.message }];
+      } else {
+        errors = [{ msg: '登录失败，请检查网络连接或稍后重试' }];
+      }
+      
       return { 
         success: false, 
-        errors: err.response?.data?.errors || [{ msg: '登录失败' }] 
+        errors 
       };
     }
   };
