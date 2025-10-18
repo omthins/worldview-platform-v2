@@ -14,17 +14,12 @@
 }
 
 /* 搜索框聚焦时的页面模糊效果 */
-body.search-blur {
-  overflow: hidden;
-}
-
 main {
   transition: filter 0.3s ease;
 }
 
 body.search-blur main {
   filter: blur(5px);
-  pointer-events: none;
 }
 
 body.search-blur .navbar {
@@ -33,6 +28,15 @@ body.search-blur .navbar {
 
 body.search-blur .search-suggestions {
   z-index: 1002;
+}
+
+/* 搜索框过渡效果 */
+.search-input {
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .navbar .container {

@@ -27,9 +27,21 @@ const Profile = () => {
   const [message, setMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [userWorldviews, setUserWorldviews] = useState([]);
-  const [userLikedWorldviews, setUserLikedWorldviews] = useState([]);
+
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // 获取用户的世界观
+        const worldviewsData = await apiRequest(`/api/worldviews/user/${user.id}`);
+        setUserWorldviews(worldviewsData.worldviews);
+        
+
+      } catch (err) {
+        console.error('获取用户数据失败:', err);
+      }
+    };
+
     if (isAuthenticated && user) {
       setProfileData({
         username: user.username || '',
@@ -41,26 +53,6 @@ const Profile = () => {
       fetchUserData();
     }
   }, [isAuthenticated, user]);
-
-  const fetchUserData = async () => {
-    try {
-      // 获取用户的世界观
-      const worldviewsData = await apiRequest(`/api/worldviews/user/${user.id}`);
-      setUserWorldviews(worldviewsData.worldviews);
-      
-      // 获取用户点赞的世界观
-      try {
-        const likedData = await apiRequest('/api/users/liked');
-        setUserLikedWorldviews(likedData.likedWorldviews || []);
-      } catch (err) {
-        // 如果API端点不存在，设置为空数组
-        console.log('获取点赞的世界观失败，可能是功能未实现:', err);
-        setUserLikedWorldviews([]);
-      }
-    } catch (err) {
-      console.error('获取用户数据失败:', err);
-    }
-  };
 
   const handleProfileChange = (e) => {
     setProfileData({
@@ -203,12 +195,6 @@ const Profile = () => {
             onClick={() => setActiveTab('worldviews')}
           >
             我的世界观
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'liked' ? 'active' : ''}`}
-            onClick={() => setActiveTab('liked')}
-          >
-            点赞的世界观
           </button>
         </div>
 
@@ -387,27 +373,7 @@ const Profile = () => {
             </div>
           )}
 
-          {activeTab === 'liked' && (
-            <div className="user-liked-worldviews">
-              <h2>点赞的世界观</h2>
-              {userLikedWorldviews.length > 0 ? (
-                <div className="worldviews-grid">
-                  {userLikedWorldviews.map(worldview => (
-                    <WorldviewCard 
-                      key={worldview.id} 
-                      worldview={worldview}
-                      showNumber={true}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="empty-state">
-                  <p>您还没有点赞任何世界观</p>
-                  <a href="/" className="btn btn-primary">浏览世界观</a>
-                </div>
-              )}
-            </div>
-          )}
+
         </div>
       </div>
     </div>

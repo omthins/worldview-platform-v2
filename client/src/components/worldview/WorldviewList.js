@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './WorldviewList.css';
 
 const WorldviewList = ({ worldview, showNumber }) => {
-  const { id, title, description, author, views, likes, createdAt, category } = worldview;
+  const { id, title, description, author, createdAt, category } = worldview;
 
   // 格式化日期
   const formatDate = (dateString) => {
@@ -52,16 +52,6 @@ const WorldviewList = ({ worldview, showNumber }) => {
                 {getAuthorInitial(author?.username)}
               </div>
               <span className="author-name">{author?.username || '匿名用户'}</span>
-            </div>
-            <div className="list-item-stats">
-              <span className="stat views">
-                <i className="icon-eye"></i>
-                {formatNumber(views || 0)}
-              </span>
-              <span className="stat likes">
-                <i className="icon-heart"></i>
-                {formatNumber(likes || 0)}
-              </span>
             </div>
             <div className="list-item-date">
               {formatDate(createdAt)}

@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext';
 import { ToastProvider } from './components/common/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/layout/Navbar';
+import PageTransition from './components/common/PageTransition';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -49,12 +50,12 @@ function App() {
           <main>
             <div className="container">
               <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<PageTransition><Home /></PageTransition>} />
               <Route 
                 path="/login" 
                 element={
                   <PublicRoute>
-                    <Login />
+                    <PageTransition><Login /></PageTransition>
                   </PublicRoute>
                 } 
               />
@@ -62,7 +63,7 @@ function App() {
                 path="/register" 
                 element={
                   <PublicRoute>
-                    <Register />
+                    <PageTransition><Register /></PageTransition>
                   </PublicRoute>
                 } 
               />
@@ -70,7 +71,7 @@ function App() {
                 path="/dashboard" 
                 element={
                   <PrivateRoute>
-                    <Dashboard />
+                    <PageTransition><Dashboard /></PageTransition>
                   </PrivateRoute>
                 } 
               />
@@ -78,16 +79,16 @@ function App() {
                 path="/create-worldview" 
                 element={
                   <PrivateRoute>
-                    <CreateWorldview />
+                    <PageTransition><CreateWorldview /></PageTransition>
                   </PrivateRoute>
                 } 
               />
-              <Route path="/worldview/:id" element={<WorldviewDetail />} />
+              <Route path="/worldview/:id" element={<PageTransition><WorldviewDetail /></PageTransition>} />
               <Route 
                 path="/edit-worldview/:id" 
                 element={
                   <PrivateRoute>
-                    <EditWorldview />
+                    <PageTransition><EditWorldview /></PageTransition>
                   </PrivateRoute>
                 } 
               />
@@ -95,18 +96,18 @@ function App() {
                 path="/profile" 
                 element={
                   <PrivateRoute>
-                    <Profile />
+                    <PageTransition><Profile /></PageTransition>
                   </PrivateRoute>
                 } 
               />
-              <Route path="/profile/:id" element={<UserProfile />} />
+              <Route path="/profile/:id" element={<PageTransition><UserProfile /></PageTransition>} />
 
 
               <Route 
                 path="/chat" 
                 element={
                   <PrivateRoute>
-                    <Chat />
+                    <PageTransition><Chat /></PageTransition>
                   </PrivateRoute>
                 } 
               />

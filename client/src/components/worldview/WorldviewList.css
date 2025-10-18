@@ -84,6 +84,7 @@
   align-items: center;
   font-size: 0.9rem;
   color: var(--text-secondary-color);
+  width: 100%;
 }
 
 .list-item-author {
@@ -110,24 +111,7 @@
   color: var(--text-color);
 }
 
-.list-item-stats {
-  display: flex;
-  gap: 1rem;
-}
 
-.stat {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.icon-eye::before {
-  content: "👁";
-}
-
-.icon-heart::before {
-  content: "❤️";
-}
 
 .list-item-date {
   color: var(--text-secondary-color);

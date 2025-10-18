@@ -18,45 +18,43 @@ const EditWorldview = () => {
     title: '',
     description: '',
     content: '',
-    coverImage: '',
     isPublic: true
   });
 
   useEffect(() => {
+    const fetchWorldview = async () => {
+      try {
+        setLoading(true);
+        const data = await apiRequest(`/api/worldviews/${id}`);
+        
+        // 检查用户是否有权限编辑这个世界观
+        if (data.authorId !== user.id) {
+          setError('您没有权限编辑这个世界观');
+          setLoading(false);
+          return;
+        }
+        
+        setWorldview(data);
+        setFormData({
+          title: data.title || '',
+          description: data.description || '',
+          content: data.content || '',
+          isPublic: data.isPublic !== false
+        });
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || '获取世界观失败');
+        setLoading(false);
+      }
+    };
+
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
 
     fetchWorldview();
-  }, [id, isAuthenticated]);
-
-  const fetchWorldview = async () => {
-    try {
-      setLoading(true);
-      const data = await apiRequest(`/api/worldviews/${id}`);
-      
-      // 检查用户是否有权限编辑这个世界观
-      if (data.authorId !== user.id) {
-        setError('您没有权限编辑这个世界观');
-        setLoading(false);
-        return;
-      }
-      
-      setWorldview(data);
-      setFormData({
-        title: data.title || '',
-        description: data.description || '',
-        content: data.content || '',
-        coverImage: data.coverImage || '',
-        isPublic: data.isPublic !== false
-      });
-      setLoading(false);
-    } catch (err) {
-      setError(err.message || '获取世界观失败');
-      setLoading(false);
-    }
-  };
+  }, [id, isAuthenticated, navigate, user]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -184,18 +182,7 @@ const EditWorldview = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="coverImage">封面图片URL</label>
-            <input
-              type="url"
-              id="coverImage"
-              name="coverImage"
-              value={formData.coverImage}
-              onChange={handleChange}
-              className="form-control"
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
+
 
           <div className="form-group">
             <div className="form-check">

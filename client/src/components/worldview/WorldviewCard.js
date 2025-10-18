@@ -3,15 +3,7 @@ import { Link } from 'react-router-dom';
 import './WorldviewCard.css';
 
 const WorldviewCard = ({ worldview, showNumber = false, showEdit = false }) => {
-  const { id, title, description, author, views, likes } = worldview;
-
-  // 格式化数字
-  const formatNumber = (num) => {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'k';
-    }
-    return num;
-  };
+  const { id, title, description, author } = worldview;
 
   // 获取作者头像
   const getAuthorAvatar = (author) => {
@@ -54,16 +46,7 @@ const WorldviewCard = ({ worldview, showNumber = false, showEdit = false }) => {
           </div>
           
           <div className="card-footer-right">
-            <div className="card-stats">
-              <div className="stat-item">
-                <span className="stat-icon">👁</span>
-                <span className="stat-value">{formatNumber(views || 0)}</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-icon">❤️</span>
-                <span className="stat-value">{formatNumber(likes || 0)}</span>
-              </div>
-            </div>
+
             
             {showEdit && (
               <div className="card-actions">

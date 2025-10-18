@@ -33,6 +33,31 @@
   color: var(--text-color);
 }
 
+/* 评论按钮样式 */
+.comment-form .btn {
+  background-color: #6c757d; /* 灰色 - 禁用状态 */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: not-allowed;
+  transition: background-color 0.3s ease;
+}
+
+.comment-form .btn:not(:disabled) {
+  background-color: var(--primary-color); /* 紫色 - 启用状态 */
+  cursor: pointer;
+}
+
+.comment-form .btn:not(:disabled):hover {
+  background-color: var(--primary-hover-color);
+}
+
+.comment-form .btn:disabled {
+  opacity: 0.6;
+}
+
 .replying-to {
   display: flex;
   justify-content: space-between;
@@ -122,6 +147,7 @@
 
 .comment-actions {
   display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
@@ -138,9 +164,7 @@
   color: #007bff;
 }
 
-.like-btn:hover {
-  color: #e63946;
-}
+
 
 .comment-replies {
   margin-top: 1rem;

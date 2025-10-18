@@ -72,6 +72,21 @@ const Navbar = () => {
     }, 200);
   };
 
+  // 点击空白处关闭下拉菜单
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const dropdownElement = document.querySelector('.dropdown');
+      if (dropdownOpen && dropdownElement && !dropdownElement.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   useEffect(() => {
     return () => {
       document.body.classList.remove('search-blur');

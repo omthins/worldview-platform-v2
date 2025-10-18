@@ -162,13 +162,7 @@
   gap: 1rem;
 }
 
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: var(--text-secondary-color);
-  font-size: 0.9rem;
-}
+
 
 .stat-icon {
   font-size: 1rem;

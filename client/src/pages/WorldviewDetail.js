@@ -70,11 +70,7 @@ const WorldviewDetail = () => {
               </div>
             </div>
           
-          <div className="worldview-actions">
-            <div className="view-count">
-              👁 {worldview.views}
-            </div>
-          </div>
+
         </div>
         
 
@@ -93,25 +89,7 @@ const WorldviewDetail = () => {
         </div>
       </div>
       
-      <div className="worldview-footer">
-        <div className="author-bio">
-          <h3>关于作者</h3>
-          <div className="author-card">
-            <img 
-              src={worldview.author?.avatar || 'https://picsum.photos/seed/avatar/60/60.jpg'} 
-              alt="作者头像" 
-              className="author-avatar-large"
-            />
-            <div className="author-details">
-                <Link to={`/profile/${worldview.author?.id}`} className="author-name">
-                  {worldview.author?.username || '未知作者'}
-                </Link>
-                <p>{worldview.author?.bio || '这个人很神秘，什么都没有留下'}</p>
-                <div className="author-id">作者ID: {worldview.author?.id}</div>
-              </div>
-          </div>
-        </div>
-      </div>
+
       
       <CommentSection worldviewId={id} />
     </div>

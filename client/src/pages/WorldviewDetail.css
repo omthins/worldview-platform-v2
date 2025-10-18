@@ -67,33 +67,6 @@
   gap: 1rem;
 }
 
-.like-btn {
-  background: none;
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 5px 15px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s;
-}
-
-.like-btn:hover {
-  background-color: var(--hover-bg-color);
-}
-
-.like-btn.liked {
-  background-color: var(--alert-danger-bg-color);
-  border-color: var(--btn-danger-color);
-  color: var(--btn-danger-color);
-}
-
-.view-count {
-  color: var(--text-secondary-color);
-  font-size: 0.9rem;
-}
-
 .worldview-tags {
   display: flex;
   flex-wrap: wrap;

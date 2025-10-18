@@ -1,0 +1,39 @@
+.page-transition {
+  width: 100%;
+  height: 100%;
+}
+
+.page-transition.fadeIn {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.page-transition.fadeOut {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* 确保页面内容平滑过渡 */
+.page-transition > * {
+  width: 100%;
+}

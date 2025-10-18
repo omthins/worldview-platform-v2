@@ -88,44 +88,7 @@ const CommentSection = ({ worldviewId }) => {
     setSubmitting(false);
   };
 
-  const handleLike = async (commentId) => {
-    if (!isAuthenticated) {
-      showInfo('请先登录后再点赞');
-      return;
-    }
-    
-    try {
-      const data = await apiRequest(`${API_ENDPOINTS.COMMENTS}/${commentId}/like`, {
-        method: 'POST'
-      });
-      
-      // 更新评论点赞数
-      const updateCommentLikes = (comments) => {
-        return comments.map(comment => {
-          if (comment.id === commentId) {
-            return {
-              ...comment,
-              likesCount: data.likesCount
-            };
-          }
-          
-          if (comment.replies && comment.replies.length > 0) {
-            return {
-              ...comment,
-              replies: updateCommentLikes(comment.replies)
-            };
-          }
-          
-          return comment;
-        });
-      };
-      
-      setComments(updateCommentLikes(comments));
-    } catch (err) {
-      console.error('点赞失败:', err);
-      showError('点赞失败，请重试');
-    }
-  };
+
 
   const formatDate = (dateString) => {
     const options = { 
@@ -192,7 +155,6 @@ const CommentSection = ({ worldviewId }) => {
               key={comment.id} 
               comment={comment} 
               onReply={(comment) => setReplyTo(comment)}
-              onLike={handleLike}
               formatDate={formatDate}
             />
           ))}
@@ -207,7 +169,7 @@ const CommentSection = ({ worldviewId }) => {
 };
 
 // 评论项组件
-const CommentItem = ({ comment, onReply, onLike, formatDate }) => {
+const CommentItem = ({ comment, onReply, formatDate }) => {
   const { isAuthenticated } = useAuth();
   
   return (
@@ -236,15 +198,6 @@ const CommentItem = ({ comment, onReply, onLike, formatDate }) => {
               回复
             </button>
           )}
-          
-          {isAuthenticated && (
-            <button 
-              className="comment-action like-btn"
-              onClick={() => onLike(comment.id)}
-            >
-              ❤️ {comment.likesCount || comment.likes?.length || 0}
-            </button>
-          )}
         </div>
         
         {comment.replies && comment.replies.length > 0 && (
@@ -269,10 +222,10 @@ const CommentItem = ({ comment, onReply, onLike, formatDate }) => {
                   <div className="comment-actions">
                     {isAuthenticated && (
                       <button 
-                        className="comment-action like-btn"
-                        onClick={() => onLike(reply.id)}
+                        className="comment-action"
+                        onClick={() => onReply(reply)}
                       >
-                        ❤️ {reply.likesCount || reply.likes?.length || 0}
+                        回复
                       </button>
                     )}
                   </div>

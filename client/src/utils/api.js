@@ -4,8 +4,7 @@ export const API_ENDPOINTS = {
   WORLDVIEWS: `${API_BASE_URL}/api/worldviews`,
   WORLDVIEWS_USER: `${API_BASE_URL}/api/worldviews/user`,
   WORLDVIEWS_USER_ID: `${API_BASE_URL}/api/worldviews/user/:id`,
-  WORLDVIEWS_LIKED: `${API_BASE_URL}/api/worldviews/liked`,
-  WORLDVIEWS_USER_LIKED: `${API_BASE_URL}/api/worldviews/user/:userId/liked`,
+
   AUTH: `${API_BASE_URL}/api/auth`,
   AUTH_ME: `${API_BASE_URL}/api/auth/me`,
   USERS: `${API_BASE_URL}/api/users`,
