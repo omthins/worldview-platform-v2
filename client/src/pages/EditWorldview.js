@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest } from '../utils/api';
 import ReactMarkdown from 'react-markdown';
+import CustomCSSInjector from '../components/CustomCSSInjector';
 import './EditWorldview.css';
 
 // 字数限制
@@ -25,7 +26,8 @@ const EditWorldview = () => {
     title: '',
     description: '',
     content: '',
-    isPublic: true
+    isPublic: true,
+    customCSS: ''
   });
 
   useEffect(() => {
@@ -46,7 +48,8 @@ const EditWorldview = () => {
           title: data.title || '',
           description: data.description || '',
           content: data.content || '',
-          isPublic: data.isPublic !== false
+          isPublic: data.isPublic !== false,
+          customCSS: data.customCSS || ''
         });
         // 设置初始表单验证状态
         setIsFormValid(validateForm({
@@ -287,6 +290,14 @@ const EditWorldview = () => {
             公开可见（取消勾选后将创建为私有世界观，只有你自己能看到）
           </label>
         </div>
+
+        <CustomCSSInjector 
+          customCSS={formData.customCSS}
+          onCSSChange={(css) => setFormData(prev => ({
+            ...prev,
+            customCSS: css
+          }))}
+        />
 
         <div className="form-actions">
           <button

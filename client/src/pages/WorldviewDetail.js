@@ -41,6 +41,27 @@ const WorldviewDetail = () => {
 
 
 
+  // 注入自定义CSS
+  useEffect(() => {
+    if (!worldview?.customCSS) return;
+    
+    // 创建style元素
+    const styleElement = document.createElement('style');
+    styleElement.id = `worldview-custom-css-${id}`;
+    styleElement.textContent = worldview.customCSS;
+    
+    // 添加到head
+    document.head.appendChild(styleElement);
+    
+    // 清理函数
+    return () => {
+      const existingStyle = document.getElementById(`worldview-custom-css-${id}`);
+      if (existingStyle) {
+        document.head.removeChild(existingStyle);
+      }
+    };
+  }, [worldview?.customCSS, id]);
+
   if (loading) {
     return <div className="text-center mt-5">加载中...</div>;
   }

@@ -1,4 +1,4 @@
-# WorldView Platform - 世界观发布平台
+# World Platform - 世界观发布平台
 
 > **注意：本项目完全由AI（人工智能）编写，包括前端、后端代码以及文档。**
 
@@ -13,6 +13,7 @@
 - 💬 评论和互动功能
 - 📱 响应式设计
 - 🖼️ 头像上传功能
+- 🎨 自定义CSS样式（预设+手动编写）
 
 
 ## 技术栈
@@ -24,11 +25,13 @@
 - bcrypt 密码加密
 - Multer 文件上传
 
-### 前端
+### Web前端
 - React
 - React Router
 - Axios
 - 现代化 UI 设计
+
+
 
 ## 快速开始
 
@@ -51,17 +54,25 @@ npm run dev
 ## 项目结构
 
 ```
-worldview-platform/
+world/
 ├── server/          # 后端代码
 │   ├── routes/      # API路由
 │   ├── models/      # 数据模型
 │   ├── middleware/  # 中间件
+│   ├── config/      # 配置文件
+│   ├── DatabaseManager/ # 数据库管理
 │   └── uploads/     # 文件上传目录
-├── client/          # 前端代码
+├── client/          # Web前端代码
 │   ├── src/         # 源代码
 │   │   ├── components/ # React组件
 │   │   ├── pages/      # 页面组件
-│   │   └── context/    # 上下文
+│   │   ├── context/    # 上下文
+│   │   ├── services/   # 服务层
+│   │   ├── styles/     # 样式文件
+│   │   └── utils/      # 工具函数
+│   ├── public/      # 静态资源
+│   └── build/       # 构建输出
+├── test.js/         # 测试脚本目录
 └── README.md        # 项目文档
 ```
 
@@ -125,10 +136,34 @@ worldview-platform/
 
 ## 项目更新记录
 
+
+### 2025-10-19 - 自定义CSS样式功能
+**修改内容：**
+- **前端组件**：
+  - 创建`CustomCSSInjector`组件，支持自定义CSS样式
+  - 提供4种预设样式：深色科技感、奇幻魔法风、简约现代、复古羊皮纸
+  - 支持手动编写自定义CSS代码，实时语法验证
+  - 折叠式设计，默认收起，保持界面简洁
+
+- **后端支持**：
+  - 世界观模型添加`customCSS`字段，存储自定义样式
+  - 世界观路由支持创建和更新时处理自定义CSS
+  - 世界观详情页面自动注入自定义CSS样式
+
+- **功能特性**：
+  - 创作者可自定义世界观页面样式
+  - 预设样式快速应用，适合不同主题
+  - 实时CSS语法验证，防止错误代码
+  - 世界观详情页面动态应用自定义样式
+
+- **测试脚本**：
+  - 创建`test.js/README.md`测试说明文档
+  - 包含功能概述、测试要点和使用说明
+
 ### 2025-10-19 - 删除世界观测试脚本
 **修改内容：**
 - **测试脚本功能**：
-  - 创建`test.js/删除世界观测试.js`测试脚本
+  - 创建`test.js/删除世界观测试.md`测试脚本
   - 支持单个世界观删除和批量删除功能
   - 提供删除确认机制，防止误操作
   - 支持浏览所有公开世界观和用户自己的世界观
@@ -315,7 +350,7 @@ MIT License
 
 ---
 
-# WorldView Platform
+# World Platform
 
 A complete worldview publishing platform with user system and content management features.
 
@@ -328,6 +363,7 @@ A complete worldview publishing platform with user system and content management
 - 💬 Comment and interaction features
 - 📱 Responsive design
 - 🖼️ Avatar upload functionality
+- 🎨 Custom CSS styling (presets + manual coding)
 
 ## Tech Stack
 
@@ -365,17 +401,24 @@ npm run dev
 ## Project Structure
 
 ```
-worldview-platform/
+world/
 ├── server/          # Backend code
 │   ├── routes/      # API routes
 │   ├── models/      # Data models
 │   ├── middleware/  # Middleware
+│   ├── config/      # Configuration
+│   ├── DatabaseManager/ # Database management
 │   └── uploads/     # File upload directory
 ├── client/          # Frontend code
 │   ├── src/         # Source code
 │   │   ├── components/ # React components
 │   │   ├── pages/      # Page components
-│   │   └── context/    # Context
+│   │   ├── context/    # Context
+│   │   ├── services/   # Services
+│   │   ├── styles/     # Styles
+│   │   └── utils/      # Utilities
+│   ├── public/      # Static resources
+│   └── build/       # Build output
 └── README.md        # Project documentation
 ```
 

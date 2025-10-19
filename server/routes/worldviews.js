@@ -221,7 +221,7 @@ router.post('/', authenticateToken, [
       return res.status(400).json({ errors: errors.array() });
     }
     
-    const { title, description, content, coverImage, isPublic } = req.body;
+    const { title, description, content, coverImage, isPublic, customCSS } = req.body;
     
     // 获取当前最大的世界观编号
     const maxWorldview = await Worldview.findOne({
@@ -236,6 +236,7 @@ router.post('/', authenticateToken, [
       title,
       description,
       content,
+      customCSS: customCSS || '',
       category: '默认分类', // 设置默认分类
       tags: [], // 空标签数组
       coverImage: coverImage || '',
@@ -289,7 +290,7 @@ router.put('/:id', authenticateToken, [
       return res.status(403).json({ message: '无权修改此世界观' });
     }
     
-    const { title, description, content, coverImage, isPublic } = req.body;
+    const { title, description, content, coverImage, isPublic, customCSS } = req.body;
     
     // 更新字段
     const updateData = {};
@@ -298,6 +299,7 @@ router.put('/:id', authenticateToken, [
     if (content !== undefined) updateData.content = content;
     if (coverImage !== undefined) updateData.coverImage = coverImage;
     if (isPublic !== undefined) updateData.isPublic = isPublic;
+    if (customCSS !== undefined) updateData.customCSS = customCSS;
     
     await Worldview.update(updateData, { where: { id: req.params.id } });
     

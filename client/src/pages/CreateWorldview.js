@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest, API_ENDPOINTS } from '../utils/api';
 import ReactMarkdown from 'react-markdown';
+import CustomCSSInjector from '../components/CustomCSSInjector';
 import './CreateWorldview.css';
 
 const CreateWorldview = () => {
@@ -20,7 +21,8 @@ const CreateWorldview = () => {
     title: '',
     description: '',
     content: '',
-    isPublic: true
+    isPublic: true,
+    customCSS: ''
   });
   
   const [errors, setErrors] = useState([]);
@@ -29,7 +31,7 @@ const CreateWorldview = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
-  const { title, description, content, isPublic } = formData || {};
+  const { title, description, content, isPublic, customCSS } = formData || {};
 
   // 字数限制
   const TITLE_MAX_LENGTH = 255;
@@ -118,7 +120,8 @@ const CreateWorldview = () => {
         title: title || '',
         description: description || '',
         content: content || '',
-        isPublic: isPublic !== undefined ? isPublic : true
+        isPublic: isPublic !== undefined ? isPublic : true,
+        customCSS: customCSS || ''
       };
       
       const data = await apiRequest(API_ENDPOINTS.WORLDVIEWS, {
@@ -312,6 +315,14 @@ const CreateWorldview = () => {
             公开发布（取消勾选后将创建为私有世界观，只有你自己能看到）
           </label>
         </div>
+        
+        <CustomCSSInjector 
+          customCSS={customCSS}
+          onCSSChange={(css) => setFormData(prev => ({
+            ...prev,
+            customCSS: css
+          }))}
+        />
         
         <div className="form-actions">
           <button

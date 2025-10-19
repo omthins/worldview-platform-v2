@@ -24,6 +24,11 @@ const Worldview = sequelize.define('Worldview', {
     type: DataTypes.TEXT,
     allowNull: false
   },
+  customCSS: {
+    type: DataTypes.TEXT,
+    defaultValue: '',
+    allowNull: true
+  },
   coverImage: {
     type: DataTypes.STRING,
     defaultValue: ''

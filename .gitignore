@@ -109,3 +109,7 @@ server/uploads/avatars/*
 server/uploads/images/*
 !server/uploads/avatars/.gitkeep
 !server/uploads/images/.gitkeep
+
+# Project specific folders to exclude
+WinUI3/
+test.js/

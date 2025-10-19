@@ -17,6 +17,7 @@ import EditWorldview from './pages/EditWorldview';
 
 
 import Chat from './pages/Chat';
+import TechDocs from './pages/TechDocs';
 import './App.css';
 
 // 私有路由组件
@@ -101,7 +102,7 @@ function App() {
                 } 
               />
               <Route path="/profile/:id" element={<PageTransition><UserProfile /></PageTransition>} />
-
+              <Route path="/tech-docs" element={<PageTransition><TechDocs /></PageTransition>} />
 
               <Route 
                 path="/chat" 
