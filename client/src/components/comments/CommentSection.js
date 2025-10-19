@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../common/ToastContext';
 import { API_ENDPOINTS, apiRequest } from '../../utils/api';
+import ReactMarkdown from 'react-markdown';
 import './CommentSection.css';
 
 const CommentSection = ({ worldviewId }) => {
@@ -9,11 +10,14 @@ const CommentSection = ({ worldviewId }) => {
   const { showSuccess, showError, showInfo } = useToast();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
+  const maxCommentLength = 500; // 评论最大字数限制
+  const textareaRef = useRef(null);
   const [replyTo, setReplyTo] = useState(null);
   const [replyingToCommentId, setReplyingToCommentId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [expandedReplies, setExpandedReplies] = useState(new Set());
+  // 移除未使用的状态变量
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -43,6 +47,26 @@ const CommentSection = ({ worldviewId }) => {
     setNewComment('');
   };
 
+  // 自动调整文本框高度
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [newComment, showPreview]);
+
+  const handleCommentChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= maxCommentLength) {
+      setNewComment(value);
+    }
+  };
+
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     
@@ -56,7 +80,7 @@ const CommentSection = ({ worldviewId }) => {
     setSubmitting(true);
     
     try {
-      const data = await apiRequest(API_ENDPOINTS.COMMENTS, {
+      await apiRequest(API_ENDPOINTS.COMMENTS, {
         method: 'POST',
         body: JSON.stringify({
           content: newComment,
@@ -65,25 +89,16 @@ const CommentSection = ({ worldviewId }) => {
         })
       });
       
-      if (replyTo) {
-        // 如果是回复，更新对应评论的回复列表
-        setComments(prevComments => 
-          prevComments.map(comment => {
-            if (comment.id === replyTo.id) {
-              return {
-                ...comment,
-                replies: [...comment.replies, data]
-              };
-            }
-            return comment;
-          })
-        );
-      } else {
-        // 如果是顶级评论，添加到评论列表
-        setComments(prevComments => [data, ...prevComments]);
-      }
+      // 重新获取完整的评论列表，确保多层嵌套结构正确
+      const response = await apiRequest(`${API_ENDPOINTS.COMMENTS}/${worldviewId}`);
+      const processedComments = (response.comments || []).map(comment => ({
+        ...comment,
+        replies: Array.isArray(comment.replies) ? comment.replies : []
+      }));
+      setComments(processedComments);
       
       setNewComment('');
+      setShowPreview(false);
       setReplyTo(null);
       setReplyingToCommentId(null);
       
@@ -110,17 +125,7 @@ const CommentSection = ({ worldviewId }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const toggleReplies = (commentId) => {
-    setExpandedReplies(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
-      }
-      return newSet;
-    });
-  };
+  // 移除未使用的函数
 
   return (
     <div className="comment-section">
@@ -128,23 +133,59 @@ const CommentSection = ({ worldviewId }) => {
       
       {isAuthenticated && !replyTo && (
         <form onSubmit={handleCommentSubmit} className="comment-form">
-          <div className="form-group">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="form-control"
-              rows="3"
-              placeholder="写下你的评论..."
-            ></textarea>
+          <div className="comment-input-tabs">
+            <button 
+              type="button"
+              className={`tab-button ${!showPreview ? 'active' : ''}`}
+              onClick={() => setShowPreview(false)}
+            >
+              编辑
+            </button>
+            <button 
+              type="button"
+              className={`tab-button ${showPreview ? 'active' : ''}`}
+              onClick={() => setShowPreview(true)}
+              disabled={!newComment.trim()}
+            >
+              预览
+            </button>
           </div>
           
-          <button 
-            type="submit" 
-            className="btn btn-primary"
-            disabled={submitting || !newComment.trim()}
-          >
-            {submitting ? '发送中...' : '发表评论'}
-          </button>
+          <div className="form-group">
+            {!showPreview ? (
+              <>
+                <textarea
+                  ref={textareaRef}
+                  value={newComment}
+                  onChange={handleCommentChange}
+                  className="form-control auto-resize"
+                  placeholder="写下你的评论..."
+                  maxLength={maxCommentLength}
+                ></textarea>
+                <div className="comment-length-counter">
+                  <span className={newComment.length > maxCommentLength * 0.8 ? 'text-warning' : ''}>
+                    {newComment.length}/{maxCommentLength}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="comment-preview">
+                <div className="preview-content markdown-preview">
+                  <ReactMarkdown>{newComment}</ReactMarkdown>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="comment-form-actions">
+            <button 
+              type="submit" 
+              className="btn btn-primary"
+              disabled={submitting || !newComment.trim() || newComment.length > maxCommentLength}
+            >
+              {submitting ? '发送中...' : '发表评论'}
+            </button>
+          </div>
         </form>
       )}
       
@@ -164,8 +205,6 @@ const CommentSection = ({ worldviewId }) => {
               comment={comment} 
               onReply={handleReply}
               formatDate={formatDate}
-              isExpanded={expandedReplies.has(comment.id)}
-              onToggleReplies={() => toggleReplies(comment.id)}
               replyingToCommentId={replyingToCommentId}
               onCancelReply={() => {
                 setReplyTo(null);
@@ -176,6 +215,11 @@ const CommentSection = ({ worldviewId }) => {
               handleCommentSubmit={handleCommentSubmit}
               submitting={submitting}
               isAuthenticated={isAuthenticated}
+              maxCommentLength={maxCommentLength}
+              showPreview={showPreview}
+              setShowPreview={setShowPreview}
+              textareaRef={textareaRef}
+              handleCommentChange={handleCommentChange}
             />
           ))}
         </div>
@@ -188,13 +232,25 @@ const CommentSection = ({ worldviewId }) => {
   );
 };
 
+// 递归函数计算评论的所有回复数量（包括嵌套回复）
+const countAllReplies = (comment) => {
+  if (!comment.replies || comment.replies.length === 0) {
+    return 0;
+  }
+  
+  let total = comment.replies.length;
+  comment.replies.forEach(reply => {
+    total += countAllReplies(reply);
+  });
+  
+  return total;
+};
+
 // 递归评论组件（支持多层嵌套）
 const CommentItem = ({ 
   comment, 
   onReply, 
   formatDate, 
-  isExpanded, 
-  onToggleReplies, 
   replyingToCommentId,
   onCancelReply,
   newComment,
@@ -202,12 +258,17 @@ const CommentItem = ({
   handleCommentSubmit,
   submitting,
   isAuthenticated,
+  maxCommentLength,
+  showPreview,
+  setShowPreview,
+  textareaRef,
+  handleCommentChange,
   level = 0 
 }) => {
-  const maxNestingLevel = 5; // 最大嵌套层级
-  
-  // 如果超过最大嵌套层级，使用不同的样式
-  const isDeepNested = level >= maxNestingLevel;
+  // 为每个评论创建独立的展开状态
+  const [expandedReplies, setExpandedReplies] = useState(new Set());
+  // 支持无限嵌套，移除层级限制
+  const isDeepNested = false; // 不再限制嵌套层级
   const isReplyingToThisComment = replyingToCommentId === comment.id;
   
   return (
@@ -225,10 +286,12 @@ const CommentItem = ({
           <span className="comment-date">{formatDate(comment.createdAt)}</span>
         </div>
         
-        <div className="comment-body">{comment.content}</div>
+        <div className="comment-body">
+          <ReactMarkdown>{comment.content}</ReactMarkdown>
+        </div>
         
         <div className="comment-actions">
-          {isAuthenticated && level < maxNestingLevel && (
+          {isAuthenticated && (
             <button 
               className="comment-action"
               onClick={() => onReply(comment)}
@@ -241,21 +304,55 @@ const CommentItem = ({
         {/* 回复表单 - 显示在被回复的评论下方 */}
         {isReplyingToThisComment && (
           <form onSubmit={handleCommentSubmit} className="comment-reply-form">
+            <div className="comment-input-tabs">
+              <button 
+                type="button"
+                className={`tab-button ${!showPreview ? 'active' : ''}`}
+                onClick={() => setShowPreview(false)}
+              >
+                编辑
+              </button>
+              <button 
+                type="button"
+                className={`tab-button ${showPreview ? 'active' : ''}`}
+                onClick={() => setShowPreview(true)}
+                disabled={!newComment.trim()}
+              >
+                预览
+              </button>
+            </div>
+            
             <div className="form-group">
-              <textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className="form-control"
-                rows="3"
-                placeholder={`回复 @${comment.author?.username || '用户'}...`}
-              ></textarea>
+              {!showPreview ? (
+                <>
+                  <textarea
+                    ref={textareaRef}
+                    value={newComment}
+                    onChange={handleCommentChange}
+                    className="form-control auto-resize"
+                    placeholder={`回复 @${comment.author?.username || '用户'}...`}
+                    maxLength={maxCommentLength}
+                  ></textarea>
+                  <div className="comment-length-counter">
+                    <span className={newComment.length > maxCommentLength * 0.8 ? 'text-warning' : ''}>
+                      {newComment.length}/{maxCommentLength}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="comment-preview">
+                  <div className="preview-content markdown-preview">
+                    <ReactMarkdown>{newComment}</ReactMarkdown>
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="comment-form-actions">
               <button 
                 type="submit" 
                 className="btn btn-primary btn-sm"
-                disabled={submitting || !newComment.trim()}
+                disabled={submitting || !newComment.trim() || newComment.length > maxCommentLength}
               >
                 {submitting ? '发送中...' : '回复'}
               </button>
@@ -272,16 +369,25 @@ const CommentItem = ({
         
         {comment.replies && comment.replies.length > 0 && (
           <div className="comment-replies-section">
-            {level < maxNestingLevel && (
-              <button 
-                className="toggle-replies-btn"
-                onClick={onToggleReplies}
-              >
-                {isExpanded ? '收起' : `展开 ${comment.replies.length} 条回复`}
-              </button>
-            )}
+            <button 
+              className="toggle-replies-btn"
+              onClick={() => {
+                // 为当前评论的回复创建独立的展开状态
+                setExpandedReplies(prev => {
+                  const newSet = new Set(prev);
+                  if (newSet.has('replies')) {
+                    newSet.delete('replies');
+                  } else {
+                    newSet.add('replies');
+                  }
+                  return newSet;
+                });
+              }}
+            >
+              {expandedReplies.has('replies') ? '收起' : `展开 ${countAllReplies(comment)} 条回复`}
+            </button>
             
-            {isExpanded && level < maxNestingLevel && (
+            {expandedReplies.has('replies') && (
               <div className="comment-replies">
                 {comment.replies.map(reply => (
                   <CommentItem 
@@ -289,8 +395,6 @@ const CommentItem = ({
                     comment={reply}
                     onReply={onReply}
                     formatDate={formatDate}
-                    isExpanded={isExpanded}
-                    onToggleReplies={onToggleReplies}
                     replyingToCommentId={replyingToCommentId}
                     onCancelReply={onCancelReply}
                     newComment={newComment}
@@ -298,15 +402,14 @@ const CommentItem = ({
                     handleCommentSubmit={handleCommentSubmit}
                     submitting={submitting}
                     isAuthenticated={isAuthenticated}
+                    maxCommentLength={maxCommentLength}
+                    showPreview={showPreview}
+                    setShowPreview={setShowPreview}
+                    textareaRef={textareaRef}
+                    handleCommentChange={handleCommentChange}
                     level={level + 1}
                   />
                 ))}
-              </div>
-            )}
-            
-            {isDeepNested && (
-              <div className="deep-nested-notice">
-                回复层级过深，无法继续显示
               </div>
             )}
           </div>

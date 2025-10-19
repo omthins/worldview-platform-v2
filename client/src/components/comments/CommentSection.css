@@ -281,6 +281,206 @@
   font-style: italic;
 }
 
+/* 编辑/预览标签页样式 */
+.comment-input-tabs {
+  display: flex;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--text-secondary-color);
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.tab-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tab-button:not(:disabled):hover {
+  color: var(--primary-color);
+}
+
+/* 自动调整高度的文本框 */
+.auto-resize {
+  resize: none;
+  overflow: auto; /* 允许滚动 */
+  min-height: 80px;
+  max-height: 300px;
+}
+
+/* 隐藏滚动条但保持滚动功能 */
+.auto-resize::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.auto-resize::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auto-resize::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.auto-resize {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Markdown预览样式 */
+.comment-preview {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.75rem;
+  background-color: var(--input-bg-color);
+  min-height: 80px;
+}
+
+.markdown-preview {
+  line-height: 1.6;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.markdown-preview p {
+  margin-bottom: 1rem;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.markdown-preview li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-preview code {
+  background-color: var(--hover-bg-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.markdown-preview pre {
+  background-color: var(--hover-bg-color);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.markdown-preview pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown-preview blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 1rem;
+  color: var(--text-secondary-color);
+  font-style: italic;
+}
+
+.markdown-preview a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.markdown-preview a:hover {
+  text-decoration: underline;
+}
+
+/* 评论内容中的Markdown样式 */
+.comment-body h1,
+.comment-body h2,
+.comment-body h3,
+.comment-body h4,
+.comment-body h5,
+.comment-body h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.comment-body p {
+  margin-bottom: 1rem;
+}
+
+.comment-body ul,
+.comment-body ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.comment-body li {
+  margin-bottom: 0.25rem;
+}
+
+.comment-body code {
+  background-color: var(--hover-bg-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.comment-body pre {
+  background-color: var(--hover-bg-color);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.comment-body pre code {
+  background: none;
+  padding: 0;
+}
+
+.comment-body blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 1rem;
+  color: var(--text-secondary-color);
+  font-style: italic;
+}
+
+.comment-body a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.comment-body a:hover {
+  text-decoration: underline;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .comment-form {
@@ -302,5 +502,14 @@
   
   .comment-replies {
     padding-left: 0.5rem;
+  }
+  
+  .comment-input-tabs {
+    margin-bottom: 0.75rem;
+  }
+  
+  .tab-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
   }
 }
