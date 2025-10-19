@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import WorldviewCard from '../components/worldview/WorldviewCard';
 import { API_ENDPOINTS, apiRequest } from '../utils/api';
 import './Home.css';

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest } from '../utils/api';
 import WorldviewCard from '../components/worldview/WorldviewCard';
@@ -59,13 +58,7 @@ const Dashboard = () => {
     }
   }, [user]);
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+
 
   return (
     <div className="dashboard">

@@ -38,7 +38,7 @@ const CreateWorldview = () => {
   // 初始化表单验证状态
   React.useEffect(() => {
     setIsFormValid(validateForm(formData));
-  }, []);
+  }, [formData]);
 
   // 验证表单是否完整
   const validateForm = (data) => {

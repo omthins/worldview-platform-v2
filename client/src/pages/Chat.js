@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Layout, 
   List, 
@@ -7,7 +7,6 @@ import {
   Avatar, 
   Typography, 
   Space, 
-  Card,
   Empty,
   message
 } from 'antd';
@@ -35,22 +34,6 @@ const Chat = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const messagesEndRef = useRef(null);
 
-  useEffect(() => {
-    if (user) {
-      loadChatRooms();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (selectedRoom) {
-      loadRoomMessages();
-    }
-  }, [selectedRoom]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -67,7 +50,9 @@ const Chat = () => {
     }
   };
 
-  const loadRoomMessages = async () => {
+  const loadRoomMessages = useCallback(async () => {
+    if (!selectedRoom) return;
+    
     try {
       setLoading(true);
       const response = await chatAPI.getRoomMessages(selectedRoom.id);
@@ -80,7 +65,7 @@ const Chat = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedRoom]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -110,6 +95,22 @@ const Chat = () => {
       user.username.toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
+
+  useEffect(() => {
+    if (user) {
+      loadChatRooms();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (selectedRoom) {
+      loadRoomMessages();
+    }
+  }, [selectedRoom, loadRoomMessages]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   if (!user) {
     return (
