@@ -6,6 +6,7 @@ import './Home.css';
 
 const Home = () => {
   const [worldviews, setWorldviews] = useState([]);
+  const [matchedAuthors, setMatchedAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -53,11 +54,17 @@ const Home = () => {
         console.log('获取到的世界观数据:', data);
         
         setWorldviews(data.worldviews);
+        setMatchedAuthors(data.matchedAuthors || []);
         setTotalPages(data.totalPages);
         setLoading(false);
       } catch (err) {
         console.error('获取世界观列表失败:', err);
-        setError(err.message || '获取世界观列表失败');
+        // 处理UUID格式错误和其他服务器错误
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message || '获取世界观列表失败');
+        }
         setLoading(false);
       }
     };
@@ -92,11 +99,54 @@ const Home = () => {
           </div>
         ) : worldviews && worldviews.length > 0 ? (
           <>
-            <div className="worldviews-list">
-              {worldviews.map(worldview => (
-                <WorldviewCard key={worldview.id} worldview={worldview} showNumber={true} />
-              ))}
-            </div>
+            {/* 如果是创作者搜索，按作者分组显示世界观 */}
+            {searchParams.get('creator') && matchedAuthors.length > 0 ? (
+              <div className="authors-worldviews-section">
+                {matchedAuthors.map(author => {
+                  // 获取该作者的世界观
+                  const authorWorldviews = worldviews.filter(w => w.author.id === author.id);
+                  
+                  return (
+                    <div key={author.id} className="author-section">
+                      <div className="author-header">
+                        <div className="author-info-card">
+                          <img 
+                            src={author.avatar || 'https://picsum.photos/seed/avatar/60/60.jpg'} 
+                            alt={author.username}
+                            className="author-avatar"
+                          />
+                          <div className="author-details">
+                            <h3 className="author-name">{author.username}</h3>
+                            <p className="author-id">创作者ID: {author.id}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {authorWorldviews.length > 0 ? (
+                        <div className="author-worldviews">
+                          <div className="worldviews-list">
+                            {authorWorldviews.map(worldview => (
+                              <WorldviewCard key={worldview.id} worldview={worldview} showNumber={true} />
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="no-worldviews">
+                          <p>该创作者暂无公开的世界观</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              // 非创作者搜索，正常显示世界观列表
+              <div className="worldviews-list">
+                {worldviews.map(worldview => (
+                  <WorldviewCard key={worldview.id} worldview={worldview} showNumber={true} />
+                ))}
+              </div>
+            )}
             
             {totalPages > 1 && (
               <div className="pagination">
@@ -127,9 +177,9 @@ const Home = () => {
             <h3>
               {searchParams.get('creator') ? '没有找到该创作者的世界观' : 
                searchParams.get('worldview') ? '没有找到匹配的世界观' :
-               searchParams.get('id') ? '没有找到该UUID的世界观' :
-               searchParams.get('wid') ? '没有找到该编号的世界观' :
-               '没有找到世界观'}
+               searchParams.get('id') ? '没有找到该创作者UUID的世界观' :
+               searchParams.get('wid') ? '没有找到该世界观编号的世界观' :
+               '没有找到合适的搜索结果'}
             </h3>
             <p>试试调整搜索条件</p>
           </div>

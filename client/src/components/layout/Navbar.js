@@ -36,6 +36,7 @@ const Navbar = () => {
       if (searchType) {
         searchUrl = `/?${searchType}=${encodeURIComponent(term)}`;
       } else {
+        // 直接点击搜索按钮时，使用综合搜索
         searchUrl += encodeURIComponent(term);
       }
       navigate(searchUrl);

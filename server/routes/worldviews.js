@@ -59,7 +59,7 @@ router.get('/', async (req, res) => {
       // 搜索世界观标题
       whereCondition.title = { [Op.iLike]: `%${worldview}%` };
     } else if (creator) {
-      // 搜索创作者用户名
+      // 搜索创作者用户名 - 支持模糊搜索
       authorNameFilter = creator;
     } else if (id) {
       // 搜索世界观ID (UUID类型)
@@ -103,8 +103,22 @@ router.get('/', async (req, res) => {
       offset
     });
     
+    // 如果是创作者搜索，获取匹配的作者信息
+    let matchedAuthors = [];
+    if (authorNameFilter) {
+      const authors = await User.findAll({
+        where: { 
+          username: { [Op.iLike]: `%${authorNameFilter}%` } 
+        },
+        attributes: ['id', 'username', 'avatar'],
+        limit: 10
+      });
+      matchedAuthors = authors;
+    }
+    
     res.json({
       worldviews,
+      matchedAuthors,
       totalPages: Math.ceil(count / limit),
       currentPage: page,
       total: count

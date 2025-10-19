@@ -75,10 +75,6 @@ const Dashboard = () => {
             <h1>欢迎回来，{user?.username}！</h1>
             <p className="welcome-subtitle">管理你的世界观创作</p>
           </div>
-          <Link to="/create-worldview" className="btn btn-primary">
-            <span className="btn-icon">+</span>
-            发布新世界观
-          </Link>
         </div>
 
         {/* 统计卡片 */}
@@ -150,9 +146,6 @@ const Dashboard = () => {
                         <div className="empty-icon">📝</div>
                         <h3>还没有发布世界观</h3>
                         <p>开始创建你的第一个世界观吧！分享你的创意世界。</p>
-                        <Link to="/create-worldview" className="btn btn-primary">
-                          发布世界观
-                        </Link>
                       </div>
                     )}
                   </div>

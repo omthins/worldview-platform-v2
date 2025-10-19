@@ -1,5 +1,7 @@
 .navbar {
-  background-color: var(--navbar-bg-color);
+  background-color: transparent;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   box-shadow: var(--card-shadow);
   padding: 0;
   position: fixed;
@@ -8,7 +10,9 @@
   right: 0;
   z-index: 1000;
   height: 80px;
-  transition: background-color var(--transition-speed);
+  transition: all 0.3s ease;
+  will-change: backdrop-filter;
+  transform: translateZ(0);
 }
 
 /* 搜索框聚焦时的页面模糊效果 */

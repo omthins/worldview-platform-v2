@@ -348,3 +348,185 @@
     padding: 6px 12px;
   }
 }
+
+/* 作者卡片样式 */
+.authors-section {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+}
+
+.authors-title {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+.authors-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.author-card {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--navbar-bg-color);
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.author-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.author-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  border: 2px solid var(--primary-color);
+}
+
+.author-info {
+  flex: 1;
+}
+
+.author-name {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.author-id {
+  color: var(--text-secondary-color);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* 按作者分组的世界观显示样式 */
+.authors-worldviews-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.author-section {
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 2.5rem;
+}
+
+.author-section:last-child {
+  border-bottom: none;
+}
+
+.author-header {
+  margin-bottom: 1.5rem;
+}
+
+.author-info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: transparent;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.author-info-card:hover {
+  background-color: var(--hover-bg-color);
+}
+
+.author-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
+  flex-shrink: 0;
+}
+
+.author-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+.author-id {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary-color);
+  line-height: 1.2;
+}
+
+.worldview-count {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.author-worldviews {
+  margin-top: 1rem;
+}
+
+.no-worldviews {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary-color);
+  font-style: italic;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .authors-section {
+    padding: 1.5rem;
+  }
+  
+  .authors-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .author-card {
+    padding: 0.75rem;
+  }
+  
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 0.75rem;
+  }
+  
+  .author-header {
+    padding: 1.5rem;
+  }
+  
+  .author-info-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .author-worldviews {
+    padding: 1.5rem;
+  }
+}
