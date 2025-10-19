@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './WorldviewCard.css';
 
-const WorldviewCard = ({ worldview, showNumber = false, showEdit = false }) => {
-  const { id, title, description, author } = worldview;
+const WorldviewCard = ({ worldview, showNumber = false, showEdit = false, showDate = false }) => {
+  const { id, title, description, author, createdAt, updatedAt } = worldview;
 
   // 获取作者头像
   const getAuthorAvatar = (author) => {
@@ -12,6 +12,17 @@ const WorldviewCard = ({ worldview, showNumber = false, showEdit = false }) => {
     }
     // 如果没有头像，使用首字母
     return author?.username ? author.username.charAt(0).toUpperCase() : '?';
+  };
+
+  // 格式化日期
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   return (
@@ -32,22 +43,28 @@ const WorldviewCard = ({ worldview, showNumber = false, showEdit = false }) => {
         <div className="card-divider"></div>
         
         <div className="card-footer">
-          <div className="card-author">
-            <div className="author-avatar">
-              {author?.avatar ? (
-                <img src={author.avatar} alt={author.username} />
-              ) : (
-                <span className="avatar-initial">{getAuthorAvatar(author)}</span>
-              )}
+          <div className="card-footer-left">
+            <div className="card-author">
+              <div className="author-avatar">
+                {author?.avatar ? (
+                  <img src={author.avatar} alt={author.username} />
+                ) : (
+                  <span className="avatar-initial">{getAuthorAvatar(author)}</span>
+                )}
+              </div>
+              <Link to={`/profile/${author?.id}`} className="author-name-link">
+                <span className="author-name">{author?.username || '匿名用户'}</span>
+              </Link>
             </div>
-            <Link to={`/profile/${author?.id}`} className="author-name-link">
-              <span className="author-name">{author?.username || '匿名用户'}</span>
-            </Link>
+            
+            {showDate && (
+              <div className="card-date">
+                <span className="date-label">更新于: {formatDate(updatedAt || createdAt)}</span>
+              </div>
+            )}
           </div>
           
           <div className="card-footer-right">
-
-            
             {showEdit && (
               <div className="card-actions">
                 <Link to={`/edit-worldview/${id}`} className="btn btn-sm btn-primary">

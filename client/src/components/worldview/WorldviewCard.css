@@ -74,6 +74,10 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  display: -moz-box;
+  -moz-line-clamp: 3;
+  -moz-box-orient: vertical;
+  line-clamp: 3;
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.5;
@@ -99,14 +103,32 @@
 .card-footer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   margin-top: auto;
+  gap: 1rem;
+}
+
+.card-footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
 }
 
 .card-footer-right {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
+}
+
+.card-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
+}
+
+.date-label {
+  opacity: 0.8;
 }
 
 .card-actions {

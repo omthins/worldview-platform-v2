@@ -1,7 +1,5 @@
 .navbar {
   background-color: var(--navbar-bg-color);
-  backdrop-filter: var(--navbar-blur);
-  -webkit-backdrop-filter: var(--navbar-blur); /* Safari支持 */
   box-shadow: var(--card-shadow);
   padding: 0;
   position: fixed;

@@ -10,14 +10,16 @@ const CommentSection = ({ worldviewId }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
+  const [replyingToCommentId, setReplyingToCommentId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [expandedReplies, setExpandedReplies] = useState(new Set());
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
         setLoading(true);
-        const data = await apiRequest(`${API_ENDPOINTS.COMMENTS}/worldview/${worldviewId}`);
+        const data = await apiRequest(`${API_ENDPOINTS.COMMENTS}/${worldviewId}`);
         // 确保每个评论的replies都是数组
         const processedComments = (data.comments || []).map(comment => ({
           ...comment,
@@ -34,6 +36,12 @@ const CommentSection = ({ worldviewId }) => {
 
     fetchComments();
   }, [worldviewId]);
+
+  const handleReply = (comment) => {
+    setReplyTo(comment);
+    setReplyingToCommentId(comment.id);
+    setNewComment('');
+  };
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -77,6 +85,7 @@ const CommentSection = ({ worldviewId }) => {
       
       setNewComment('');
       setReplyTo(null);
+      setReplyingToCommentId(null);
       
       // 显示成功提示
       showSuccess(replyTo ? '回复成功！' : '评论发表成功！');
@@ -101,11 +110,23 @@ const CommentSection = ({ worldviewId }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const toggleReplies = (commentId) => {
+    setExpandedReplies(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(commentId)) {
+        newSet.delete(commentId);
+      } else {
+        newSet.add(commentId);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="comment-section">
       <h3>评论 ({comments.length})</h3>
       
-      {isAuthenticated && (
+      {isAuthenticated && !replyTo && (
         <form onSubmit={handleCommentSubmit} className="comment-form">
           <div className="form-group">
             <textarea
@@ -113,29 +134,16 @@ const CommentSection = ({ worldviewId }) => {
               onChange={(e) => setNewComment(e.target.value)}
               className="form-control"
               rows="3"
-              placeholder={replyTo ? `回复 @${replyTo.username}...` : '写下你的评论...'}
+              placeholder="写下你的评论..."
             ></textarea>
           </div>
-          
-          {replyTo && (
-            <div className="replying-to">
-              回复给 @{replyTo.username}
-              <button 
-                type="button" 
-                className="btn-cancel-reply"
-                onClick={() => setReplyTo(null)}
-              >
-                取消
-              </button>
-            </div>
-          )}
           
           <button 
             type="submit" 
             className="btn btn-primary"
             disabled={submitting || !newComment.trim()}
           >
-            {submitting ? '发送中...' : (replyTo ? '回复评论' : '发表评论')}
+            {submitting ? '发送中...' : '发表评论'}
           </button>
         </form>
       )}
@@ -154,8 +162,20 @@ const CommentSection = ({ worldviewId }) => {
             <CommentItem 
               key={comment.id} 
               comment={comment} 
-              onReply={(comment) => setReplyTo(comment)}
+              onReply={handleReply}
               formatDate={formatDate}
+              isExpanded={expandedReplies.has(comment.id)}
+              onToggleReplies={() => toggleReplies(comment.id)}
+              replyingToCommentId={replyingToCommentId}
+              onCancelReply={() => {
+                setReplyTo(null);
+                setReplyingToCommentId(null);
+              }}
+              newComment={newComment}
+              setNewComment={setNewComment}
+              handleCommentSubmit={handleCommentSubmit}
+              submitting={submitting}
+              isAuthenticated={isAuthenticated}
             />
           ))}
         </div>
@@ -168,12 +188,30 @@ const CommentSection = ({ worldviewId }) => {
   );
 };
 
-// 评论项组件
-const CommentItem = ({ comment, onReply, formatDate }) => {
-  const { isAuthenticated } = useAuth();
+// 递归评论组件（支持多层嵌套）
+const CommentItem = ({ 
+  comment, 
+  onReply, 
+  formatDate, 
+  isExpanded, 
+  onToggleReplies, 
+  replyingToCommentId,
+  onCancelReply,
+  newComment,
+  setNewComment,
+  handleCommentSubmit,
+  submitting,
+  isAuthenticated,
+  level = 0 
+}) => {
+  const maxNestingLevel = 5; // 最大嵌套层级
+  
+  // 如果超过最大嵌套层级，使用不同的样式
+  const isDeepNested = level >= maxNestingLevel;
+  const isReplyingToThisComment = replyingToCommentId === comment.id;
   
   return (
-    <div className="comment-item">
+    <div className={`comment-item ${isDeepNested ? 'deep-nested' : ''}`} data-level={level}>
       <div className="comment-avatar">
         <img 
           src={comment.author.avatar || 'https://picsum.photos/seed/avatar/40/40.jpg'} 
@@ -190,7 +228,7 @@ const CommentItem = ({ comment, onReply, formatDate }) => {
         <div className="comment-body">{comment.content}</div>
         
         <div className="comment-actions">
-          {isAuthenticated && (
+          {isAuthenticated && level < maxNestingLevel && (
             <button 
               className="comment-action"
               onClick={() => onReply(comment)}
@@ -200,38 +238,77 @@ const CommentItem = ({ comment, onReply, formatDate }) => {
           )}
         </div>
         
+        {/* 回复表单 - 显示在被回复的评论下方 */}
+        {isReplyingToThisComment && (
+          <form onSubmit={handleCommentSubmit} className="comment-reply-form">
+            <div className="form-group">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                className="form-control"
+                rows="3"
+                placeholder={`回复 @${comment.author?.username || '用户'}...`}
+              ></textarea>
+            </div>
+            
+            <div className="comment-form-actions">
+              <button 
+                type="submit" 
+                className="btn btn-primary btn-sm"
+                disabled={submitting || !newComment.trim()}
+              >
+                {submitting ? '发送中...' : '回复'}
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-secondary btn-sm"
+                onClick={onCancelReply}
+              >
+                取消
+              </button>
+            </div>
+          </form>
+        )}
+        
         {comment.replies && comment.replies.length > 0 && (
-          <div className="comment-replies">
-            {comment.replies.map(reply => (
-              <div key={reply.id} className="comment-reply">
-                <div className="comment-avatar">
-                  <img 
-                    src={reply.author.avatar || 'https://picsum.photos/seed/avatar/30/30.jpg'} 
-                    alt="用户头像" 
+          <div className="comment-replies-section">
+            {level < maxNestingLevel && (
+              <button 
+                className="toggle-replies-btn"
+                onClick={onToggleReplies}
+              >
+                {isExpanded ? '收起' : `展开 ${comment.replies.length} 条回复`}
+              </button>
+            )}
+            
+            {isExpanded && level < maxNestingLevel && (
+              <div className="comment-replies">
+                {comment.replies.map(reply => (
+                  <CommentItem 
+                    key={reply.id}
+                    comment={reply}
+                    onReply={onReply}
+                    formatDate={formatDate}
+                    isExpanded={isExpanded}
+                    onToggleReplies={onToggleReplies}
+                    replyingToCommentId={replyingToCommentId}
+                    onCancelReply={onCancelReply}
+                    newComment={newComment}
+                    setNewComment={setNewComment}
+                    handleCommentSubmit={handleCommentSubmit}
+                    submitting={submitting}
+                    isAuthenticated={isAuthenticated}
+                    level={level + 1}
                   />
-                </div>
-                
-                <div className="reply-content">
-                  <div className="comment-header">
-                    <span className="comment-author">{reply.author.username}</span>
-                    <span className="comment-date">{formatDate(reply.createdAt)}</span>
-                  </div>
-                  
-                  <div className="comment-body">{reply.content}</div>
-                  
-                  <div className="comment-actions">
-                    {isAuthenticated && (
-                      <button 
-                        className="comment-action"
-                        onClick={() => onReply(reply)}
-                      >
-                        回复
-                      </button>
-                    )}
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
+            )}
+            
+            {isDeepNested && (
+              <div className="deep-nested-notice">
+                回复层级过深，无法继续显示
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -5,42 +5,71 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// 获取世界观的评论
-router.get('/worldview/:worldviewId', async (req, res) => {
+// 递归函数获取评论及其所有子评论
+const getCommentsWithReplies = async (worldviewId, parentCommentId = null) => {
+  const comments = await Comment.findAll({
+    where: { 
+      worldviewId,
+      parentCommentId 
+    },
+    include: [{
+      model: User,
+      as: 'author',
+      attributes: ['id', 'username', 'avatar']
+    }],
+    order: [['createdAt', 'ASC']]
+  });
+  
+  // 为每个评论递归获取其回复
+  const commentsWithReplies = await Promise.all(
+    comments.map(async (comment) => {
+      const replies = await getCommentsWithReplies(worldviewId, comment.id);
+      return {
+        ...comment.toJSON(),
+        replies
+      };
+    })
+  );
+  
+  return commentsWithReplies;
+};
+
+// 获取世界观的评论（支持多层嵌套）
+router.get('/:worldviewId', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const offset = (page - 1) * limit;
     
-    const { count, rows: comments } = await Comment.findAndCountAll({
+    // 获取顶级评论（parentCommentId为null）
+    const { count, rows: topLevelComments } = await Comment.findAndCountAll({
       where: { 
         worldviewId: req.params.worldviewId,
         parentCommentId: null 
       },
-      include: [
-        {
-          model: User,
-          as: 'author',
-          attributes: ['id', 'username', 'avatar']
-        },
-        {
-          model: Comment,
-          as: 'replies',
-          include: [{
-            model: User,
-            as: 'author',
-            attributes: ['id', 'username', 'avatar']
-          }],
-          order: [['createdAt', 'ASC']]
-        }
-      ],
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username', 'avatar']
+      }],
       order: [['createdAt', 'DESC']],
       limit,
       offset
     });
     
+    // 为每个顶级评论获取所有嵌套回复
+    const commentsWithNestedReplies = await Promise.all(
+      topLevelComments.map(async (comment) => {
+        const replies = await getCommentsWithReplies(req.params.worldviewId, comment.id);
+        return {
+          ...comment.toJSON(),
+          replies
+        };
+      })
+    );
+    
     res.json({
-      comments,
+      comments: commentsWithNestedReplies,
       totalPages: Math.ceil(count / limit),
       currentPage: page,
       total: count

@@ -164,12 +164,51 @@
   color: #007bff;
 }
 
+/* 折叠回复功能样式 */
+.comment-replies-section {
+  margin-top: 0.5rem;
+}
 
+.toggle-replies-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.toggle-replies-btn:hover {
+  background-color: var(--hover-bg-color);
+  text-decoration: underline;
+}
 
 .comment-replies {
   margin-top: 1rem;
-  padding-left: 1rem;
+  padding-left: 1.5rem;
   border-left: 2px solid var(--border-color);
+}
+
+/* 多层嵌套样式 - 统一灰色边框 */
+.comment-item[data-level="1"] .comment-replies,
+.comment-item[data-level="2"] .comment-replies,
+.comment-item[data-level="3"] .comment-replies,
+.comment-item[data-level="4"] .comment-replies,
+.comment-item.deep-nested .comment-replies {
+  border-left-color: var(--border-color);
+}
+
+.deep-nested-notice {
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
+  font-style: italic;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--hover-bg-color);
+  border-radius: 4px;
 }
 
 .comment-reply {
@@ -184,6 +223,55 @@
 
 .reply-content {
   flex: 1;
+}
+
+/* 回复表单样式 */
+.comment-reply-form {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.comment-reply-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.comment-reply-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+}
+
+.comment-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
 }
 
 .no-comments {

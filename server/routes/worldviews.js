@@ -121,6 +121,29 @@ router.get('/', async (req, res) => {
   }
 });
 
+// 获取最近的世界观
+router.get('/recent', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 6;
+    
+    const worldviews = await Worldview.findAll({
+      where: { isPublic: true },
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username', 'avatar']
+      }],
+      order: [['updatedAt', 'DESC']],
+      limit
+    });
+    
+    res.json({ worldviews });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
 // 获取单个世界观详情
 router.get('/:id', async (req, res) => {
   try {
@@ -410,6 +433,40 @@ router.get('/user/:userId/liked', async (req, res) => {
   }
 });
 
+// 获取指定用户的世界观
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+    
+    const { count, rows: worldviews } = await Worldview.findAndCountAll({
+      where: { 
+        authorId: req.params.userId,
+        isPublic: true 
+      },
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username', 'avatar']
+      }],
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
+    
+    res.json({
+      worldviews,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      total: count
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '服务器错误' });
+  }
+});
+
 // 获取当前登录用户的世界观
 router.get('/user', authenticateToken, async (req, res) => {
   try {
@@ -443,34 +500,23 @@ router.get('/user', authenticateToken, async (req, res) => {
   }
 });
 
-// 获取指定用户的世界观
-router.get('/user/:userId', async (req, res) => {
+// 获取最近的世界观
+router.get('/recent', async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const offset = (page - 1) * limit;
+    const limit = parseInt(req.query.limit) || 6;
     
-    const { count, rows: worldviews } = await Worldview.findAndCountAll({
-      where: { 
-        authorId: req.params.userId,
-        isPublic: true 
-      },
+    const worldviews = await Worldview.findAll({
+      where: { isPublic: true },
       include: [{
         model: User,
         as: 'author',
         attributes: ['id', 'username', 'avatar']
       }],
-      order: [['createdAt', 'DESC']],
-      limit,
-      offset
+      order: [['updatedAt', 'DESC']],
+      limit
     });
     
-    res.json({
-      worldviews,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      total: count
-    });
+    res.json({ worldviews });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '服务器错误' });

@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { apiRequest, API_ENDPOINTS } from '../utils/api';
 import AvatarUpload from '../components/AvatarUpload';
 import DefaultAvatarSelector from '../components/DefaultAvatarSelector';
-import WorldviewCard from '../components/worldview/WorldviewCard';
 import './Profile.css';
 
 const Profile = () => {
@@ -26,22 +25,8 @@ const Profile = () => {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
-  const [userWorldviews, setUserWorldviews] = useState([]);
-
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        // 获取用户的世界观
-        const worldviewsData = await apiRequest(`/api/worldviews/user/${user.id}`);
-        setUserWorldviews(worldviewsData.worldviews);
-        
-
-      } catch (err) {
-        console.error('获取用户数据失败:', err);
-      }
-    };
-
     if (isAuthenticated && user) {
       setProfileData({
         username: user.username || '',
@@ -49,8 +34,6 @@ const Profile = () => {
         bio: user.bio || '',
         avatar: user.avatar || ''
       });
-      
-      fetchUserData();
     }
   }, [isAuthenticated, user]);
 
@@ -123,17 +106,6 @@ const Profile = () => {
     setPasswordLoading(false);
   };
 
-  // const formatDate = (dateString) => {
-  //   const options = { 
-  //     year: 'numeric', 
-  //     month: 'short', 
-  //     day: 'numeric'
-  //   };
-  //   return new Date(dateString).toLocaleDateString(undefined, options);
-  // };
-
-
-
   // 如果有ID参数，则重定向到UserProfile页面
   if (id) {
     return (
@@ -189,12 +161,6 @@ const Profile = () => {
             onClick={() => setActiveTab('password')}
           >
             修改密码
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'worldviews' ? 'active' : ''}`}
-            onClick={() => setActiveTab('worldviews')}
-          >
-            我的世界观
           </button>
         </div>
 
@@ -349,31 +315,6 @@ const Profile = () => {
               </form>
             </div>
           )}
-
-          {activeTab === 'worldviews' && (
-            <div className="user-worldviews">
-              <h2>我的世界观</h2>
-              {userWorldviews.length > 0 ? (
-                <div className="worldviews-grid">
-                  {userWorldviews.map(worldview => (
-                    <WorldviewCard 
-                      key={worldview.id} 
-                      worldview={worldview}
-                      showNumber={true}
-                      showEdit={true}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="empty-state">
-                  <p>您还没有创建任何世界观</p>
-                  <a href="/create-worldview" className="btn btn-primary">发布世界观</a>
-                </div>
-              )}
-            </div>
-          )}
-
-
         </div>
       </div>
     </div>
