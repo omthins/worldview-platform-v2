@@ -117,6 +117,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
+  gap: 1rem;
 }
 
 .editor-title-section {
@@ -124,6 +125,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  gap: 1rem;
 }
 
 .editor-header h4 {
@@ -132,32 +134,127 @@
   font-size: 1.1rem;
 }
 
-.copy-default-btn {
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.copy-btn {
   background: #2d2d2d;
   border: 1px solid #444;
   border-radius: 4px;
   padding: 0.5rem;
   color: #ffffff;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0;
   width: 32px;
   height: 32px;
+  position: relative;
+  overflow: hidden;
 }
 
-.copy-default-btn:hover {
+.copy-btn:hover {
   background: #444;
   border-color: #666;
+  width: 120px;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
 }
 
-.copy-default-btn svg {
+.copy-btn:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 40px;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.copy-btn::after {
+  content: attr(title);
+  position: absolute;
+  left: 40px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.copy-btn svg {
   stroke: #ffffff;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
 }
 
-.copy-default-btn:active {
-  transform: translateY(0);
+.copy-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.copy-btn:active {
+  transform: translateY(1px);
+}
+
+.reset-btn {
+  background: #5a1a1a;
+  border: 1px solid #8b2c2c;
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0;
+  width: 32px;
+  height: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.reset-btn:hover {
+  background: #6a2a2a;
+  border-color: #9b3c3c;
+  width: 100px;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.reset-btn:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 40px;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.reset-btn::after {
+  content: attr(title);
+  position: absolute;
+  left: 40px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.reset-btn svg {
+  stroke: #ffffff;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.reset-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.reset-btn:active {
+  transform: translateY(1px);
 }
 
 .css-error {
@@ -205,6 +302,16 @@
   padding: 0.5rem;
   background: rgba(255, 107, 107, 0.1);
   border-radius: 4px;
+}
+
+.status-message {
+  color: #64ffda;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(100, 255, 218, 0.1);
+  border-radius: 4px;
+  text-align: center;
 }
 
 .css-help {

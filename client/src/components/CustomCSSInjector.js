@@ -11,6 +11,7 @@ const CustomCSSInjector = ({
   const [isValidCSS, setIsValidCSS] = useState(true);
   const [cssError, setCSSError] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
+  const [copyType, setCopyType] = useState(''); // 'current' 或 'default'
 
   // 预设样式选项
   const presetStyles = [
@@ -813,6 +814,19 @@ body::after {
     }
   };
 
+  // 复制当前CSS样式到剪贴板
+  const copyCurrentStyle = async () => {
+    try {
+      await navigator.clipboard.writeText(customCSS);
+      setCopyType('current');
+      setCopyStatus('已复制当前CSS样式！');
+      setTimeout(() => setCopyStatus(''), 2000);
+    } catch (err) {
+      setCopyStatus('复制失败，请手动复制');
+      setTimeout(() => setCopyStatus(''), 2000);
+    }
+  };
+
   // 复制默认样式到剪贴板
   const copyDefaultStyle = async () => {
     const defaultStyle = `.worldview-detail {
@@ -908,8 +922,6 @@ body::after {
   border-radius: 15px;
   font-size: 0.8rem;
 }
-
-
 
 .worldview-content {
   background-color: var(--card-bg-color);
@@ -1189,12 +1201,20 @@ body::after {
 
     try {
       await navigator.clipboard.writeText(defaultStyle);
-      setCopyStatus('已复制到剪贴板！');
+      setCopyType('default');
+      setCopyStatus('已复制默认CSS样式！');
       setTimeout(() => setCopyStatus(''), 2000);
     } catch (err) {
       setCopyStatus('复制失败，请手动复制');
       setTimeout(() => setCopyStatus(''), 2000);
     }
+  };
+
+  // 恢复默认样式
+  const resetToDefault = () => {
+    handleCSSChange('');
+    setCopyStatus('已恢复默认样式！');
+    setTimeout(() => setCopyStatus(''), 2000);
   };
 
   return (
@@ -1237,28 +1257,64 @@ body::after {
               <div className="editor-header">
                 <div className="editor-title-section">
                   <h4>自定义CSS代码</h4>
-                  <button 
-                    type="button" 
-                    className="copy-default-btn"
-                    onClick={copyDefaultStyle}
-                    title="复制参考代码"
-                  >
-                    {copyStatus === '已复制到剪贴板！' ? (
+                  <div className="button-group">
+                    <button 
+                      type="button" 
+                      className="copy-btn"
+                      onClick={copyCurrentStyle}
+                      title="复制当前CSS样式"
+                    >
+                      {copyType === 'current' && copyStatus.includes('已复制') ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="8" y="8" width="12" height="12" rx="2" />
+                          <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+                        </svg>
+                      )}
+                    </button>
+                    <button 
+                      type="button" 
+                      className="copy-btn"
+                      onClick={copyDefaultStyle}
+                      title="复制默认CSS样式"
+                    >
+                      {copyType === 'default' && copyStatus.includes('已复制') ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="8" y="8" width="12" height="12" rx="2" />
+                          <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+                        </svg>
+                      )}
+                    </button>
+                    <button 
+                      type="button" 
+                      className="reset-btn"
+                      onClick={resetToDefault}
+                      title="恢复默认样式"
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12"></polyline>
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
                       </svg>
-                    ) : copyStatus ? (
-                      copyStatus
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="8" y="8" width="12" height="12" rx="2" />
-                        <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
-                      </svg>
-                    )}
-                  </button>
+                    </button>
+                  </div>
                 </div>
                 {!isValidCSS && (
                   <span className="css-error">CSS语法错误</span>
+                )}
+              </div>
+              
+              <div className="status-message">
+                {copyStatus && (
+                  <span className={`copy-status ${copyStatus.includes('失败') ? 'error' : 'success'}`}>
+                    {copyStatus}
+                  </span>
                 )}
               </div>
               
@@ -1267,8 +1323,8 @@ body::after {
                 onChange={handleTextareaChange}
                 className={`css-textarea ${!isValidCSS ? 'error' : ''}`}
                 placeholder="在此处输入自定义CSS代码...
-点击预设样式或复制参考代码开始编辑"
-                rows={6}
+当前显示的是您当前的CSS样式代码"
+                rows={8}
               />
               
               {cssError && (
@@ -1278,7 +1334,7 @@ body::after {
               )}
               
               <div className="css-help">
-                <strong>提示：</strong>支持所有CSS选择器，可以自由编写任何CSS代码
+                <strong>提示：</strong>输入框显示当前CSS样式代码，使用上方按钮进行复制或恢复操作
               </div>
             </div>
           )}
