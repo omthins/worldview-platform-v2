@@ -7,6 +7,11 @@ const router = express.Router();
 
 // 递归函数获取评论及其所有子评论
 const getCommentsWithReplies = async (worldviewId, parentCommentId = null) => {
+  // 验证worldviewId参数
+  if (!worldviewId || worldviewId === 'undefined') {
+    throw new Error('世界观ID不能为空');
+  }
+  
   const comments = await Comment.findAll({
     where: { 
       worldviewId,
@@ -37,6 +42,13 @@ const getCommentsWithReplies = async (worldviewId, parentCommentId = null) => {
 // 获取世界观的评论（支持多层嵌套）
 router.get('/:worldviewId', async (req, res) => {
   try {
+    const { worldviewId } = req.params;
+    
+    // 验证worldviewId参数
+    if (!worldviewId || worldviewId === 'undefined') {
+      return res.status(400).json({ message: '世界观ID不能为空' });
+    }
+    
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const offset = (page - 1) * limit;
@@ -44,7 +56,7 @@ router.get('/:worldviewId', async (req, res) => {
     // 获取顶级评论（parentCommentId为null）
     const { count, rows: topLevelComments } = await Comment.findAndCountAll({
       where: { 
-        worldviewId: req.params.worldviewId,
+        worldviewId: worldviewId,
         parentCommentId: null 
       },
       include: [{
@@ -60,7 +72,7 @@ router.get('/:worldviewId', async (req, res) => {
     // 为每个顶级评论获取所有嵌套回复
     const commentsWithNestedReplies = await Promise.all(
       topLevelComments.map(async (comment) => {
-        const replies = await getCommentsWithReplies(req.params.worldviewId, comment.id);
+        const replies = await getCommentsWithReplies(worldviewId, comment.id);
         return {
           ...comment.toJSON(),
           replies

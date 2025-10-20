@@ -815,290 +815,331 @@ body::after {
 
   // 复制默认样式到剪贴板
   const copyDefaultStyle = async () => {
-    const defaultStyle = `/* 全局基础设置 */
-:root {
-  --primary-color: #0078D7;
-  --primary-hover-color: #106EBE;
-  --text-color: rgba(255, 255, 255, 0.92);
-  --text-secondary-color: rgba(255, 255, 255, 0.6);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --card-bg-color: rgba(32, 32, 32, 0.48);
-  --tag-bg-color: rgba(0, 120, 215, 0.12);
-  --form-bg-color: rgba(20, 20, 20, 0.64);
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-/* 根治背景闪烁问题 */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-body {
-  background: 
-    linear-gradient(to bottom, #1A1A1A 0%, #0D0D0D 100%) fixed,
-    radial-gradient(circle at 20% 30%, rgba(0, 120, 215, 0.15) 0%, transparent 40%) fixed,
-    radial-gradient(circle at 80% 70%, rgba(0, 120, 215, 0.1) 0%, transparent 40%) fixed;
-  background-attachment: fixed;
-  min-height: 100vh;
-  font-family: 'Segoe UI Variable', system-ui, -apple-system, sans-serif;
-  color: var(--text-color);
-  line-height: 1.6;
-}
-
-/* 防白边保险层 */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: inherit;
-  z-index: -2;
-}
-
-/* 主内容容器 */
-.worldview-detail {
-  max-width: 760px;
+    const defaultStyle = `.worldview-detail {
+  max-width: 900px;
   margin: 0 auto;
-  padding: 1.5rem;
-  position: relative;
-  z-index: 1;
+  padding: 2rem 1.5rem;
 }
 
-/* 极简标题区 */
 .worldview-header {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .worldview-number {
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   color: var(--primary-color);
   font-weight: 600;
-  margin-bottom: 0.25rem;
-  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
 }
 
 .worldview-title {
-  font-size: 2.2rem;
-  margin: 0 0 1rem;
-  line-height: 1.25;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
-/* 超精简元信息 */
 .worldview-meta {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1.5rem;
-  margin: 1.25rem 0;
-  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
 }
 
 .author-info {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .author-avatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--border-color);
+}
+
+.author-name {
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.author-name:hover {
+  color: var(--primary-color);
 }
 
 .publish-date {
+  font-size: 0.9rem;
   color: var(--text-secondary-color);
 }
 
-/* 极简标签系统 */
+.worldview-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .worldview-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1rem 0;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.category-tag {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
 .tag {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
   background-color: var(--tag-bg-color);
   color: var(--primary-color);
-  border: 1px solid rgba(0, 120, 215, 0.2);
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
 }
 
-/* WinUI3风格内容卡片 */
+
+
 .worldview-content {
   background-color: var(--card-bg-color);
-  border-radius: 8px;
-  padding: 2rem;
-  margin-bottom: 2.5rem;
-  backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid var(--border-color);
+  border-radius: 12px;
   box-shadow: var(--card-shadow);
-  transform: translateZ(0);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 3rem;
+  margin-bottom: 3rem;
 }
 
-.worldview-content:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
-}
-
-/* 极致内容排版 */
-.worldview-body {
-  font-size: 1rem;
-  font-variation-settings: 'wght' 450;
-}
-
-.worldview-body > * + * {
-  margin-top: 1.25rem;
-}
-
-.worldview-body h1,
-.worldview-body h2,
-.worldview-body h3 {
-  font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-
-.worldview-body h1 {
-  font-size: 1.6rem;
-  padding-bottom: 0.5rem;
+.worldview-description {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
 }
 
+.worldview-description h3 {
+  margin-bottom: 1.5rem;
+  color: #ffffff !important;
+  font-size: 1.5rem;
+}
+
+.worldview-description p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #ffffff !important;
+}
+
+.worldview-body {
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.worldview-body h1, 
+.worldview-body h2, 
+.worldview-body h3 {
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+}
+
+.worldview-body h1 {
+  font-size: 2rem;
+}
+
 .worldview-body h2 {
-  font-size: 1.4rem;
+  font-size: 1.7rem;
 }
 
 .worldview-body h3 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
 }
 
 .worldview-body p {
-  margin: 0;
-  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  color: #ffffff !important;
+}
+
+.worldview-body ul, 
+.worldview-body ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.worldview-body li {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+/* 确保ReactMarkdown渲染的所有文本元素都使用正确的颜色 */
+.worldview-body h1, 
+.worldview-body h2, 
+.worldview-body h3,
+.worldview-body h4,
+.worldview-body h5,
+.worldview-body h6 {
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff !important;
+}
+
+.worldview-body p,
+.worldview-body ul,
+.worldview-body ol,
+.worldview-body li,
+.worldview-body blockquote,
+.worldview-body table,
+.worldview-body tr,
+.worldview-body td,
+.worldview-body th {
+  color: #ffffff !important;
 }
 
 .worldview-body a {
   color: var(--primary-color);
-  text-decoration: none;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid transparent;
 }
 
 .worldview-body a:hover {
   color: var(--primary-hover-color);
-  border-bottom-color: currentColor;
 }
 
-/* 极简列表 */
-.worldview-body ul,
-.worldview-body ol {
-  padding-left: 1.5rem;
-  margin: 0;
-}
-
-.worldview-body li {
-  margin: 0.25rem 0;
-  position: relative;
-}
-
-.worldview-body ul li::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--primary-color);
-  border-radius: 50%;
-  margin-right: 0.75rem;
-  position: relative;
-  top: -0.15em;
-}
-
-/* 代码块优化 */
-.worldview-body pre {
-  background: var(--form-bg-color);
-  border-radius: 6px;
-  padding: 1rem;
-  overflow-x: auto;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin: 1.25rem 0;
-  border: 1px solid var(--border-color);
+.worldview-body blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
 }
 
 .worldview-body code {
-  font-family: 'Consolas', monospace;
-  background: var(--form-bg-color);
+  background-color: var(--form-bg-color);
+  color: #ffffff;
   padding: 0.2rem 0.4rem;
-  border-radius: 4px;
+  border-radius: 3px;
+  font-family: monospace;
 }
 
-/* 极简作者卡片 */
+.worldview-body pre {
+  background-color: var(--form-bg-color);
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.worldview-body pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.worldview-footer {
+  margin-top: 3rem;
+}
+
 .author-bio {
-  background: var(--card-bg-color);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  transform: translateZ(0);
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.author-bio h3 {
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  font-size: 1.5rem;
 }
 
 .author-card {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 2rem;
 }
 
 .author-avatar-large {
-  width: 56px;
-  height: 56px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--primary-color);
+  border: 3px solid var(--primary-color);
 }
 
 .author-details .author-name {
-  font-size: 1.1rem;
-  margin-bottom: 0.25rem;
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+  font-size: 1.3rem;
   font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.author-details .author-name:hover {
+  color: var(--primary-color);
 }
 
 .author-details p {
-  font-size: 0.9rem;
-  color: var(--text-secondary-color);
-  margin: 0;
-  line-height: 1.5;
+  margin-bottom: 1.2rem;
+  color: #ffffff;
+  line-height: 1.6;
 }
 
-/* 响应式优化 */
-@media (max-width: 640px) {
+.author-id {
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  background-color: var(--card-bg-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
   .worldview-detail {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
   }
   
   .worldview-title {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
   }
   
   .worldview-content {
-    padding: 1.5rem;
+    padding: 2rem;
   }
   
   .author-bio {
-    padding: 1.25rem;
+    padding: 2rem;
+  }
+  
+  .worldview-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
   
   .author-card {
@@ -1107,40 +1148,42 @@ body::after {
   }
   
   .author-avatar-large {
-    width: 48px;
-    height: 48px;
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .worldview-detail {
+    padding: 1rem 0.75rem;
+  }
+  
+  .worldview-title {
+    font-size: 2rem;
+  }
+  
+  .worldview-content {
+    padding: 1.5rem;
+  }
+  
+  .author-bio {
+    padding: 1.5rem;
+  }
+  
+  .worldview-body {
+    font-size: 1rem;
   }
   
   .worldview-body h1 {
+    font-size: 1.8rem;
+  }
+  
+  .worldview-body h2 {
     font-size: 1.5rem;
   }
-}
-
-/* 滚动条美化 */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* 防闪烁保险 */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  
+  .worldview-body h3 {
+    font-size: 1.3rem;
   }
 }`;
 
