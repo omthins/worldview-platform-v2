@@ -1200,7 +1200,13 @@ body::after {
                     onClick={copyDefaultStyle}
                     title="复制参考代码"
                   >
-                    {copyStatus ? copyStatus : (
+                    {copyStatus === '已复制到剪贴板！' ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    ) : copyStatus ? (
+                      copyStatus
+                    ) : (
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="8" y="8" width="12" height="12" rx="2" />
                         <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />

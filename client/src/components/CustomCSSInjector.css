@@ -148,8 +148,8 @@
 }
 
 .copy-default-btn:hover {
-  background: #0078d7;
-  border-color: #0078d7;
+  background: #444;
+  border-color: #666;
 }
 
 .copy-default-btn svg {
