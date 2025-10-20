@@ -174,9 +174,6 @@ const Navbar = () => {
           <li className="nav-item">
             <Link to="/" className="nav-link">首页</Link>
           </li>
-          <li className="nav-item">
-            <Link to="/tech-docs" className="nav-link">技术文档</Link>
-          </li>
           
 
 

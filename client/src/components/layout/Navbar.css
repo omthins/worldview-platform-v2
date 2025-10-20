@@ -258,8 +258,166 @@ body.search-blur .search-suggestions {
   }
 }
 
+/* 下拉菜单样式优化 - WinUI3风格 */
+.dropdown {
+  position: relative;
+}
 
+.dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--navbar-text-color);
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  height: fit-content;
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+}
 
+.dropdown-toggle:hover {
+  background-color: var(--navbar-hover-bg-color);
+  color: var(--navbar-text-color);
+  transform: translateY(-1px);
+}
+
+.dropdown-toggle:focus {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+}
+
+/* 用户头像样式优化 */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  border: 2px solid var(--primary-color);
+  transition: all 0.2s ease;
+}
+
+.dropdown-toggle:hover .avatar {
+  border-color: #0078d4;
+  transform: scale(1.05);
+}
+
+/* 下拉菜单面板样式 - WinUI3风格 */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #252525;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 220px;
+  z-index: 1000;
+  margin-top: 0.5rem;
+  padding: 8px 0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: dropdownSlide 0.2s ease-out;
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 下拉菜单项样式 */
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  color: #e0e0e0;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+  position: relative;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(0, 120, 212, 0.1);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.dropdown-item:active {
+  background-color: rgba(0, 120, 212, 0.2);
+  transform: scale(0.98);
+}
+
+/* 下拉菜单分隔线 */
+.dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #2d2d2d, transparent);
+}
+
+/* 导航链接样式优化 */
+.nav-link {
+  color: var(--navbar-text-color);
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  height: fit-content;
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+  position: relative;
+}
+
+.nav-link:hover {
+  background-color: var(--navbar-hover-bg-color);
+  color: var(--navbar-text-color);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.nav-link:focus {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+}
+
+/* 当前页面激活状态 */
+.nav-link.active {
+  color: #0078d4;
+  background-color: rgba(0, 120, 212, 0.1);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: #0078d4;
+  border-radius: 1px;
+}
+
+/* 主题切换按钮样式优化 */
 .theme-toggle-btn {
   background: none;
   border: none;
@@ -272,12 +430,20 @@ body.search-blur .search-suggestions {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transition-speed);
+  transition: all 0.2s ease;
   margin-left: 0.5rem;
+  color: var(--navbar-text-color);
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
 }
 
 .theme-toggle-btn:hover {
   background-color: var(--navbar-hover-bg-color);
+  transform: scale(1.1) rotate(15deg);
+}
+
+.theme-toggle-btn:focus {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
 }
 
 /* 移动端响应式设计 */

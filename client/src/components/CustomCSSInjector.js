@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CustomCSSInjector.css';
 
 const CustomCSSInjector = ({ 
@@ -7,8 +7,10 @@ const CustomCSSInjector = ({
   showPresets = true 
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showCustomEditor, setShowCustomEditor] = useState(false);
   const [isValidCSS, setIsValidCSS] = useState(true);
   const [cssError, setCSSError] = useState('');
+  const [copyStatus, setCopyStatus] = useState('');
 
   // 预设样式选项
   const presetStyles = [
@@ -282,90 +284,336 @@ const CustomCSSInjector = ({
       description: '极简深色设计，干净利落的现代风格'
     },
     {
-      name: '复古羊皮纸',
-      value: `/* 复古羊皮纸风格 - 优化版 */
-.worldview-detail {
-  background: linear-gradient(135deg, #f5e8c8 0%, #e6d2b5 50%, #d4b896 100%);
-  color: #5d4037;
-  font-family: 'Times New Roman', 'Georgia', serif;
-  border: 3px double #8d6e63;
-  box-shadow: 0 8px 25px rgba(141, 110, 99, 0.3);
-  border-radius: 4px;
-  overflow: hidden;
+      name: 'WinUI3风格',
+      value: `/* 全局基础设置 */
+:root {
+  --primary-color: #0078D7;
+  --primary-hover-color: #106EBE;
+  --text-color: rgba(255, 255, 255, 0.92);
+  --text-secondary-color: rgba(255, 255, 255, 0.6);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --card-bg-color: rgba(32, 32, 32, 0.48);
+  --tag-bg-color: rgba(0, 120, 215, 0.12);
+  --form-bg-color: rgba(20, 20, 20, 0.64);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
+/* 根治背景闪烁问题 */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  background: 
+    linear-gradient(to bottom, #1A1A1A 0%, #0D0D0D 100%) fixed,
+    radial-gradient(circle at 20% 30%, rgba(0, 120, 215, 0.15) 0%, transparent 40%) fixed,
+    radial-gradient(circle at 80% 70%, rgba(0, 120, 215, 0.1) 0%, transparent 40%) fixed;
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Segoe UI Variable', system-ui, -apple-system, sans-serif;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* 防白边保险层 */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  z-index: -2;
+}
+
+/* 主内容容器 */
+.worldview-detail {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* 极简标题区 */
 .worldview-header {
-  background: rgba(141, 110, 99, 0.15);
-  border-bottom: 4px double #8d6e63;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.worldview-number {
+  font-size: 0.85rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
 }
 
 .worldview-title {
-  color: #5d4037;
-  font-size: 3rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(93, 64, 55, 0.2);
-  margin: 0;
-  letter-spacing: 1px;
+  font-size: 2.2rem;
+  margin: 0 0 1rem;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 
+/* 超精简元信息 */
+.worldview-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 1.25rem 0;
+  font-size: 0.85rem;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.author-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
+
+.publish-date {
+  color: var(--text-secondary-color);
+}
+
+/* 极简标签系统 */
+.worldview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--tag-bg-color);
+  color: var(--primary-color);
+  border: 1px solid rgba(0, 120, 215, 0.2);
+}
+
+/* WinUI3风格内容卡片 */
 .worldview-content {
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid #bcaaa4;
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
   padding: 2rem;
-  margin: 2rem 0;
-  border-radius: 2px;
-  box-shadow: inset 0 0 20px rgba(188, 170, 164, 0.2);
+  margin-bottom: 2.5rem;
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  transform: translateZ(0);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.worldview-content:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+/* 极致内容排版 */
 .worldview-body {
-  line-height: 1.8;
-  font-size: 1.15rem;
-  color: #4e342e;
+  font-size: 1rem;
+  font-variation-settings: 'wght' 450;
 }
 
-.worldview-body p {
-  margin-bottom: 1.5rem;
-  text-align: justify;
+.worldview-body > * + * {
+  margin-top: 1.25rem;
+}
+
+.worldview-body h1,
+.worldview-body h2,
+.worldview-body h3 {
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
 .worldview-body h1 {
-  color: #795548;
-  border-bottom: 3px double #a1887f;
-  padding-bottom: 0.8rem;
-  margin-bottom: 1.5rem;
-  font-size: 2.2rem;
-  font-weight: bold;
+  font-size: 1.6rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .worldview-body h2 {
-  color: #6d4c41;
-  border-left: 4px solid #8d6e63;
-  padding-left: 1rem;
-  margin: 2rem 0 1rem 0;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
 }
 
 .worldview-body h3 {
-  color: #5d4037;
-  margin: 1.5rem 0 1rem 0;
-  font-size: 1.5rem;
-  font-style: italic;
+  font-size: 1.2rem;
 }
 
-.worldview-body strong {
-  color: #5d4037;
-  font-weight: bold;
+.worldview-body p {
+  margin: 0;
+  line-height: 1.7;
 }
 
-.worldview-body em {
-  font-style: italic;
-  color: #6d4c41;
-  text-decoration: underline;
+.worldview-body a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.worldview-body a:hover {
+  color: var(--primary-hover-color);
+  border-bottom-color: currentColor;
+}
+
+/* 极简列表 */
+.worldview-body ul,
+.worldview-body ol {
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.worldview-body li {
+  margin: 0.25rem 0;
+  position: relative;
+}
+
+.worldview-body ul li::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  position: relative;
+  top: -0.15em;
+}
+
+/* 代码块优化 */
+.worldview-body pre {
+  background: var(--form-bg-color);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 1.25rem 0;
+  border: 1px solid var(--border-color);
+}
+
+.worldview-body code {
+  font-family: 'Consolas', monospace;
+  background: var(--form-bg-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* 极简作者卡片 */
+.author-bio {
+  background: var(--card-bg-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  transform: translateZ(0);
+}
+
+.author-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.author-avatar-large {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-color);
+}
+
+.author-details .author-name {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.author-details p {
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 响应式优化 */
+@media (max-width: 640px) {
+  .worldview-detail {
+    padding: 1rem;
+  }
+  
+  .worldview-title {
+    font-size: 1.8rem;
+  }
+  
+  .worldview-content {
+    padding: 1.5rem;
+  }
+  
+  .author-bio {
+    padding: 1.25rem;
+  }
+  
+  .author-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .author-avatar-large {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .worldview-body h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 防闪烁保险 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }`,
-      description: '古典羊皮纸风格，温暖怀旧的色调'
+      description: '微软WinUI3设计风格，极致简洁的深色主题'
     },
     {
       name: '赛博朋克',
@@ -529,8 +777,381 @@ const CustomCSSInjector = ({
     }
   };
 
-  const handlePresetSelect = (presetValue) => {
-    handleCSSChange(presetValue);
+  // 自动调整文本区域高度
+  const autoResizeTextarea = (textarea) => {
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+  };
+
+  // 处理文本区域输入
+  const handleTextareaChange = (e) => {
+    const newCSS = e.target.value;
+    handleCSSChange(newCSS);
+    autoResizeTextarea(e.target);
+  };
+
+  // 初始化时调整高度
+  useEffect(() => {
+    const textarea = document.querySelector('.css-textarea');
+    if (textarea) {
+      autoResizeTextarea(textarea);
+    }
+  }, [customCSS, isExpanded]);
+
+  const handlePresetSelect = (presetValue, presetName) => {
+    // 只有"默认样式"会显示自定义CSS编辑器
+    if (presetName === '默认样式') {
+      setShowCustomEditor(true);
+      handleCSSChange(presetValue);
+    } else {
+      // 其他样式隐藏自定义CSS编辑器，清空输入框并直接应用
+      setShowCustomEditor(false);
+      handleCSSChange('');
+      onCSSChange(presetValue);
+    }
+  };
+
+  // 复制默认样式到剪贴板
+  const copyDefaultStyle = async () => {
+    const defaultStyle = `/* 全局基础设置 */
+:root {
+  --primary-color: #0078D7;
+  --primary-hover-color: #106EBE;
+  --text-color: rgba(255, 255, 255, 0.92);
+  --text-secondary-color: rgba(255, 255, 255, 0.6);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --card-bg-color: rgba(32, 32, 32, 0.48);
+  --tag-bg-color: rgba(0, 120, 215, 0.12);
+  --form-bg-color: rgba(20, 20, 20, 0.64);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* 根治背景闪烁问题 */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  background: 
+    linear-gradient(to bottom, #1A1A1A 0%, #0D0D0D 100%) fixed,
+    radial-gradient(circle at 20% 30%, rgba(0, 120, 215, 0.15) 0%, transparent 40%) fixed,
+    radial-gradient(circle at 80% 70%, rgba(0, 120, 215, 0.1) 0%, transparent 40%) fixed;
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Segoe UI Variable', system-ui, -apple-system, sans-serif;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* 防白边保险层 */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  z-index: -2;
+}
+
+/* 主内容容器 */
+.worldview-detail {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* 极简标题区 */
+.worldview-header {
+  margin-bottom: 2.5rem;
+}
+
+.worldview-number {
+  font-size: 0.85rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
+}
+
+.worldview-title {
+  font-size: 2.2rem;
+  margin: 0 0 1rem;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+/* 超精简元信息 */
+.worldview-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 1.25rem 0;
+  font-size: 0.85rem;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.author-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
+
+.publish-date {
+  color: var(--text-secondary-color);
+}
+
+/* 极简标签系统 */
+.worldview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--tag-bg-color);
+  color: var(--primary-color);
+  border: 1px solid rgba(0, 120, 215, 0.2);
+}
+
+/* WinUI3风格内容卡片 */
+.worldview-content {
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  transform: translateZ(0);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.worldview-content:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+/* 极致内容排版 */
+.worldview-body {
+  font-size: 1rem;
+  font-variation-settings: 'wght' 450;
+}
+
+.worldview-body > * + * {
+  margin-top: 1.25rem;
+}
+
+.worldview-body h1,
+.worldview-body h2,
+.worldview-body h3 {
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.worldview-body h1 {
+  font-size: 1.6rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.worldview-body h2 {
+  font-size: 1.4rem;
+}
+
+.worldview-body h3 {
+  font-size: 1.2rem;
+}
+
+.worldview-body p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.worldview-body a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.worldview-body a:hover {
+  color: var(--primary-hover-color);
+  border-bottom-color: currentColor;
+}
+
+/* 极简列表 */
+.worldview-body ul,
+.worldview-body ol {
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.worldview-body li {
+  margin: 0.25rem 0;
+  position: relative;
+}
+
+.worldview-body ul li::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  position: relative;
+  top: -0.15em;
+}
+
+/* 代码块优化 */
+.worldview-body pre {
+  background: var(--form-bg-color);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 1.25rem 0;
+  border: 1px solid var(--border-color);
+}
+
+.worldview-body code {
+  font-family: 'Consolas', monospace;
+  background: var(--form-bg-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* 极简作者卡片 */
+.author-bio {
+  background: var(--card-bg-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  transform: translateZ(0);
+}
+
+.author-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.author-avatar-large {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-color);
+}
+
+.author-details .author-name {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.author-details p {
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 响应式优化 */
+@media (max-width: 640px) {
+  .worldview-detail {
+    padding: 1rem;
+  }
+  
+  .worldview-title {
+    font-size: 1.8rem;
+  }
+  
+  .worldview-content {
+    padding: 1.5rem;
+  }
+  
+  .author-bio {
+    padding: 1.25rem;
+  }
+  
+  .author-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .author-avatar-large {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .worldview-body h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 防闪烁保险 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}`;
+
+    try {
+      await navigator.clipboard.writeText(defaultStyle);
+      setCopyStatus('已复制到剪贴板！');
+      setTimeout(() => setCopyStatus(''), 2000);
+    } catch (err) {
+      setCopyStatus('复制失败，请手动复制');
+      setTimeout(() => setCopyStatus(''), 2000);
+    }
   };
 
   return (
@@ -558,7 +1179,7 @@ const CustomCSSInjector = ({
                     key={index}
                     type="button"
                     className={`preset-btn ${customCSS === preset.value ? 'active' : ''}`}
-                    onClick={() => handlePresetSelect(preset.value)}
+                    onClick={() => handlePresetSelect(preset.value, preset.name)}
                   >
                     <div className="preset-name">{preset.name}</div>
                     <div className="preset-desc">{preset.description}</div>
@@ -568,37 +1189,50 @@ const CustomCSSInjector = ({
             </div>
           )}
 
-          <div className="custom-css-editor">
-            <div className="editor-header">
-              <h4>自定义CSS代码</h4>
-              {!isValidCSS && (
-                <span className="css-error">CSS语法错误</span>
-              )}
-            </div>
-            
-            <textarea
-              value={customCSS}
-              onChange={(e) => handleCSSChange(e.target.value)}
-              className={`css-textarea ${!isValidCSS ? 'error' : ''}`}
-              placeholder="在此处输入自定义CSS代码...
-例如：
-.worldview-detail {
-  background: #1a1a1a;
-  color: #ffffff;
-}"
-              rows={12}
-            />
-            
-            {cssError && (
-              <div className="error-message">
-                {cssError}
+          {showCustomEditor && (
+            <div className="custom-css-editor">
+              <div className="editor-header">
+                <div className="editor-title-section">
+                  <h4>自定义CSS代码</h4>
+                  <button 
+                    type="button" 
+                    className="copy-default-btn"
+                    onClick={copyDefaultStyle}
+                    title="复制参考代码"
+                  >
+                    {copyStatus ? copyStatus : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="8" y="8" width="12" height="12" rx="2" />
+                        <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+                {!isValidCSS && (
+                  <span className="css-error">CSS语法错误</span>
+                )}
               </div>
-            )}
-            
-            <div className="css-help">
-              <strong>提示：</strong>支持所有CSS选择器，可以自由编写任何CSS代码
+              
+              <textarea
+                value={customCSS}
+                onChange={handleTextareaChange}
+                className={`css-textarea ${!isValidCSS ? 'error' : ''}`}
+                placeholder="在此处输入自定义CSS代码...
+点击预设样式或复制参考代码开始编辑"
+                rows={6}
+              />
+              
+              {cssError && (
+                <div className="error-message">
+                  {cssError}
+                </div>
+              )}
+              
+              <div className="css-help">
+                <strong>提示：</strong>支持所有CSS选择器，可以自由编写任何CSS代码
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>

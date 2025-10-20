@@ -35,7 +35,7 @@
 }
 
 .css-toggle-btn.expanded {
-  color: #64ffda;
+  color: #3498db;
 }
 
 .toggle-icon {
@@ -119,10 +119,45 @@
   margin-bottom: 1rem;
 }
 
+.editor-title-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .editor-header h4 {
   color: #e0e0e0;
   margin: 0;
   font-size: 1.1rem;
+}
+
+.copy-default-btn {
+  background: #2d2d2d;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.copy-default-btn:hover {
+  background: #0078d7;
+  border-color: #0078d7;
+}
+
+.copy-default-btn svg {
+  stroke: #ffffff;
+}
+
+.copy-default-btn:active {
+  transform: translateY(0);
 }
 
 .css-error {
@@ -144,6 +179,13 @@
   line-height: 1.5;
   resize: vertical;
   transition: border-color 0.2s;
+  /* 隐藏滚动条但保持滚动功能 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.css-textarea::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 .css-textarea:focus {
@@ -183,7 +225,7 @@
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
   font-family: 'Courier New', monospace;
-  color: #64ffda;
+  color: #3498db;
   margin: 0 0.2rem;
 }
 
