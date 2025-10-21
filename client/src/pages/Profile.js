@@ -110,7 +110,7 @@ const Profile = () => {
   if (id) {
     return (
       <div className="profile-page">
-        <div className="container">
+        <div className="profile-container">
           <div className="text-center mt-5">正在跳转到用户资料页面...</div>
         </div>
       </div>
@@ -120,7 +120,7 @@ const Profile = () => {
   if (!isAuthenticated) {
     return (
       <div className="profile-page">
-        <div className="container">
+        <div className="profile-container">
           <div className="login-prompt">
             <h2>请先登录</h2>
             <p>您需要登录才能查看个人资料页面</p>
@@ -133,7 +133,7 @@ const Profile = () => {
 
   return (
     <div className="profile-page">
-      <div className="container">
+      <div className="profile-container">
         <div className="profile-header">
           <div className="profile-avatar">
             <img 
