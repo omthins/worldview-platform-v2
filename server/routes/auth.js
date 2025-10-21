@@ -47,12 +47,20 @@ router.post('/register', [
       });
     }
 
+    // 验证头像是否为空（前端应该已经强制选择，但这里做二次验证）
+    if (!avatar) {
+      return res.status(400).json({ 
+        message: '注册失败',
+        details: ['请选择一个头像']
+      });
+    }
+    
     // 创建新用户
     const user = await User.create({
       username,
       email,
       password,
-      avatar: avatar || ''
+      avatar
     });
 
     // 创建 JWT

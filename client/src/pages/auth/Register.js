@@ -35,6 +35,13 @@ const Register = () => {
       return;
     }
     
+    // 强制用户选择头像
+    if (!avatar) {
+      setErrors([{ msg: '请选择一个头像' }]);
+      setShowModal(true);
+      return;
+    }
+    
     const result = await register({ username, email, password, avatar });
     
     if (result.success) {

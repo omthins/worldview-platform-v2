@@ -198,6 +198,7 @@ const EditWorldview = () => {
             value={formData.title}
             onChange={handleChange}
             className="form-control"
+            autoComplete="off"
             required
             maxLength={TITLE_MAX_LENGTH}
           />

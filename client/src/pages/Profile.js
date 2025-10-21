@@ -180,6 +180,7 @@ const Profile = () => {
                     value={profileData.username}
                     onChange={handleProfileChange}
                     className="form-control"
+                    autoComplete="off"
                     required
                   />
                 </div>
@@ -193,6 +194,7 @@ const Profile = () => {
                     value={profileData.email}
                     onChange={handleProfileChange}
                     className="form-control"
+                    autoComplete="off"
                     required
                   />
                 </div>
@@ -273,6 +275,7 @@ const Profile = () => {
                     value={passwordData.currentPassword}
                     onChange={handlePasswordChange}
                     className="form-control"
+                    autoComplete="off"
                     required
                   />
                 </div>
@@ -286,6 +289,7 @@ const Profile = () => {
                     value={passwordData.newPassword}
                     onChange={handlePasswordChange}
                     className="form-control"
+                    autoComplete="off"
                     required
                     minLength="6"
                   />
@@ -300,6 +304,7 @@ const Profile = () => {
                     value={passwordData.confirmPassword}
                     onChange={handlePasswordChange}
                     className="form-control"
+                    autoComplete="off"
                     required
                     minLength="6"
                   />
