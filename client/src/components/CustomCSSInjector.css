@@ -274,8 +274,9 @@
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   line-height: 1.5;
-  resize: vertical;
-  transition: border-color 0.2s;
+  resize: none; /* 禁用手动调整大小 */
+  overflow: hidden; /* 隐藏滚动条 */
+  transition: border-color 0.2s, height 0.2s;
   /* 隐藏滚动条但保持滚动功能 */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */

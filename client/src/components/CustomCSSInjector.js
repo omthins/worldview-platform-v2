@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './CustomCSSInjector.css';
 
 const CustomCSSInjector = ({ 
@@ -12,6 +12,12 @@ const CustomCSSInjector = ({
   const [cssError, setCSSError] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
   const [copyType, setCopyType] = useState(''); // 'current' 或 'default'
+  const [selectedPreset, setSelectedPreset] = useState('默认样式'); // 用于跟踪当前选中的预设样式
+  // 使用selectedPreset来控制CSS编辑器的显示状态和按钮的激活状态
+  void selectedPreset; // 告诉ESLint这个变量是有意使用的
+  
+  // 添加文本区域的引用
+  const textareaRef = useRef(null);
 
   // 预设样式选项
   const presetStyles = [
@@ -19,183 +25,6 @@ const CustomCSSInjector = ({
       name: '默认样式',
       value: '',
       description: '使用系统默认样式'
-    },
-    {
-      name: '深色科技感',
-      value: `/* 深色科技感主题 - 优化版 */
-.worldview-detail {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-  color: #e0f7fa;
-  border: 2px solid #00bcd4;
-  box-shadow: 0 8px 32px rgba(0, 188, 212, 0.15);
-  border-radius: 12px;
-  overflow: hidden;
-  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-}
-
-.worldview-header {
-  background: linear-gradient(90deg, rgba(0, 188, 212, 0.1) 0%, rgba(100, 255, 218, 0.05) 100%);
-  border-bottom: 3px solid #00bcd4;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  backdrop-filter: blur(10px);
-}
-
-.worldview-title {
-  color: #64ffda;
-  font-size: 3rem;
-  text-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  margin: 0;
-}
-
-.worldview-content {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(0, 188, 212, 0.3);
-  border-radius: 8px;
-  padding: 2rem;
-  margin: 2rem 0;
-  backdrop-filter: blur(5px);
-}
-
-.worldview-body {
-  line-height: 1.8;
-  font-size: 1.15rem;
-  color: #b3e5fc;
-}
-
-.worldview-body p {
-  margin-bottom: 1.5rem;
-}
-
-.worldview-body h1 {
-  color: #4fc3f7;
-  border-bottom: 2px solid rgba(79, 195, 247, 0.3);
-  padding-bottom: 0.8rem;
-  margin-bottom: 1.5rem;
-  font-size: 2.2rem;
-  font-weight: 600;
-}
-
-.worldview-body h2 {
-  color: #29b6f6;
-  border-left: 4px solid #29b6f6;
-  padding-left: 1rem;
-  margin: 2rem 0 1rem 0;
-  font-size: 1.8rem;
-}
-
-.worldview-body h3 {
-  color: #81d4fa;
-  margin: 1.5rem 0 1rem 0;
-  font-size: 1.5rem;
-}
-
-.worldview-body strong {
-  color: #64ffda;
-  font-weight: 600;
-}
-
-.worldview-body em {
-  color: #b3e5fc;
-  font-style: italic;
-}
-
-.worldview-body code {
-  background: rgba(0, 188, 212, 0.1);
-  color: #64ffda;
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  font-family: 'Courier New', monospace;
-}`,
-      description: '深色背景搭配霓虹蓝绿，现代科技风格'
-    },
-    {
-      name: '奇幻魔法风',
-      value: `/* 奇幻魔法风格 - 优化版 */
-.worldview-detail {
-  background: linear-gradient(135deg, #1a0638 0%, #4a1c6b 50%, #6a0dad 100%);
-  color: #f3e5f5;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  border: 2px solid #8a2be2;
-  box-shadow: 0 8px 32px rgba(138, 43, 226, 0.25);
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.worldview-header {
-  background: linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0%, rgba(138, 43, 226, 0.1) 100%);
-  border-bottom: 3px solid #ffd700;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  backdrop-filter: blur(8px);
-  text-align: center;
-}
-
-.worldview-title {
-  color: #ffd700;
-  font-size: 3rem;
-  text-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
-  font-weight: bold;
-  margin: 0;
-  letter-spacing: 1px;
-}
-
-.worldview-content {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 12px;
-  padding: 2rem;
-  margin: 2rem 0;
-  backdrop-filter: blur(5px);
-}
-
-.worldview-body {
-  line-height: 1.8;
-  font-size: 1.15rem;
-  color: #e1bee7;
-}
-
-.worldview-body p {
-  margin-bottom: 1.5rem;
-  text-indent: 2em;
-}
-
-.worldview-body h1 {
-  color: #ff6b6b;
-  border-left: 5px solid #ff6b6b;
-  padding-left: 1rem;
-  margin: 2rem 0 1rem 0;
-  font-size: 2.2rem;
-  font-weight: bold;
-}
-
-.worldview-body h2 {
-  color: #ba68c8;
-  border-bottom: 2px solid rgba(186, 104, 200, 0.3);
-  padding-bottom: 0.5rem;
-  margin: 1.5rem 0 1rem 0;
-  font-size: 1.8rem;
-}
-
-.worldview-body h3 {
-  color: #ce93d8;
-  margin: 1.5rem 0 1rem 0;
-  font-size: 1.5rem;
-}
-
-.worldview-body strong {
-  color: #ffd700;
-  font-weight: bold;
-}
-
-.worldview-body em {
-  color: #e1bee7;
-  font-style: italic;
-  text-shadow: 0 0 5px rgba(225, 190, 231, 0.3);
-}`,
-      description: '紫金配色搭配发光效果，神秘魔法风格'
     },
     {
       name: '简约现代',
@@ -617,7 +446,184 @@ body::after {
       description: '微软WinUI3设计风格，极致简洁的深色主题'
     },
     {
-      name: '赛博朋克',
+      name: '深色科技感',
+      value: `/* 深色科技感主题 - 优化版 */
+.worldview-detail {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  color: #e0f7fa;
+  border: 2px solid #00bcd4;
+  box-shadow: 0 8px 32px rgba(0, 188, 212, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+.worldview-header {
+  background: linear-gradient(90deg, rgba(0, 188, 212, 0.1) 0%, rgba(100, 255, 218, 0.05) 100%);
+  border-bottom: 3px solid #00bcd4;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.worldview-title {
+  color: #64ffda;
+  font-size: 3rem;
+  text-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.worldview-content {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 188, 212, 0.3);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem 0;
+  backdrop-filter: blur(5px);
+}
+
+.worldview-body {
+  line-height: 1.8;
+  font-size: 1.15rem;
+  color: #b3e5fc;
+}
+
+.worldview-body p {
+  margin-bottom: 1.5rem;
+}
+
+.worldview-body h1 {
+  color: #4fc3f7;
+  border-bottom: 2px solid rgba(79, 195, 247, 0.3);
+  padding-bottom: 0.8rem;
+  margin-bottom: 1.5rem;
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+
+.worldview-body h2 {
+  color: #29b6f6;
+  border-left: 4px solid #29b6f6;
+  padding-left: 1rem;
+  margin: 2rem 0 1rem 0;
+  font-size: 1.8rem;
+}
+
+.worldview-body h3 {
+  color: #81d4fa;
+  margin: 1.5rem 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.worldview-body strong {
+  color: #64ffda;
+  font-weight: 600;
+}
+
+.worldview-body em {
+  color: #b3e5fc;
+  font-style: italic;
+}
+
+.worldview-body code {
+  background: rgba(0, 188, 212, 0.1);
+  color: #64ffda;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+}`,
+      description: '深色背景搭配霓虹蓝绿，现代科技风格'
+    },
+    {
+      name: '奇幻魔法风',
+      value: `/* 奇幻魔法风格 - 优化版 */
+.worldview-detail {
+  background: linear-gradient(135deg, #1a0638 0%, #4a1c6b 50%, #6a0dad 100%);
+  color: #f3e5f5;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  border: 2px solid #8a2be2;
+  box-shadow: 0 8px 32px rgba(138, 43, 226, 0.25);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.worldview-header {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0%, rgba(138, 43, 226, 0.1) 100%);
+  border-bottom: 3px solid #ffd700;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(8px);
+  text-align: center;
+}
+
+.worldview-title {
+  color: #ffd700;
+  font-size: 3rem;
+  text-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+  font-weight: bold;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.worldview-content {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem 0;
+  backdrop-filter: blur(5px);
+}
+
+.worldview-body {
+  line-height: 1.8;
+  font-size: 1.15rem;
+  color: #e1bee7;
+}
+
+.worldview-body p {
+  margin-bottom: 1.5rem;
+  text-indent: 2em;
+}
+
+.worldview-body h1 {
+  color: #ff6b6b;
+  border-left: 5px solid #ff6b6b;
+  padding-left: 1rem;
+  margin: 2rem 0 1rem 0;
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+.worldview-body h2 {
+  color: #ba68c8;
+  border-bottom: 2px solid rgba(186, 104, 200, 0.3);
+  padding-bottom: 0.5rem;
+  margin: 1.5rem 0 1rem 0;
+  font-size: 1.8rem;
+}
+
+.worldview-body h3 {
+  color: #ce93d8;
+  margin: 1.5rem 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.worldview-body strong {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.worldview-body em {
+  color: #e1bee7;
+  font-style: italic;
+  text-shadow: 0 0 5px rgba(225, 190, 231, 0.3);
+}`,
+      description: '紫金配色搭配发光效果，神秘魔法风格'
+    },
+    {
+      name: '自定义样式',
       value: `/* 赛博朋克风格 - 新增 */
 .worldview-detail {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #2d0a4a 100%);
@@ -709,7 +715,7 @@ body::after {
   border: 1px solid #ff00ff;
   font-family: 'Courier New', monospace;
 }`,
-      description: '未来科技风格，霓虹粉紫配色，赛博朋克主题'
+      description: '完全自定义您的CSS样式，输入框将显示当前使用的CSS代码'
     }
   ];
 
@@ -779,10 +785,15 @@ body::after {
   };
 
   // 自动调整文本区域高度
-  const autoResizeTextarea = (textarea) => {
-    if (textarea) {
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
+  const autoResizeTextarea = () => {
+    if (textareaRef.current) {
+      // 重置高度以获取正确的scrollHeight
+      textareaRef.current.style.height = 'auto';
+      // 设置最小高度
+      const minHeight = 200;
+      // 计算新高度，但不小于最小高度
+      const newHeight = Math.max(textareaRef.current.scrollHeight, minHeight);
+      textareaRef.current.style.height = newHeight + 'px';
     }
   };
 
@@ -790,22 +801,43 @@ body::after {
   const handleTextareaChange = (e) => {
     const newCSS = e.target.value;
     handleCSSChange(newCSS);
-    autoResizeTextarea(e.target);
+    autoResizeTextarea();
   };
 
   // 初始化时调整高度
   useEffect(() => {
-    const textarea = document.querySelector('.css-textarea');
-    if (textarea) {
-      autoResizeTextarea(textarea);
-    }
-  }, [customCSS, isExpanded]);
+    // 使用setTimeout确保DOM已更新
+    const timer = setTimeout(() => {
+      autoResizeTextarea();
+    }, 0);
+    
+    return () => clearTimeout(timer);
+  }, [customCSS, isExpanded, showCustomEditor]);
 
   const handlePresetSelect = (presetValue, presetName) => {
-    // 只有"默认样式"会显示自定义CSS编辑器
-    if (presetName === '默认样式') {
+    setSelectedPreset(presetName); // 更新选中的预设样式
+    
+    // 只有"自定义样式"会显示自定义CSS编辑器
+    if (presetName === '自定义样式') {
       setShowCustomEditor(true);
-      handleCSSChange(presetValue);
+      // 不修改CSS，保持当前使用的CSS代码
+      // 如果当前没有CSS代码，则使用默认样式
+      if (!customCSS || customCSS.trim() === '') {
+        // 获取默认样式
+        const defaultPreset = presetStyles.find(p => p.name === '默认样式');
+        if (defaultPreset) {
+          onCSSChange(defaultPreset.value);
+          // 使用setTimeout确保在DOM更新后调整高度
+          setTimeout(() => {
+            autoResizeTextarea();
+          }, 0);
+        }
+      } else {
+        // 如果已有CSS内容，也需要调整高度
+        setTimeout(() => {
+          autoResizeTextarea();
+        }, 0);
+      }
     } else {
       // 其他样式隐藏自定义CSS编辑器，清空输入框并直接应用
       setShowCustomEditor(false);
@@ -1241,7 +1273,7 @@ body::after {
                   <button
                     key={index}
                     type="button"
-                    className={`preset-btn ${customCSS === preset.value ? 'active' : ''}`}
+                    className={`preset-btn ${selectedPreset === preset.name ? 'active' : ''}`}
                     onClick={() => handlePresetSelect(preset.value, preset.name)}
                   >
                     <div className="preset-name">{preset.name}</div>
@@ -1252,7 +1284,7 @@ body::after {
             </div>
           )}
 
-          {showCustomEditor && (
+          {showCustomEditor && selectedPreset === '自定义样式' && (
             <div className="custom-css-editor">
               <div className="editor-header">
                 <div className="editor-title-section">
@@ -1319,13 +1351,13 @@ body::after {
               </div>
               
               <textarea
-                value={customCSS}
-                onChange={handleTextareaChange}
-                className={`css-textarea ${!isValidCSS ? 'error' : ''}`}
-                placeholder="在此处输入自定义CSS代码...
-当前显示的是您当前的CSS样式代码"
-                rows={8}
-              />
+                  ref={textareaRef}
+                  value={customCSS}
+                  onChange={handleTextareaChange}
+                  className={`css-textarea ${!isValidCSS ? 'error' : ''}`}
+                  placeholder="在此输入您的自定义CSS代码..."
+                  rows={8}
+                />
               
               {cssError && (
                 <div className="error-message">
