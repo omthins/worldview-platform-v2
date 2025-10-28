@@ -1,0 +1,91 @@
+
+/* CSS变量定义 - 自动生成 */
+:root {
+  /* 主色 */
+  --primary-color: var(--primary-color);
+  --primary-hover: var(--primary-hover);
+  --primary-active: var(--primary-active);
+  
+  /* 功能色 */
+  --success-color: var(--success-color);
+  --warning-color: var(--warning-color);
+  --error-color: var(--error-color);
+  --info-color: var(--primary-color);
+  
+  /* 文本色 */
+  --text-color: var(--text-color);
+  --text-secondary-color: var(--text-secondary-color);
+  --text-muted-color: var(--text-muted-color);
+  --text-disabled-color: #cccccc;
+  
+  /* 背景色 */
+  --bg-color: var(--bg-color);
+  --card-bg-color: var(--card-bg-color);
+  --input-bg-color: var(--card-bg-color);
+  --hover-bg-color: var(--hover-bg-color);
+  --tag-bg-color: var(--hover-bg-color);
+  
+  /* 边框色 */
+  --border-color: var(--border-color);
+  --divider-color: var(--divider-color);
+  
+  /* 其他 */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --mask-color: rgba(0, 0, 0, 0.45);
+  --white: var(--card-bg-color);
+  --black: #000000;
+  
+  /* 间距 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  
+  /* 过渡 */
+  --transition-speed: 0.3s;
+  --transition-fast: 0.2s;
+  --transition-slow: 0.5s;
+  
+  /* 字体 */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  
+  /* 字号 */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-xxl: 24px;
+  
+  /* 圆角 */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 50%;
+}
+
+/* 深色主题变量 */
+[data-theme="dark"] {
+  /* 文本色 */
+  --text-color: var(--divider-color);
+  --text-secondary-color: #b8b8b8;
+  --text-muted-color: #888888;
+  --text-disabled-color: #555555;
+  
+  /* 背景色 */
+  --bg-color: #121212;
+  --card-bg-color: #1e1e1e;
+  --input-bg-color: #2a2a2a;
+  --hover-bg-color: var(--text-color);
+  --tag-bg-color: #2a2a2a;
+  
+  /* 边框色 */
+  --border-color: #404040;
+  --divider-color: #404040;
+  
+  /* 阴影 */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}

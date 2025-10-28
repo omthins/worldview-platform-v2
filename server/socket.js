@@ -4,10 +4,18 @@ const jwt = require('jsonwebtoken');
 // Socket.IO 连接管理
 class SocketManager {
   constructor(server) {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://127.0.0.1:3000'
+    ];
+
+    // 允许所有 origin 并回显请求 origin（适用于公网部署）
     this.io = new Server(server, {
       cors: {
-        origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
-        methods: ['GET', 'POST']
+        origin: true,
+        methods: ['GET', 'POST', 'OPTIONS'],
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization']
       }
     });
     

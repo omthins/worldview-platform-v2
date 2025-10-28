@@ -16,10 +16,25 @@ const notificationRoutes = require('./routes/notifications');
 const app = express();
 
 // 中间件
+// 使用 cors 中间件统一处理跨域（包括预检）
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+];
+
+// 动态检查 origin，允许 localhost / 127.0.0.1 / 局域网 192.168.x.x 的请求（便于在局域网内通过 IP 访问开发服务器）
+// 允许所有 origin 并回显请求的 Origin（Access-Control-Allow-Origin: <request-origin>），
+// 这样在公网部署时前端任意域名访问都有效，同时仍可开启 credentials（cookie）支持。
+// 注意：这在安全上等于不开启 origin 限制，请确保后端有其他认证/授权措施。
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
-  credentials: true
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// 确保预检请求也会走 cors 中间件并返回 204
+app.options('*', cors());
 
 // JSON解析中间件，但跳过文件上传请求
 app.use((req, res, next) => {
@@ -32,12 +47,7 @@ app.use((req, res, next) => {
 // 静态文件服务
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   setHeaders: (res, filePath) => {
-    // 设置CORS头，允许跨域访问
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
-    // 设置缓存控制
+    // 静态文件的缓存控制等，由 cors 中间件统一处理跨域头，避免重复或冲突
     res.setHeader('Cache-Control', 'public, max-age=3600');
     
     // 根据文件类型设置Content-Type
