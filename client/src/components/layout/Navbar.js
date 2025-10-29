@@ -9,6 +9,7 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
 
@@ -18,7 +19,8 @@ const Navbar = () => {
   };
 
   const handleSearch = (e, searchType = '', searchTerm = '') => {
-    e.preventDefault();
+    // 支持从按钮或程序调用，e 可能为 undefined
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     const term = searchTerm || searchQuery.trim();
     if (term) {
       // 立即去除模糊效果
@@ -28,6 +30,7 @@ const Navbar = () => {
       // 清空搜索框并移除焦点
       setSearchQuery('');
       setSearchSuggestions([]);
+  setHighlightedIndex(-1);
       if (searchInputRef.current) {
         searchInputRef.current.blur();
       }
@@ -46,6 +49,7 @@ const Navbar = () => {
   const handleSearchInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
+    setHighlightedIndex(-1);
     
     if (value.trim()) {
       const suggestions = [
@@ -57,6 +61,28 @@ const Navbar = () => {
       setSearchSuggestions(suggestions);
     } else {
       setSearchSuggestions([]);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (!searchSuggestions || searchSuggestions.length === 0) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlightedIndex((idx) => Math.min(searchSuggestions.length - 1, idx + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedIndex((idx) => Math.max(-1, idx - 1));
+    } else if (e.key === 'Enter') {
+      if (highlightedIndex >= 0 && searchSuggestions[highlightedIndex]) {
+        e.preventDefault();
+        const s = searchSuggestions[highlightedIndex];
+        handleSearch(e, s.type, s.term);
+      }
+      // 否则，允许表单 submit 处理普通搜索（handleSearch onSubmit 会触发）
+    } else if (e.key === 'Escape') {
+      setSearchFocused(false);
+      setSearchSuggestions([]);
+      setHighlightedIndex(-1);
     }
   };
 
@@ -143,30 +169,71 @@ const Navbar = () => {
           幻境界
         </Link>
         <form onSubmit={handleSearch} className="navbar-search">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="搜索世界观、作者名、世界编号、作者ID..."
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-              onFocus={handleSearchInputFocus}
-              onBlur={handleSearchInputBlur}
-              className="search-input"
-              ref={searchInputRef}
-            />
-            <button type="submit" className="search-btn">搜索</button>
+            <div className="search-container">
+              <span className="search-icon" aria-hidden="true">
+                {/* SVG 放大镜图标 */}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11 19a8 8 0 1 1 5.293-14.293A8 8 0 0 1 11 19zm0 2a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" fill="currentColor" opacity="0.15"/>
+                  <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+              <input
+                type="text"
+                aria-label="搜索"
+                placeholder="搜索世界观、作者名、世界编号、作者ID..."
+                value={searchQuery}
+                onChange={handleSearchInputChange}
+                onFocus={handleSearchInputFocus}
+                onBlur={handleSearchInputBlur}
+                onKeyDown={handleKeyDown}
+                aria-haspopup="listbox"
+                aria-expanded={searchFocused && searchSuggestions.length > 0}
+                aria-controls="navbar-search-listbox"
+                className="search-input"
+                ref={searchInputRef}
+              />
+              <button
+                type="button"
+                className="search-btn"
+                aria-label="执行搜索"
+                title="搜索"
+                onClick={(ev) => {
+                  if (highlightedIndex >= 0 && searchSuggestions[highlightedIndex]) {
+                    const s = searchSuggestions[highlightedIndex];
+                    handleSearch(ev, s.type, s.term);
+                  } else {
+                    handleSearch(ev);
+                  }
+                }}
+                disabled={!(searchQuery.trim() || highlightedIndex >= 0)}
+              >
+                <svg className="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="btn-text">搜索</span>
+              </button>
             {searchFocused && searchSuggestions.length > 0 && (
-              <div className="search-suggestions">
-                {searchSuggestions.map((suggestion, index) => (
-                  <div
-                    key={index}
-                    className="search-suggestion-item"
-                    onMouseDown={(e) => handleSearch(e, suggestion.type, suggestion.term)}
-                  >
-                    {suggestion.label}
-                  </div>
-                ))}
-              </div>
+                <div className="search-suggestions" role="listbox" id="navbar-search-listbox">
+                  {searchSuggestions.map((suggestion, index) => (
+                    <div
+                      key={index}
+                      role="option"
+                      aria-selected={highlightedIndex === index}
+                      className={"search-suggestion-item" + (highlightedIndex === index ? ' active' : '')}
+                      onMouseDown={(e) => handleSearch(e, suggestion.type, suggestion.term)}
+                      onMouseEnter={() => setHighlightedIndex(index)}
+                    >
+                      <div className="item-icon">{/* 占位图标 */}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" opacity="0.6"/>
+                        </svg>
+                      </div>
+                      <div className="item-text">{suggestion.label}</div>
+                    </div>
+                  ))}
+                </div>
             )}
           </div>
         </form>
