@@ -15,6 +15,11 @@
   max-width: 400px;
 }
 
+.login-card {
+  border-radius: 12px;
+  padding: 2.25rem;
+}
+
 .login-title {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -31,6 +36,27 @@
   cursor: pointer;
   transition: background-color var(--transition-speed);
 }
+
+.form-control {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--form-bg-color);
+  color: var(--text-color);
+  transition: box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 6px 20px rgba(var(--primary-color-rgb,74,144,226),0.06);
+}
+
+.password-wrapper { position: relative; display: flex; align-items: center; }
+.password-toggle { position: absolute; right: 10px; background: transparent; border: none; color: var(--text-secondary-color); cursor: pointer; padding: 6px; font-size: 0.9rem; }
+
+.login-title { font-size: 1.6rem; }
 
 .btn-primary:hover {
   background-color: var(--primary-hover-color);

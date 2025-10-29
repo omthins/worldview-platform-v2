@@ -11,6 +11,8 @@ const Login = () => {
   });
   const [errors, setErrors] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -20,9 +22,10 @@ const Login = () => {
 
   const onSubmit = async e => {
     e.preventDefault();
-    
+    setLoading(true);
     const result = await login({ email, password });
-    
+    setLoading(false);
+
     if (result.success) {
       navigate('/dashboard');
     } else {
@@ -51,22 +54,27 @@ const Login = () => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="form-group password-group">
             <label htmlFor="password">密码</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={onChange}
-              className="form-control"
-              autoComplete="off"
-              required
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                value={password}
+                onChange={onChange}
+                className="form-control"
+                autoComplete="off"
+                required
+              />
+              <button type="button" className="password-toggle" onClick={() => setShowPassword(s => !s)} aria-label="切换密码可见性">
+                {showPassword ? '隐藏' : '显示'}
+              </button>
+            </div>
           </div>
           
-          <button type="submit" className="btn btn-primary btn-block">
-            登录
+          <button type="submit" className="btn btn-primary btn-block" disabled={!email || !password || loading}>
+            {loading ? '登录中...' : '登录'}
           </button>
         </form>
         

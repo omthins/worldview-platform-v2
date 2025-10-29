@@ -15,6 +15,8 @@ const Register = () => {
   });
   const [errors, setErrors] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -42,8 +44,10 @@ const Register = () => {
       return;
     }
     
+    setLoading(true);
     const result = await register({ username, email, password, avatar });
-    
+    setLoading(false);
+
     if (result.success) {
       navigate('/dashboard');
     } else {
@@ -86,32 +90,42 @@ const Register = () => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="form-group password-group">
             <label htmlFor="password">密码</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={onChange}
-              className="form-control"
-              autoComplete="off"
-              required
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                value={password}
+                onChange={onChange}
+                className="form-control"
+                autoComplete="off"
+                required
+              />
+              <button type="button" className="password-toggle" onClick={() => setShowPassword(s => !s)} aria-label="切换密码可见性">
+                {showPassword ? '隐藏' : '显示'}
+              </button>
+            </div>
           </div>
           
-          <div className="form-group">
+          <div className="form-group password-group">
             <label htmlFor="password2">确认密码</label>
-            <input
-              type="password"
-              id="password2"
-              name="password2"
-              value={password2}
-              onChange={onChange}
-              className="form-control"
-              autoComplete="off"
-              required
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password2"
+                name="password2"
+                value={password2}
+                onChange={onChange}
+                className="form-control"
+                autoComplete="off"
+                required
+              />
+              <button type="button" className="password-toggle" onClick={() => setShowPassword(s => !s)} aria-label="切换密码可见性">
+                {showPassword ? '隐藏' : '显示'}
+              </button>
+            </div>
           </div>
           
           <div className="form-group">
@@ -122,8 +136,8 @@ const Register = () => {
             />
           </div>
           
-          <button type="submit" className="btn btn-primary btn-block">
-            注册
+          <button type="submit" className="btn btn-primary btn-block" disabled={!username || !email || !password || !password2 || loading}>
+            {loading ? '注册中...' : '注册'}
           </button>
         </form>
         
