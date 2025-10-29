@@ -5,21 +5,23 @@
 }
 
 .profile-container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
 .profile-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 2rem;
   align-items: center;
-  margin-bottom: 2rem;
-  padding: 2.5rem;
+  margin-bottom: 1.75rem;
+  padding: 1.75rem;
   background: var(--card-bg-color);
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: var(--card-shadow);
   border: 1px solid var(--border-color);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .profile-header:hover {
@@ -28,23 +30,40 @@
 }
 
 .profile-avatar {
-  margin-right: 2rem;
+  margin: 0;
   flex-shrink: 0;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-avatar img {
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid var(--primary-color);
-  transition: all 0.3s ease;
+  transition: transform 0.18s ease, border-color 0.18s ease;
 }
 
 .profile-avatar:hover img {
   border-color: var(--primary-hover-color);
-  transform: scale(1.05);
+  transform: scale(1.03);
+}
+
+/* avatar overlay hint (non-blocking) */
+.profile-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover-color));
+  border-radius: 50%;
+  opacity: 0.9;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .profile-info {
@@ -52,11 +71,11 @@
 }
 
 .profile-info h1 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.4rem 0;
   color: var(--text-color);
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
 }
 
 .profile-email {
@@ -82,26 +101,23 @@
 }
 
 .profile-tabs {
-  display: flex;
-  margin-bottom: 2rem;
-  background: var(--card-bg-color);
-  border-radius: 12px 12px 0 0;
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-  border-bottom: none;
+  display: inline-flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  background: transparent;
 }
 
 .tab-btn {
-  padding: 1.2rem 2.5rem;
+  padding: 0.65rem 1.25rem;
   border: none;
-  background: transparent;
+  background: var(--card-bg-color);
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-secondary-color);
-  transition: all 0.3s ease;
-  border-bottom: 3px solid transparent;
-  font-weight: 500;
-  position: relative;
+  transition: all 0.18s ease;
+  font-weight: 600;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .tab-btn:hover {
@@ -110,30 +126,17 @@
 }
 
 .tab-btn.active {
-  color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
-  background-color: var(--hover-bg);
-}
-
-.tab-btn.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 3px;
-  background: var(--primary-color);
-  border-radius: 2px;
+  color: white;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-hover-color));
+  transform: translateY(-2px);
 }
 
 .profile-content {
   background: var(--card-bg-color);
-  border-radius: 0 0 12px 12px;
-  padding: 2.5rem;
+  border-radius: 12px;
+  padding: 2rem;
   box-shadow: var(--card-shadow);
   border: 1px solid var(--border-color);
-  border-top: none;
 }
 
 .profile-form-container h2,
@@ -148,7 +151,8 @@
 
 .profile-form,
 .password-form {
-  max-width: 500px;
+  max-width: 700px;
+  width: 100%;
 }
 
 .form-group {
@@ -187,17 +191,17 @@
 }
 
 .btn {
-  padding: 1rem 2rem;
+  padding: 0.9rem 1.6rem;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.18s ease;
   text-decoration: none;
   display: inline-block;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-transform: none;
+  letter-spacing: 0.2px;
 }
 
 .btn-primary {
@@ -264,8 +268,12 @@
   margin-top: 1.5rem;
   background: var(--form-bg-color);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1.25rem;
   border: 1px solid var(--border-color);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
 }
 
 .avatar-option-section {
@@ -296,14 +304,14 @@
   }
   
   .profile-header {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     text-align: center;
-    padding: 2rem;
+    padding: 1.5rem;
+    gap: 1rem;
   }
   
   .profile-avatar {
-    margin-right: 0;
-    margin-bottom: 1.5rem;
+    margin: 0 auto;
   }
   
   .profile-avatar img {
@@ -313,6 +321,7 @@
   
   .profile-tabs {
     flex-wrap: wrap;
+    justify-content: center;
   }
   
   .tab-btn {
@@ -329,6 +338,7 @@
   .avatar-options-container {
     margin-top: 1rem;
     padding: 1rem;
+    grid-template-columns: 1fr;
   }
   
   .avatar-option-section {
